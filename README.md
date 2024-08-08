@@ -19,9 +19,13 @@ This project is a Content Resource Manager (CRM) application built with modern t
 -   Efficient database operations with Spring JPA and PostgreSQL
 -   API documentation with Swagger
 
-## Prerequisites
+## Entity-Relationship Diagram (ERD)
 
 -   Java 22
 -   PostgreSQL database
 -   Node.js and npm
 -   Keycloak server
+
+## Entity-Relationship Diagram (ERD)
+
+![ERD](/docs/images/database.png)

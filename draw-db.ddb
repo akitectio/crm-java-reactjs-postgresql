@@ -1,0 +1,888 @@
+{
+  "author": "Unnamed",
+  "title": "Untitled Diagram",
+  "date": "2024-08-08T14:41:16.387Z",
+  "tables": [
+    {
+      "name": "languages",
+      "comment": "",
+      "color": "#175e7a",
+      "fields": [
+        {
+          "name": "id",
+          "type": "SERIAL",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": false,
+          "primary": true,
+          "default": "",
+          "check": "",
+          "id": 0
+        },
+        {
+          "name": "code",
+          "type": "VARCHAR",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "size": 10,
+          "check": "",
+          "id": 1
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "size": 50,
+          "check": "",
+          "id": 2
+        }
+      ],
+      "indices": [],
+      "id": 0,
+      "x": 445.7139152722459,
+      "y": 189.07691078792067
+    },
+    {
+      "name": "posts",
+      "comment": "",
+      "color": "#175e7a",
+      "fields": [
+        {
+          "name": "id",
+          "type": "SERIAL",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": false,
+          "primary": true,
+          "default": "",
+          "check": "",
+          "id": 0
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "CURRENT_TIMESTAMP",
+          "check": "",
+          "id": 1
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "CURRENT_TIMESTAMP",
+          "check": "",
+          "id": 2
+        }
+      ],
+      "indices": [],
+      "id": 1,
+      "x": 285.3711818256287,
+      "y": 541.4431606062595
+    },
+    {
+      "name": "post_translations",
+      "comment": "",
+      "color": "#175e7a",
+      "fields": [
+        {
+          "name": "id",
+          "type": "SERIAL",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": false,
+          "primary": true,
+          "default": "",
+          "check": "",
+          "id": 0
+        },
+        {
+          "name": "post_id",
+          "type": "INTEGER",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "check": "",
+          "id": 1
+        },
+        {
+          "name": "language_id",
+          "type": "INTEGER",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "check": "",
+          "id": 2
+        },
+        {
+          "name": "title",
+          "type": "VARCHAR",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "size": 255,
+          "check": "",
+          "id": 3
+        },
+        {
+          "name": "content",
+          "type": "TEXT",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "check": "",
+          "id": 4
+        },
+        {
+          "name": "seo_title",
+          "type": "VARCHAR",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": false,
+          "primary": false,
+          "default": "",
+          "size": 255,
+          "check": "",
+          "id": 5
+        },
+        {
+          "name": "seo_description",
+          "type": "TEXT",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": false,
+          "primary": false,
+          "default": "",
+          "check": "",
+          "id": 6
+        },
+        {
+          "name": "seo_keywords",
+          "type": "VARCHAR",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": false,
+          "primary": false,
+          "default": "",
+          "size": 255,
+          "check": "",
+          "id": 7
+        },
+        {
+          "name": "slug",
+          "type": "VARCHAR",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "size": 255,
+          "check": "",
+          "id": 8
+        }
+      ],
+      "indices": [
+        {
+          "name": "idx_post_translations_slug",
+          "unique": true,
+          "fields": [
+            "slug"
+          ],
+          "id": 0
+        }
+      ],
+      "id": 2,
+      "x": -147.95949752505805,
+      "y": 309.8527612642929
+    },
+    {
+      "name": "categories",
+      "comment": "",
+      "color": "#175e7a",
+      "fields": [
+        {
+          "name": "id",
+          "type": "SERIAL",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": false,
+          "primary": true,
+          "default": "",
+          "check": "",
+          "id": 0
+        }
+      ],
+      "indices": [],
+      "id": 3,
+      "x": -401.6238319152626,
+      "y": 633.4094709524932
+    },
+    {
+      "name": "category_translations",
+      "comment": "",
+      "color": "#175e7a",
+      "fields": [
+        {
+          "name": "id",
+          "type": "SERIAL",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": false,
+          "primary": true,
+          "default": "",
+          "check": "",
+          "id": 0
+        },
+        {
+          "name": "category_id",
+          "type": "INTEGER",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "check": "",
+          "id": 1
+        },
+        {
+          "name": "language_id",
+          "type": "INTEGER",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "check": "",
+          "id": 2
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "size": 255,
+          "check": "",
+          "id": 3
+        },
+        {
+          "name": "description",
+          "type": "TEXT",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": false,
+          "primary": false,
+          "default": "",
+          "check": "",
+          "id": 4
+        },
+        {
+          "name": "slug",
+          "type": "VARCHAR",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "size": 255,
+          "check": "",
+          "id": 5
+        }
+      ],
+      "indices": [
+        {
+          "name": "idx_category_translations_slug",
+          "unique": true,
+          "fields": [
+            "slug"
+          ],
+          "id": 0
+        }
+      ],
+      "id": 4,
+      "x": -383.09055875794206,
+      "y": 148.17390128619752
+    },
+    {
+      "name": "tags",
+      "comment": "",
+      "color": "#175e7a",
+      "fields": [
+        {
+          "name": "id",
+          "type": "SERIAL",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": false,
+          "primary": true,
+          "default": "",
+          "check": "",
+          "id": 0
+        }
+      ],
+      "indices": [],
+      "id": 5,
+      "x": 1160.4589963227759,
+      "y": 549.2237295091495
+    },
+    {
+      "name": "tag_translations",
+      "comment": "",
+      "color": "#175e7a",
+      "fields": [
+        {
+          "name": "id",
+          "type": "SERIAL",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": false,
+          "primary": true,
+          "default": "",
+          "check": "",
+          "id": 0
+        },
+        {
+          "name": "tag_id",
+          "type": "INTEGER",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "check": "",
+          "id": 1
+        },
+        {
+          "name": "language_id",
+          "type": "INTEGER",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "check": "",
+          "id": 2
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "size": 255,
+          "check": "",
+          "id": 3
+        },
+        {
+          "name": "slug",
+          "type": "VARCHAR",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "size": 255,
+          "check": "",
+          "id": 4
+        }
+      ],
+      "indices": [
+        {
+          "name": "idx_tag_translations_slug",
+          "unique": true,
+          "fields": [
+            "slug"
+          ],
+          "id": 0
+        }
+      ],
+      "id": 6,
+      "x": 1142.4565186240668,
+      "y": 78.3230104794541
+    },
+    {
+      "name": "series",
+      "comment": "",
+      "color": "#175e7a",
+      "fields": [
+        {
+          "name": "id",
+          "type": "SERIAL",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": false,
+          "primary": true,
+          "default": "",
+          "check": "",
+          "id": 0
+        }
+      ],
+      "indices": [],
+      "id": 7,
+      "x": 910.8751784959741,
+      "y": 766.0593544553564
+    },
+    {
+      "name": "series_translations",
+      "comment": "",
+      "color": "#175e7a",
+      "fields": [
+        {
+          "name": "id",
+          "type": "SERIAL",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": false,
+          "primary": true,
+          "default": "",
+          "check": "",
+          "id": 0
+        },
+        {
+          "name": "series_id",
+          "type": "INTEGER",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "check": "",
+          "id": 1
+        },
+        {
+          "name": "language_id",
+          "type": "INTEGER",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "check": "",
+          "id": 2
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "size": 255,
+          "check": "",
+          "id": 3
+        },
+        {
+          "name": "description",
+          "type": "TEXT",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": false,
+          "primary": false,
+          "default": "",
+          "check": "",
+          "id": 4
+        },
+        {
+          "name": "slug",
+          "type": "VARCHAR",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "size": 255,
+          "check": "",
+          "id": 5
+        }
+      ],
+      "indices": [
+        {
+          "name": "idx_series_translations_slug",
+          "unique": true,
+          "fields": [
+            "slug"
+          ],
+          "id": 0
+        }
+      ],
+      "id": 8,
+      "x": 894.8198282563433,
+      "y": 292.9161567378808
+    },
+    {
+      "name": "post_categories",
+      "comment": "",
+      "color": "#175e7a",
+      "fields": [
+        {
+          "name": "post_id",
+          "type": "INTEGER",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "check": "",
+          "id": 0
+        },
+        {
+          "name": "category_id",
+          "type": "INTEGER",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "check": "",
+          "id": 1
+        }
+      ],
+      "indices": [],
+      "id": 9,
+      "x": 30.460705842845414,
+      "y": 695.9845786984661
+    },
+    {
+      "name": "post_tags",
+      "comment": "",
+      "color": "#175e7a",
+      "fields": [
+        {
+          "name": "post_id",
+          "type": "INTEGER",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "check": "",
+          "id": 0
+        },
+        {
+          "name": "tag_id",
+          "type": "INTEGER",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "check": "",
+          "id": 1
+        }
+      ],
+      "indices": [],
+      "id": 10,
+      "x": 684.9861230435267,
+      "y": 508.57432013772654
+    },
+    {
+      "name": "post_series",
+      "comment": "",
+      "color": "#175e7a",
+      "fields": [
+        {
+          "name": "post_id",
+          "type": "INTEGER",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "check": "",
+          "id": 0
+        },
+        {
+          "name": "series_id",
+          "type": "INTEGER",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "check": "",
+          "id": 1
+        }
+      ],
+      "indices": [],
+      "id": 11,
+      "x": 567.8969366301617,
+      "y": 736.4837926963944
+    },
+    {
+      "name": "configs",
+      "comment": "",
+      "color": "#175e7a",
+      "fields": [
+        {
+          "name": "key",
+          "type": "VARCHAR",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": false,
+          "primary": true,
+          "default": "",
+          "size": 255,
+          "check": "",
+          "id": 0
+        },
+        {
+          "name": "value",
+          "type": "TEXT",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": true,
+          "primary": false,
+          "default": "",
+          "check": "",
+          "id": 1
+        },
+        {
+          "name": "description",
+          "type": "TEXT",
+          "comment": "",
+          "unique": false,
+          "increment": false,
+          "notNull": false,
+          "primary": false,
+          "default": "",
+          "check": "",
+          "id": 2
+        }
+      ],
+      "indices": [],
+      "id": 12,
+      "x": -386.4530971386365,
+      "y": 821.963009525946
+    }
+  ],
+  "relationships": [
+    {
+      "name": "post_translations_post_id_fk",
+      "startTableId": 2,
+      "startFieldId": 1,
+      "endTableId": 1,
+      "endFieldId": 0,
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade",
+      "cardinality": "Nhiều thành một",
+      "id": 0
+    },
+    {
+      "name": "post_translations_language_id_fk",
+      "startTableId": 2,
+      "startFieldId": 2,
+      "endTableId": 0,
+      "endFieldId": 0,
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade",
+      "cardinality": "Nhiều thành một",
+      "id": 1
+    },
+    {
+      "name": "category_translations_category_id_fk",
+      "startTableId": 4,
+      "startFieldId": 1,
+      "endTableId": 3,
+      "endFieldId": 0,
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade",
+      "cardinality": "Nhiều thành một",
+      "id": 2
+    },
+    {
+      "name": "category_translations_language_id_fk",
+      "startTableId": 4,
+      "startFieldId": 2,
+      "endTableId": 0,
+      "endFieldId": 0,
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade",
+      "cardinality": "Nhiều thành một",
+      "id": 3
+    },
+    {
+      "name": "tag_translations_tag_id_fk",
+      "startTableId": 6,
+      "startFieldId": 1,
+      "endTableId": 5,
+      "endFieldId": 0,
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade",
+      "cardinality": "Nhiều thành một",
+      "id": 4
+    },
+    {
+      "name": "tag_translations_language_id_fk",
+      "startTableId": 6,
+      "startFieldId": 2,
+      "endTableId": 0,
+      "endFieldId": 0,
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade",
+      "cardinality": "Nhiều thành một",
+      "id": 5
+    },
+    {
+      "name": "series_translations_series_id_fk",
+      "startTableId": 8,
+      "startFieldId": 1,
+      "endTableId": 7,
+      "endFieldId": 0,
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade",
+      "cardinality": "Nhiều thành một",
+      "id": 6
+    },
+    {
+      "name": "series_translations_language_id_fk",
+      "startTableId": 8,
+      "startFieldId": 2,
+      "endTableId": 0,
+      "endFieldId": 0,
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade",
+      "cardinality": "Nhiều thành một",
+      "id": 7
+    },
+    {
+      "name": "post_categories_post_id_fk",
+      "startTableId": 9,
+      "startFieldId": 0,
+      "endTableId": 1,
+      "endFieldId": 0,
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade",
+      "cardinality": "Nhiều thành một",
+      "id": 8
+    },
+    {
+      "name": "post_categories_category_id_fk",
+      "startTableId": 9,
+      "startFieldId": 1,
+      "endTableId": 3,
+      "endFieldId": 0,
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade",
+      "cardinality": "Nhiều thành một",
+      "id": 9
+    },
+    {
+      "name": "post_tags_post_id_fk",
+      "startTableId": 10,
+      "startFieldId": 0,
+      "endTableId": 1,
+      "endFieldId": 0,
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade",
+      "cardinality": "Nhiều thành một",
+      "id": 10
+    },
+    {
+      "name": "post_tags_tag_id_fk",
+      "startTableId": 10,
+      "startFieldId": 1,
+      "endTableId": 5,
+      "endFieldId": 0,
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade",
+      "cardinality": "Nhiều thành một",
+      "id": 11
+    },
+    {
+      "name": "post_series_post_id_fk",
+      "startTableId": 11,
+      "startFieldId": 0,
+      "endTableId": 1,
+      "endFieldId": 0,
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade",
+      "cardinality": "Nhiều thành một",
+      "id": 12
+    },
+    {
+      "name": "post_series_series_id_fk",
+      "startTableId": 11,
+      "startFieldId": 1,
+      "endTableId": 7,
+      "endFieldId": 0,
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade",
+      "cardinality": "Nhiều thành một",
+      "id": 13
+    }
+  ],
+  "notes": [],
+  "subjectAreas": [],
+  "database": "postgresql",
+  "types": [],
+  "enums": []
+}
