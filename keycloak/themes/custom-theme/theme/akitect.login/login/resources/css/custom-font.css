@@ -1,0 +1,41 @@
+/** Fonts **/
+/* Inter-300 */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: 300;
+  src: url('../fonts/Inter-Light.ttf') format('opentype'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* Inter-regular */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/Inter-Regular.ttf') format('opentype'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* Inter-500 */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  src: url('../fonts/Inter-Medium.ttf') format('opentype'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* Inter-600 */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  src: url('../fonts/Inter-SemiBold.ttf') format('opentype'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* Inter-700 */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  src: url('../fonts/Inter-Bold.ttf') format('opentype'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}

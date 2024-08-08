@@ -1,0 +1,4 @@
+pgadmin_data
+postgres_data
+.env.keycloak
+.DS_Store

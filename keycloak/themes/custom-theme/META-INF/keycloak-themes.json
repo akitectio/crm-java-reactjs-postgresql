@@ -1,0 +1,16 @@
+{
+  "themes": [
+    {
+      "name": "custom",
+      "types": ["login"]
+    },
+    {
+      "name": "custom.v2",
+      "types": ["login"]
+    },
+    {
+      "name": "azinsu.payment",
+      "types": ["login"]
+    }
+  ]
+}
