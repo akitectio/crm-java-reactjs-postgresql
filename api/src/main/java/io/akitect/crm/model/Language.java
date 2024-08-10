@@ -1,31 +1,36 @@
 package io.akitect.crm.model;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.*;
-
-import org.hibernate.annotations.GenericGenerator;
-import java.util.UUID;
-
+import lombok.Data;
 
 @Entity
+@Table(name = "languages")
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Language {
-    @Id
-    @GeneratedValue(generator = "UUID")
-    @Column(updatable = false, nullable = false)
-    private UUID id;
 
-    @NotBlank(message = "Code is mandatory")
-    @Size(max = 10, message = "Code cannot be longer than 10 characters")
-    @Column(nullable = false, unique = true, length = 10)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotBlank(message = "Language name is mandatory")
+    @Size(max = 120, message = "Language name cannot be longer than 120 characters")
+    private String name;
+
+    @NotBlank(message = "Locale is mandatory")
+    @Size(max = 20, message = "Locale cannot be longer than 20 characters")
+    private String locale;
+
+    @NotBlank(message = "Language code is mandatory")
+    @Size(max = 20, message = "Language code cannot be longer than 20 characters")
     private String code;
 
-    @NotBlank(message = "Name is mandatory")
-    @Size(max = 50, message = "Name cannot be longer than 50 characters")
-    @Column(nullable = false, length = 50)
-    private String name;
+    private String flag;
+
+    private Boolean isDefault;
+
+    private Integer order;
+
+    private Boolean isRtl;
 }

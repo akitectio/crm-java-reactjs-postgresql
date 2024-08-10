@@ -1,22 +1,17 @@
-package io.akitect.crm.controllers;
+package io.akitect.crm.controller;
 
 import io.akitect.crm.model.Language;
 import io.akitect.crm.service.LanguageService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/languages")
-@Tag(name = "Language", description = "Language management APIs")
+@RequestMapping("/languages")
 public class LanguageController {
 
     private final LanguageService languageService;
@@ -27,36 +22,37 @@ public class LanguageController {
     }
 
     @GetMapping
-    @Operation(summary = "Get all languages")
     public List<Language> getAllLanguages() {
         return languageService.getAllLanguages();
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Get a language by ID")
-    public ResponseEntity<Language> getLanguageById(@PathVariable UUID id) {
+    public ResponseEntity<Language> getLanguageById(@PathVariable Long id) {
         Optional<Language> language = languageService.getLanguageById(id);
         return language.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    @Operation(summary = "Create a new language")
     public ResponseEntity<Language> createLanguage(@Valid @RequestBody Language language) {
         Language createdLanguage = languageService.createLanguage(language);
         return ResponseEntity.ok(createdLanguage);
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Update a language")
-    public ResponseEntity<Language> updateLanguage(@PathVariable UUID id, @Valid @RequestBody Language updatedLanguage) {
+    public ResponseEntity<Language> updateLanguage(@PathVariable Long id, @Valid @RequestBody Language updatedLanguage) {
         Optional<Language> language = languageService.updateLanguage(id, updatedLanguage);
         return language.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Delete a language")
-    public ResponseEntity<Void> deleteLanguage(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteLanguage(@PathVariable Long id) {
         languageService.deleteLanguage(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/search")
+    public List<Language> findLanguagesByCustomCriteria(@RequestParam(required = false) String locale,
+                                                        @RequestParam(required = false) Boolean isDefault) {
+        return languageService.findLanguagesByCustomCriteria(locale, isDefault);
     }
 }
