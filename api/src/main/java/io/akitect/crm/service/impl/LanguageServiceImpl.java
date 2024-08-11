@@ -1,69 +1,71 @@
 package io.akitect.crm.service.impl;
 
 import io.akitect.crm.model.Language;
-import io.akitect.crm.repository.LanguageRepository;
-import io.akitect.crm.repository.impl.LanguageRepositoryImpl;
 import io.akitect.crm.service.LanguageService;
+import io.akitect.crm.utils.EntityManagerHelper;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class LanguageServiceImpl implements LanguageService {
 
-    private final LanguageRepository languageRepository;
-    private final LanguageRepositoryImpl languageRepositoryImpl;
+    private final EntityManagerHelper<Language> entityManagerHelper;
 
     @Autowired
-    public LanguageServiceImpl(LanguageRepository languageRepository, LanguageRepositoryImpl languageRepositoryImpl) {
-        this.languageRepository = languageRepository;
-        this.languageRepositoryImpl = languageRepositoryImpl;
+    public LanguageServiceImpl(EntityManager entityManager) {
+        // Khởi tạo EntityManagerHelper cho thực thể Language
+        this.entityManagerHelper = new EntityManagerHelper<>(entityManager, Language.class);
     }
 
     @Override
     public List<Language> getAllLanguages() {
-        return languageRepository.findAll();
+        return entityManagerHelper.findAll();
     }
 
     @Override
     public Optional<Language> getLanguageById(Long id) {
-        return languageRepository.findById(id);
+        return entityManagerHelper.findById(id);
     }
 
     @Override
     public Language createLanguage(Language language) {
-        return languageRepository.save(language);
+        return entityManagerHelper.create(language);
     }
 
     @Override
     public Optional<Language> updateLanguage(Long id, Language updatedLanguage) {
-        return languageRepository.findById(id).map(language -> {
+        return entityManagerHelper.findById(id).map(language -> {
             language.setName(updatedLanguage.getName());
             language.setLocale(updatedLanguage.getLocale());
             language.setCode(updatedLanguage.getCode());
             language.setFlag(updatedLanguage.getFlag());
             language.setIsDefault(updatedLanguage.getIsDefault());
-            language.setOrder(updatedLanguage.getOrder());
+            language.setOrderIndex(updatedLanguage.getOrderIndex());
             language.setIsRtl(updatedLanguage.getIsRtl());
-            return languageRepository.save(language);
+            return entityManagerHelper.update(language);
         });
     }
 
     @Override
     public void deleteLanguage(Long id) {
-        languageRepository.deleteById(id);
+        entityManagerHelper.deleteById(id);
     }
 
     @Override
     public List<Language> findLanguagesByCustomCriteria(String locale, Boolean isDefault) {
+        Map<String, Object> conditions = new HashMap<>();
         if (locale != null && !locale.isEmpty()) {
-            return languageRepository.findByLocale(locale);
+            conditions.put("locale", locale);
         }
-        if (isDefault != null && isDefault) {
-            return languageRepository.findByIsDefaultTrue();
+        if (isDefault != null) {
+            conditions.put("isDefault", isDefault);
         }
-        return languageRepositoryImpl.findLanguagesByCustomCriteria(locale, isDefault); // Sử dụng phương thức tùy chỉnh
+        return entityManagerHelper.findWithConditions(conditions);
     }
 }

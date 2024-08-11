@@ -1,40 +1,28 @@
 package io.akitect.crm.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.Data;
 
 @Entity
+@Table(name = "categories_translations")
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class CategoryTranslation {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "categories_id", nullable = false)
+    private Long categoryId;
 
-    @NotNull(message = "Category is mandatory")
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    @Column(name = "lang_code", nullable = false, length = 20)
+    private String langCode;
 
-    @NotNull(message = "Language is mandatory")
-    @ManyToOne
-    @JoinColumn(name = "language_id", nullable = false)
-    private Language language;
-
-    @NotBlank(message = "Name is mandatory")
-    @Size(max = 255, message = "Name cannot be longer than 255 characters")
-    @Column(nullable = false)
+    @Column(length = 191)
     private String name;
 
+    @Column(length = 400)
     private String description;
 
-    @NotBlank(message = "Slug is mandatory")
-    @Size(max = 255, message = "Slug cannot be longer than 255 characters")
-    @Column(nullable = false, unique = true)
-    private String slug;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "categories_id", insertable = false, updatable = false)
+    private Category category;
 }

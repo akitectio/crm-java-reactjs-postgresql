@@ -30,7 +30,7 @@ public class Language {
 
     private Boolean isDefault;
 
-    private Integer order;
+    private Integer orderIndex;
 
     private Boolean isRtl;
 }
