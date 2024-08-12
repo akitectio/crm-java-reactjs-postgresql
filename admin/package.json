@@ -1,6 +1,6 @@
 {
-  "name": "adminlte-3-react",
-  "version": "0.3.2",
+  "name": "akitect-admin-crm",
+  "version": "0.0.1",
   "private": true,
   "type": "module",
   "scripts": {
