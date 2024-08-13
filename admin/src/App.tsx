@@ -28,55 +28,67 @@ import { Loading } from './components/Loading';
 const { VITE_NODE_ENV } = import.meta.env;
 
 const App = () => {
-  // const windowSize = useWindowSize();
-  // const screenSize = useAppSelector((state) => state.ui.screenSize);
-  // const dispatch = useAppDispatch();
-  // const location = useLocation();
+  const windowSize = useWindowSize();
+  const screenSize = useAppSelector((state) => state.ui.screenSize);
+  const dispatch = useAppDispatch();
+  const location = useLocation();
 
-  // const [isAppLoading, setIsAppLoading] = useState(true);
+  const [isAppLoading, setIsAppLoading] = useState(true);
 
-  // useEffect(() => {
-  //   onAuthStateChanged(
-  //     firebaseAuth,
-  //     (user) => {
-  //       if (user) {
-  //         dispatch(setCurrentUser(user));
-  //       } else {
-  //         dispatch(setCurrentUser(null));
-  //       }
-  //       setIsAppLoading(false);
-  //     },
-  //     (e) => {
-  //       console.log(e);
-  //       dispatch(setCurrentUser(null));
-  //       setIsAppLoading(false);
-  //     }
-  //   );
-  // }, []);
+  useEffect(() => {
+    onAuthStateChanged(
+      firebaseAuth,
+      (user) => {
+        if (user) {
+          dispatch(setCurrentUser(user));
+        } else {
+          dispatch(setCurrentUser(null));
+        }
+        setIsAppLoading(false);
+      },
+      (e) => {
+        console.log(e);
+        dispatch(setCurrentUser(null));
+        setIsAppLoading(false);
+      }
+    );
+  }, []);
 
-  // useEffect(() => {
-  //   const size = calculateWindowSize(windowSize.width);
-  //   if (screenSize !== size) {
-  //     dispatch(setWindowSize(size));
-  //   }
-  // }, [windowSize]);
+  useEffect(() => {
+    const size = calculateWindowSize(windowSize.width);
+    if (screenSize !== size) {
+      dispatch(setWindowSize(size));
+    }
+  }, [windowSize]);
 
-  // useEffect(() => {
-  //   if (location && location.pathname && VITE_NODE_ENV === 'production') {
-  //     ReactGA.send({
-  //       hitType: 'pageview',
-  //       page: location.pathname,
-  //     });
-  //   }
-  // }, [location]);
+  useEffect(() => {
+    if (location && location.pathname && VITE_NODE_ENV === 'production') {
+      ReactGA.send({
+        hitType: 'pageview',
+        page: location.pathname,
+      });
+    }
+  }, [location]);
 
-  // if (isAppLoading) {
-  //   return <Loading />;
-  // }
+  if (isAppLoading) {
+    return <Loading />;
+  }
 
   return (
     <>
       <Routes>
+        <Route path="/login" element={<PublicRoute />}>
+          <Route path="/login" element={<Login />} />
+        </Route>
+        <Route path="/register" element={<PublicRoute />}>
+          <Route path="/register" element={<Register />} />
+        </Route>
+        <Route path="/forgot-password" element={<PublicRoute />}>
+          <Route path="/forgot-password" element={<ForgetPassword />} />
+        </Route>
+        <Route path="/recover-password" element={<PublicRoute />}>
+          <Route path="/recover-password" element={<RecoverPassword />} />
+        </Route>
         <Route path="/" element={<PrivateRoute />}>
           <Route path="/" element={<Main />}>
             <Route path="/sub-menu-2" element={<Blank />} />

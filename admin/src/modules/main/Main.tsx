@@ -101,9 +101,9 @@ const Main = () => {
   }, [mainRef.current]);
 
   const getAppTemplate = useCallback(() => {
-    // if (!isAppLoaded) {
-    //   return <Loading />;
-    // }
+    if (!isAppLoaded) {
+      return <Loading />;
+    }
     return (
       <>
         <Header
@@ -162,7 +162,7 @@ const Main = () => {
       </>
     );
   }, [
-    // isAppLoaded,
+    isAppLoaded,
     menuSidebarCollapsed,
     screenSize,
     layoutBoxed,

@@ -9,7 +9,6 @@ import ReactGA from 'react-ga4';
 
 import './utils/i18n';
 import './index.scss';
-import InitAuth from './routes/InitAuth';
 
 export const { VITE_NODE_ENV, VITE_GA_ID } = import.meta.env;
 
@@ -19,11 +18,9 @@ if (VITE_NODE_ENV === 'production' && VITE_GA_ID) {
 
 createRoot(document.getElementById('root') as HTMLDivElement).render(
   <Provider store={store}>
-    <InitAuth>
     <BrowserRouter>
       <App />
     </BrowserRouter>
-    </InitAuth>
   </Provider>
 );
 

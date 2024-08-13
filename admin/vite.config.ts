@@ -10,9 +10,6 @@ export default ({ mode }) => {
   const { VITE_NODE_ENV } = process.env;
 
   return defineConfig({
-    server: {
-      port: 3000,
-    },
     mode: VITE_NODE_ENV,
     plugins: [react()],
     resolve: {

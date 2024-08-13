@@ -12,21 +12,15 @@ import { firebaseAuth } from '@app/firebase';
 import {} from '@app/index';
 import { useAppSelector } from '@app/store/store';
 import { DateTime } from 'luxon';
-import keycloak from '@app/keycloak/Keycloak';
-import { useDispatch } from 'react-redux';
-import { onLogOut } from '@app/store/reducers/auth';
 
 const UserDropdown = () => {
-  const dispatch = useDispatch()
   const navigate = useNavigate();
   const [t] = useTranslation();
   const currentUser = useAppSelector((state) => state.auth.currentUser);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const logOut = async (event: any) => {
-    // await firebaseAuth.signOut();
-    keycloak.logout()
-    dispatch(onLogOut());
+    await firebaseAuth.signOut();
     event.preventDefault();
     setDropdownOpen(false);
   };

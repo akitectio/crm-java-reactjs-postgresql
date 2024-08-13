@@ -1,55 +1,17 @@
-import { firebaseAuth } from '@app/firebase';
-import { createUserWithEmailAndPassword } from '@firebase/auth';
-import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { GoogleAuthProvider } from 'firebase/auth';
-
-const provider = new GoogleAuthProvider();
-
-// export const loginByAuth = async (email: string, password: string) => {
-//   const token = 'I_AM_THE_TOKEN';
-//   localStorage.setItem('token', token);
-//   removeWindowClass('login-page');
-//   removeWindowClass('hold-transition');
-//   return token;
-// };
-
-// export const registerByAuth = async (email: string, password: string) => {
-//   const token = 'I_AM_THE_TOKEN';
-//   localStorage.setItem('token', token);
-//   removeWindowClass('register-page');
-//   removeWindowClass('hold-transition');
-//   return token;
-// };
-
-export const registerWithEmail = async (email: string, password: string) => {
-  try {
-    const result = await createUserWithEmailAndPassword(
-      firebaseAuth,
-      email,
-      password
-    );
-    return result;
-  } catch (error) {
-    throw error;
-  }
-};
+import axios from 'axios';
 
 export const loginWithEmail = async (email: string, password: string) => {
   try {
-    const result = await signInWithEmailAndPassword(
-      firebaseAuth,
+    const response = await axios.post('/api/login', {
       email,
-      password
-    );
-    return result;
-  } catch (error) {
-    throw error;
-  }
-};
+      password,
+    });
 
-export const signInByGoogle = async () => {
-  try {
-    return await signInWithPopup(firebaseAuth, provider);
+    // Assuming the backend returns a token upon successful login
+    const { token } = response.data;
+    localStorage.setItem('token', token);
+
+    return response.data;
   } catch (error) {
     throw error;
   }
