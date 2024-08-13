@@ -1,9 +1,7 @@
 package io.akitect.crm.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import lombok.Data;
-
 import java.sql.Timestamp;
 
 @Entity
@@ -15,31 +13,28 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Email cannot be null")
-    @Email(message = "Email should be valid")
-    @Size(max = 191, message = "Email cannot exceed 191 characters")
+    @Column(length = 191)  // Define the size of the 'email' column
     private String email;
 
-    @Size(min = 8, max = 120, message = "Password should be between 8 and 120 characters")
+    @Column(length = 120)  // Define the size of the 'password' column
     private String password;
 
-    @Size(max = 120, message = "First name cannot exceed 120 characters")
+    @Column(length = 120)  // Define the size of the 'firstName' column
     private String firstName;
 
-    @Size(max = 120, message = "Last name cannot exceed 120 characters")
+    @Column(length = 120)  // Define the size of the 'lastName' column
     private String lastName;
 
-    @Size(max = 60, message = "Username cannot exceed 60 characters")
+    @Column(length = 60)  // Define the size of the 'username' column
     private String username;
 
     private Long avatarId;
 
-    @NotNull(message = "Super user flag cannot be null")
     private boolean superUser;
 
-    @NotNull(message = "Manage supers flag cannot be null")
     private boolean manageSupers;
 
+    @Column(columnDefinition = "TEXT")  // Define the type of the 'permissions' column
     private String permissions;
 
     private Timestamp emailVerifiedAt;

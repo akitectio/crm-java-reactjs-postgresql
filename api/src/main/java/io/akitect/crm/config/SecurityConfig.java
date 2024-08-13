@@ -20,6 +20,7 @@ public class SecurityConfig {
     }
 
     private final String[] WHITE_LIST = {
+            "/api/users/create",
             "/users/create",
             "/auth/login",
             "/v3/api-docs/**",
@@ -37,7 +38,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(WHITE_LIST).permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
+//                        .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

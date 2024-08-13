@@ -2,12 +2,12 @@ package io.akitect.crm.repository.impl;
 
 import io.akitect.crm.model.User;
 import io.akitect.crm.repository.UserRepository;
+import io.akitect.crm.utils.QueryHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import io.akitect.crm.utils.QueryHelper;
-
 import jakarta.persistence.EntityManager;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,17 +19,17 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Autowired
     public UserRepositoryImpl(EntityManager entityManager) {
-        this.queryHelper = new QueryHelper<>(User.class);
+        this.queryHelper = new QueryHelper<>(entityManager, User.class);
     }
 
     @Override
     public User create(User user) {
-        return queryHelper.create(user);
+        return queryHelper.saveOrUpdate(user);
     }
 
     @Override
     public User update(User user) {
-        return queryHelper.update(user);
+        return queryHelper.saveOrUpdate(user);
     }
 
     @Override
