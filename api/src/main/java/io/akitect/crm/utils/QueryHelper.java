@@ -1,20 +1,24 @@
 package io.akitect.crm.utils;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class EntityManagerHelper<T> {
+//@Component
+public class QueryHelper<T> {
 
-    private final EntityManager entityManager;
+    @PersistenceContext
+    private EntityManager entityManager;
+
     private final Class<T> entityClass;
 
-    public EntityManagerHelper(EntityManager entityManager, Class<T> entityClass) {
-        this.entityManager = entityManager;
+    public QueryHelper(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
 
@@ -31,7 +35,11 @@ public class EntityManagerHelper<T> {
 
     @Transactional
     public void delete(T entity) {
-        entityManager.remove(entity);
+        if (entityManager.contains(entity)) {
+            entityManager.remove(entity);
+        } else {
+            entityManager.remove(entityManager.merge(entity));
+        }
     }
 
     @Transactional
