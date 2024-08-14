@@ -14,4 +14,7 @@ public interface UserRepository {
     Optional<User> findById(Long id);
     List<User> findAll();
     List<User> findWithConditions(Map<String, Object> conditions);
+    boolean existsByEmail(String email);
+    // Method to check if a username already exists
+    boolean existsByUsername(String username);
 }

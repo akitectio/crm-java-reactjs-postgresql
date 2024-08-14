@@ -2,6 +2,7 @@ package io.akitect.crm.utils;
 
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import lombok.Getter;
 
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Optional;
 
 public class QueryHelper<T> {
 
+    @Getter
     private final EntityManager entityManager;
     private final Class<T> entityClass;
 
@@ -16,6 +18,7 @@ public class QueryHelper<T> {
         this.entityManager = entityManager;
         this.entityClass = entityClass;
     }
+
 
     @Transactional
     public T saveOrUpdate(T entity) {
@@ -61,4 +64,5 @@ public class QueryHelper<T> {
 
         return query.getResultList();
     }
+
 }

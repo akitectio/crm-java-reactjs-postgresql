@@ -56,4 +56,26 @@ public class UserRepositoryImpl implements UserRepository {
     public List<User> findWithConditions(Map<String, Object> conditions) {
         return queryHelper.findWithConditions(conditions);
     }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        String queryStr = "SELECT COUNT(u) FROM User u WHERE u.email = :email";
+        Long count = queryHelper.getEntityManager()
+                .createQuery(queryStr, Long.class)
+                .setParameter("email", email)
+                .getSingleResult();
+        return count > 0;
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        String queryStr = "SELECT COUNT(u) FROM User u WHERE u.username = :username";
+        Long count = queryHelper.getEntityManager()
+                .createQuery(queryStr, Long.class)
+                .setParameter("username", username)
+                .getSingleResult();
+        return count > 0;
+    }
+
+
 }

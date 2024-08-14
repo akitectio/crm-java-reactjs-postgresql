@@ -1,6 +1,5 @@
 import { setWindowClass } from "@app/utils/helpers";
 import { Checkbox } from "@profabric/react-components";
-import { setCurrentUser } from "@store/reducers/auth";
 import { useFormik } from "formik";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -8,15 +7,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 
-import { loginWithEmail, signInByGoogle } from "@app/services/auth";
+import { loginWithEmail } from "@app/services/auth";
+import { setCurrentUser } from "@app/store/reducers/auth";
 import { useAppDispatch } from "@app/store/store";
 import { Button } from "@app/styles/common";
 import { Form, InputGroup } from "react-bootstrap";
 
 const Login = () => {
   const [isAuthLoading, setAuthLoading] = useState(false);
-  const [isGoogleAuthLoading, setGoogleAuthLoading] = useState(false);
-  const [isFacebookAuthLoading, setFacebookAuthLoading] = useState(false);
   const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
@@ -25,38 +23,18 @@ const Login = () => {
   const login = async (email: string, password: string) => {
     try {
       setAuthLoading(true);
-      const { user } = await loginWithEmail(email, password);
-      dispatch(setCurrentUser(user));
+      const userData  = await loginWithEmail(email, password);
+      console.log(userData);
+      dispatch(setCurrentUser(userData));
       toast.success("Login is succeed!");
       setAuthLoading(false);
       navigate("/");
     } catch (error: any) {
       setAuthLoading(false);
-      toast.error(error.message || "Failed");
+      toast.error(error.response.data.message || "Failed");
     }
   };
 
-  const loginByGoogle = async () => {
-    try {
-      setGoogleAuthLoading(true);
-      await signInByGoogle();
-      toast.success("Login is succeed!");
-      setGoogleAuthLoading(false);
-    } catch (error: any) {
-      setGoogleAuthLoading(false);
-      toast.error(error.message || "Failed");
-    }
-  };
-
-  const loginByFacebook = async () => {
-    try {
-      setFacebookAuthLoading(true);
-      throw new Error("Not implemented");
-    } catch (error: any) {
-      setFacebookAuthLoading(false);
-      toast.error(error.message || "Failed");
-    }
-  };
 
   const { handleChange, values, handleSubmit, touched, errors } = useFormik({
     initialValues: {
@@ -152,7 +130,6 @@ const Login = () => {
               <div className="col-4">
                 <Button
                   loading={isAuthLoading}
-                  disabled={isFacebookAuthLoading || isGoogleAuthLoading}
                   onClick={handleSubmit as any}
                 >
                   {t("login.button.signIn.label")}
@@ -160,36 +137,6 @@ const Login = () => {
               </div>
             </div>
           </form>
-          {/* <div className="social-auth-links text-center mt-2 mb-3">
-            <Button
-              className="mb-2"
-              onClick={loginByFacebook}
-              loading={isFacebookAuthLoading}
-              disabled={true || isAuthLoading || isGoogleAuthLoading}
-            >
-              <i className="fab fa-facebook mr-2" />
-              {t('login.button.signIn.social', {
-                what: 'Facebook',
-              })}
-            </Button>
-            <Button
-              variant="danger"
-              onClick={loginByGoogle}
-              loading={isGoogleAuthLoading}
-              disabled={isAuthLoading || isFacebookAuthLoading}
-            >
-              <i className="fab fa-google mr-2" />
-              {t('login.button.signIn.social', { what: 'Google' })}
-            </Button>
-          </div> */}
-          {/* <p className="mb-1">
-            <Link to="/forgot-password">{t("login.label.forgotPass")}</Link>
-          </p>
-          <p className="mb-0">
-            <Link to="/register" className="text-center">
-              {t("login.label.registerNew")}
-            </Link>
-          </p> */}
         </div>
       </div>
     </div>

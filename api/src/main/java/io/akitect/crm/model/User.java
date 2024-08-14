@@ -5,7 +5,10 @@ import lombok.Data;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "email"),
+        @UniqueConstraint(columnNames = "username")
+})
 @Data
 public class User {
 
@@ -13,7 +16,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 191)  // Define the size of the 'email' column
+    @Column(length = 191, unique = true)  // Define the size and uniqueness of the 'email' column
     private String email;
 
     @Column(length = 120)  // Define the size of the 'password' column
@@ -25,7 +28,7 @@ public class User {
     @Column(length = 120)  // Define the size of the 'lastName' column
     private String lastName;
 
-    @Column(length = 60)  // Define the size of the 'username' column
+    @Column(length = 60, unique = true)  // Define the size and uniqueness of the 'username' column
     private String username;
 
     private Long avatarId;

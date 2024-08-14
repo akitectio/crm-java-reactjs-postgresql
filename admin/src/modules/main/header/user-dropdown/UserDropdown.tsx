@@ -1,6 +1,5 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { } from '@app/index';
+import { useAppSelector } from '@app/store/store';
 import { StyledBigUserImage, StyledSmallUserImage } from '@app/styles/common';
 import {
   UserBody,
@@ -8,10 +7,10 @@ import {
   UserHeader,
   UserMenuDropdown,
 } from '@app/styles/dropdown-menus';
-import { firebaseAuth } from '@app/firebase';
-import {} from '@app/index';
-import { useAppSelector } from '@app/store/store';
 import { DateTime } from 'luxon';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link, useNavigate } from 'react-router-dom';
 
 const UserDropdown = () => {
   const navigate = useNavigate();
@@ -20,7 +19,6 @@ const UserDropdown = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const logOut = async (event: any) => {
-    await firebaseAuth.signOut();
     event.preventDefault();
     setDropdownOpen(false);
   };
