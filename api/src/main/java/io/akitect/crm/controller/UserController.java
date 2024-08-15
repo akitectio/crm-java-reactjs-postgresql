@@ -2,6 +2,7 @@ package io.akitect.crm.controller;
 
 import io.akitect.crm.dto.request.UserRequest;
 import io.akitect.crm.dto.response.UserResponse;
+import io.akitect.crm.model.User;
 import io.akitect.crm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,22 +45,4 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/find/{id}")
-    public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
-        Optional<UserResponse> user = userService.findUserById(id);
-        return user.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/all")
-    public ResponseEntity<List<UserResponse>> getAllUsers() {
-        List<UserResponse> users = userService.findAllUsers();
-        return ResponseEntity.ok(users);
-    }
-
-    @PostMapping("/find")
-    public ResponseEntity<List<UserResponse>> getUsersWithConditions(@RequestBody Map<String, Object> conditions) {
-        List<UserResponse> users = userService.findUsersWithConditions(conditions);
-        return ResponseEntity.ok(users);
-    }
 }

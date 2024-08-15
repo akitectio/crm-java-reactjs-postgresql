@@ -2,7 +2,6 @@ server:
   port: 8081
   servlet:
     context-path: /api
-
 spring:
   application:
     name: api-service
@@ -20,6 +19,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
+    open-in-view: true
     hibernate:
       ddl-auto: update
 
@@ -28,3 +28,16 @@ springdoc:
     path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
+
+logging:
+  io:
+    akitect:
+      enabled: true
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE  # Log the SQL parameters

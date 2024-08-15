@@ -54,29 +54,7 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
-    @Override
-    @Transactional
-    public Optional<UserResponse> findUserById(Long id) {
-        return userRepository.findById(id).map(this::mapToResponse);
-    }
 
-    @Override
-    @Transactional
-    public List<UserResponse> findAllUsers() {
-        return userRepository.findAll().stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional
-    public List<UserResponse> findUsersWithConditions(Map<String, Object> conditions) {
-        return userRepository.findWithConditions(conditions).stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
-    }
-
-    // Utility methods to map between UserRequest, User, and UserResponse
 
     private User mapToEntity(UserRequest userRequest) {
         User user = new User();

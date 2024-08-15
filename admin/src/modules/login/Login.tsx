@@ -11,6 +11,7 @@ import { loginWithEmail } from "@app/services/auth";
 import { setCurrentUser } from "@app/store/reducers/auth";
 import { useAppDispatch } from "@app/store/store";
 import { Button } from "@app/styles/common";
+import { IUser } from "@app/types/user";
 import { Form, InputGroup } from "react-bootstrap";
 
 const Login = () => {
@@ -23,9 +24,11 @@ const Login = () => {
   const login = async (email: string, password: string) => {
     try {
       setAuthLoading(true);
-      const userData  = await loginWithEmail(email, password);
+      const userData : IUser  = await loginWithEmail(email, password);
       console.log(userData);
-      dispatch(setCurrentUser(userData));
+      dispatch(setCurrentUser({
+        token : userData.token
+      }));
       toast.success("Login is succeed!");
       setAuthLoading(false);
       navigate("/");

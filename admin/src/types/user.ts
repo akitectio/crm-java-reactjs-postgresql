@@ -1,3 +1,9 @@
-import { User } from 'firebase/auth';
 
-export type IUser = User;
+interface IUser  {
+    token: string
+};
+
+
+export type {
+    IUser
+}

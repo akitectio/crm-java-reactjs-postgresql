@@ -2,6 +2,7 @@ package io.akitect.crm.controller;
 
 import io.akitect.crm.dto.request.LoginRequest;
 import io.akitect.crm.dto.response.LoginResponse;
+import io.akitect.crm.dto.response.UserResponse;
 import io.akitect.crm.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,8 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
-public class AuthenticationController {
+public class AuthenticationController  {
+
 
     private final AuthenticationService authenticationService;
 
@@ -27,4 +29,13 @@ public class AuthenticationController {
                 .orElseGet(() -> ResponseEntity.status(401).body(new LoginResponse(null, "Invalid email or password")));
     }
 
+    @GetMapping("/user-info")
+    public ResponseEntity<UserResponse> getUserInfo(@RequestHeader("Authorization") String token) {
+        if (token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+
+        Optional<UserResponse> user = authenticationService.getUserInfoByToken(token);
+        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }

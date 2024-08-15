@@ -10,11 +10,15 @@ const axiosInstance = axios.create({
   },
 });
 
+const noAuthPaths = ['/api/auth/login', '/public/register', '/public/forgot-password'];
+
+
 // Optional: add an interceptor to inject the authorization token in requests
 axiosInstance.interceptors.request.use(
   (config) => {
+    const requiresAuth = !noAuthPaths.some((path) => config.url.includes(path));
     const token = localStorage.getItem('token');
-    if (token) {
+    if (token && !requiresAuth) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;

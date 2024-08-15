@@ -54,15 +54,19 @@ public class QueryHelper<T> {
         String queryStr = "SELECT e FROM " + entityClass.getSimpleName() + " e";
         return entityManager.createQuery(queryStr, entityClass).getResultList();
     }
-
     public List<T> findWithConditions(Map<String, Object> conditions) {
         StringBuilder queryStr = new StringBuilder("SELECT e FROM " + entityClass.getSimpleName() + " e WHERE 1=1");
         conditions.forEach((key, value) -> queryStr.append(" AND e.").append(key).append(" = :").append(key));
+
+        // Log the generated query
+        System.out.println("Generated Query: " + queryStr.toString());
+        System.out.println("Parameters: " + conditions);
 
         var query = entityManager.createQuery(queryStr.toString(), entityClass);
         conditions.forEach(query::setParameter);
 
         return query.getResultList();
     }
+
 
 }
