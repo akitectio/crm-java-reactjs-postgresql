@@ -15,9 +15,10 @@ import Profile from '@pages/profile/Profile';
 
 import PrivateRoute from './routes/PrivateRoute';
 import PublicRoute from './routes/PublicRoute';
-import { setCurrentUser } from './store/reducers/auth';
 
 import { Loading } from './components/Loading';
+import { getUserInfo } from './services/auth';
+import { setCurrentUser } from './store/reducers/auth';
 import { useAppDispatch, useAppSelector } from './store/store';
 
 const { VITE_NODE_ENV } = import.meta.env;
@@ -31,9 +32,32 @@ const App = () => {
   const [isAppLoading, setIsAppLoading] = useState(true);
 
   useEffect(() => {
-    dispatch(setCurrentUser(null));
-    setIsAppLoading(false);
+    const fetchUserInfo = async () => {
+      try {
+        // Await the result of getUserInfo(), since it returns a promise
+        let userInfo: any = await getUserInfo();
+        
+        console.log(userInfo);
+
+        if (userInfo) {
+          dispatch(setCurrentUser(userInfo));
+        } else {
+          dispatch(setCurrentUser(null));
+        }
+      } catch (error: any) {
+        console.error('Error fetching user info:', error);
+
+        // Handle error and reset user state
+        dispatch(setCurrentUser(null));
+      } finally {
+        // Ensure loading state is set to false
+        setIsAppLoading(false);
+      }
+    };
+
+    fetchUserInfo();
   }, [dispatch]);
+
 
   useEffect(() => {
     const size = calculateWindowSize(windowSize.width);

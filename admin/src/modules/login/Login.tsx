@@ -7,11 +7,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 
-import { loginWithEmail } from "@app/services/auth";
+import { getUserInfo, loginWithEmail } from "@app/services/auth";
 import { setCurrentUser } from "@app/store/reducers/auth";
 import { useAppDispatch } from "@app/store/store";
 import { Button } from "@app/styles/common";
-import { IUser } from "@app/types/user";
+import { ILogin, IUser } from "@app/types/user";
 import { Form, InputGroup } from "react-bootstrap";
 
 const Login = () => {
@@ -24,11 +24,10 @@ const Login = () => {
   const login = async (email: string, password: string) => {
     try {
       setAuthLoading(true);
-      const userData : IUser  = await loginWithEmail(email, password);
+      const userData : ILogin  = await loginWithEmail(email, password);
+      const userInfo : IUser = await getUserInfo();
       console.log(userData);
-      dispatch(setCurrentUser({
-        token : userData.token
-      }));
+      dispatch(setCurrentUser(userInfo));
       toast.success("Login is succeed!");
       setAuthLoading(false);
       navigate("/");
