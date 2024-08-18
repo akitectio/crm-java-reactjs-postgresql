@@ -1,6 +1,7 @@
 package io.akitect.crm.component;
 
 import io.akitect.crm.service.impl.UserDetailsServiceImpl;
+import io.akitect.crm.utils.JwtHelper;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,16 +29,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-
-        final String authorizationHeader = request.getHeader("Authorization");
-
+        request.getHeaderNames().asIterator().forEachRemaining(item ->{
+            System.out.println(item);
+            System.out.println(request.getHeader(item));
+        });
+        final String authorizationHeader = JwtHelper.getCurrentToken();
         String email = null;
-        String jwt = null;
-
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
+        if (authorizationHeader != null) {
             try {
-                email = jwtUtil.extractEmail(jwt);
+                email = jwtUtil.extractEmail();
             } catch (ExpiredJwtException e) {
                 System.out.println("JWT Token has expired");
             }
@@ -47,7 +47,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
 
-            if (jwtUtil.validateToken(jwt, userDetails.getUsername())) {
+            if (jwtUtil.validateToken(userDetails.getUsername())) {
 
                 var usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());

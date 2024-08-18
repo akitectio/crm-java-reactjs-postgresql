@@ -9,7 +9,6 @@ import io.akitect.crm.component.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 import java.util.Optional;
@@ -44,7 +43,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             System.out.println("Stored Password Hash: " + storedPasswordHash);
 
             if (passwordEncoder.matches(enteredPassword, storedPasswordHash)) {
-                String token = jwtUtil.generateToken(String.valueOf(user.get().getId()));
+
+                String token = jwtUtil.generateToken(user.get());
                 return Optional.of(token);
             } else {
                 System.out.println("Password does not match!");
@@ -55,27 +55,24 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     @Override
-    @Transactional
-    public Optional<UserResponse> getUserInfoByToken(String token) {
-        Long userId = jwtUtil.extractUserId(token);
-        return userRepository.findById(userId).map(this::mapToResponse);
-    }
-
-    private UserResponse mapToResponse(User user) {
-        UserResponse response = new UserResponse();
-        response.setId(user.getId());
-        response.setEmail(user.getEmail());
-        response.setFirstName(user.getFirstName());
-        response.setLastName(user.getLastName());
-        response.setUsername(user.getUsername());
-        response.setAvatarId(user.getAvatarId());
-        response.setSuperUser(user.isSuperUser());
-        response.setManageSupers(user.isManageSupers());
-        response.setPermissions(user.getPermissions());
-        response.setEmailVerifiedAt(user.getEmailVerifiedAt());
-        response.setCreatedAt(user.getCreatedAt());
-        response.setUpdatedAt(user.getUpdatedAt());
-        response.setLastLogin(user.getLastLogin());
-        return response;
+    public Optional<UserResponse> getUserInfoByToken() {
+        Long userId = Long.valueOf(jwtUtil.extractUserId());
+        return userRepository.findById(userId).map(user -> {
+            UserResponse response = new UserResponse();
+            response.setId(user.getId());
+            response.setEmail(user.getEmail());
+            response.setFirstName(user.getFirstName());
+            response.setLastName(user.getLastName());
+            response.setUsername(user.getUsername());
+            response.setAvatarId(user.getAvatarId());
+            response.setSuperUser(user.isSuperUser());
+            response.setManageSupers(user.isManageSupers());
+            response.setPermissions(user.getPermissions());
+            response.setEmailVerifiedAt(user.getEmailVerifiedAt());
+            response.setCreatedAt(user.getCreatedAt());
+            response.setUpdatedAt(user.getUpdatedAt());
+            response.setLastLogin(user.getLastLogin());
+            return response;
+        });
     }
 }

@@ -29,13 +29,11 @@ public class AuthenticationController  {
                 .orElseGet(() -> ResponseEntity.status(401).body(new LoginResponse(null, "Invalid email or password")));
     }
 
-    @GetMapping("/user-info")
-    public ResponseEntity<UserResponse> getUserInfo(@RequestHeader("Authorization") String token) {
-        if (token.startsWith("Bearer ")) {
-            token = token.substring(7);
-        }
 
-        Optional<UserResponse> user = authenticationService.getUserInfoByToken(token);
+    @GetMapping("/user-info")
+    public ResponseEntity<UserResponse> getUserInfo() {
+        Optional<UserResponse> user = authenticationService.getUserInfoByToken();
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
 }
