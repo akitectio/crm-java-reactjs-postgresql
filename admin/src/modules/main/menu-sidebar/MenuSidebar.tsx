@@ -1,10 +1,10 @@
-import { Link } from 'react-router-dom';
-import { MenuItem } from '@components';
-import { Image } from '@profabric/react-components';
-import styled from 'styled-components';
-import { SidebarSearch } from '@app/components/sidebar-search/SidebarSearch';
-import i18n from '@app/utils/i18n';
-import { useAppSelector } from '@app/store/store';
+import { SidebarSearch } from "@app/components/sidebar-search/SidebarSearch";
+import { useAppSelector } from "@app/store/store";
+import i18n from "@app/utils/i18n";
+import { MenuItem } from "@components";
+import { Image } from "@profabric/react-components";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
 
 export interface IMenuItem {
   name: string;
@@ -15,29 +15,45 @@ export interface IMenuItem {
 
 export const MENU: IMenuItem[] = [
   {
-    name: i18n.t('menusidebar.label.dashboard'),
-    icon: 'fas fa-tachometer-alt nav-icon',
-    path: '/',
+    name: i18n.t("menusidebar.label.dashboard"),
+    icon: "fas fa-tachometer-alt nav-icon",
+    path: "/",
   },
   {
-    name: i18n.t('menusidebar.label.blank'),
-    icon: 'fas fa-wrench nav-icon',
-    path: '/blank',
+    name: i18n.t("menusidebar.label.blank"),
+    icon: "fas fa-wrench nav-icon",
+    path: "/blank",
   },
   {
-    name: i18n.t('menusidebar.label.mainMenu'),
-    icon: 'far fa-caret-square-down nav-icon',
+    name: i18n.t("menusidebar.label.mainMenu"),
+    icon: "far fa-caret-square-down nav-icon",
     children: [
       {
-        name: i18n.t('menusidebar.label.subMenu'),
-        icon: 'fas fa-hammer nav-icon',
-        path: '/sub-menu-1',
+        name: i18n.t("menusidebar.label.subMenu"),
+        icon: "fas fa-hammer nav-icon",
+        path: "/sub-menu-1",
       },
 
       {
-        name: i18n.t('menusidebar.label.blank'),
-        icon: 'fas fa-cogs nav-icon',
-        path: '/sub-menu-2',
+        name: i18n.t("menusidebar.label.blank"),
+        icon: "fas fa-cogs nav-icon",
+        path: "/sub-menu-2",
+      },
+    ],
+  },
+  {
+    name: i18n.t("menusidebar.label.platformAdministration"),
+    icon: "fas fa-user-shield nav-icon",
+    children: [
+      {
+        name: i18n.t("menusidebar.label.users"),
+        icon: "fas fa-users nav-icon",
+        path: "/users",
+      },
+      {
+        name: i18n.t("menusidebar.label.role"),
+        icon: "fas fa-key nav-icon",
+        path: "/role",
       },
     ],
   },
@@ -87,7 +103,7 @@ const MenuSidebar = () => {
             />
           </div>
           <div className="info">
-            <Link to={'/profile'} className="d-block">
+            <Link to={"/profile"} className="d-block">
               {currentUser?.email}
             </Link>
           </div>
@@ -97,11 +113,11 @@ const MenuSidebar = () => {
           <SidebarSearch />
         </div>
 
-        <nav className="mt-2" style={{ overflowY: 'hidden' }}>
+        <nav className="mt-2" style={{ overflowY: "hidden" }}>
           <ul
             className={`nav nav-pills nav-sidebar flex-column${
-              menuItemFlat ? ' nav-flat' : ''
-            }${menuChildIndent ? ' nav-child-indent' : ''}`}
+              menuItemFlat ? " nav-flat" : ""
+            }${menuChildIndent ? " nav-child-indent" : ""}`}
             role="menu"
           >
             {MENU.map((menuItem: IMenuItem) => (

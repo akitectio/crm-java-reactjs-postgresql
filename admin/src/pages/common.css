@@ -1,0 +1,37 @@
+.custom-datepicker {
+  padding: 9px;
+  border: 1px solid #c1c4c9;
+  border-radius: 5px;
+  width: 258px;
+}
+
+thead > tr > th {
+  color: grey;
+  font-size: 13px;
+}
+
+tbody > tr > td > a {
+  margin-top: 11px;
+}
+
+span.title-edit {
+  position: absolute;
+  display: none;
+  background-color: #343a40;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  top: -30px;
+  left: -5px;
+}
+
+button.btn.btn-sm.btn-icon.btn-primary.mr-1.position-relative:hover
+  span.title-edit {
+  display: block;
+}
+
+button.btn.btn-sm.btn-icon.btn-danger.position-relative:hover span.title-edit {
+  display: block;
+  left: -12px;
+}

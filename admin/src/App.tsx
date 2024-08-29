@@ -1,25 +1,29 @@
-import { useWindowSize } from '@app/hooks/useWindowSize';
-import { setWindowSize } from '@app/store/reducers/ui';
-import { calculateWindowSize } from '@app/utils/helpers';
-import Login from '@modules/login/Login';
-import Main from '@modules/main/Main';
-import { useEffect, useState } from 'react';
-import ReactGA from 'react-ga4';
-import { Route, Routes, useLocation } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
+import { useWindowSize } from "@app/hooks/useWindowSize";
+import { setWindowSize } from "@app/store/reducers/ui";
+import { calculateWindowSize } from "@app/utils/helpers";
+import Login from "@modules/login/Login";
+import Main from "@modules/main/Main";
+import { useEffect, useState } from "react";
+import ReactGA from "react-ga4";
+import { Route, Routes, useLocation } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
-import Blank from '@pages/Blank';
-import Dashboard from '@pages/Dashboard';
-import SubMenu from '@pages/SubMenu';
-import Profile from '@pages/profile/Profile';
+import Blank from "@pages/Blank";
+import Dashboard from "@pages/Dashboard";
+import SubMenu from "@pages/SubMenu";
+import Profile from "@pages/profile/Profile";
 
-import PrivateRoute from './routes/PrivateRoute';
-import PublicRoute from './routes/PublicRoute';
+import PrivateRoute from "./routes/PrivateRoute";
+import PublicRoute from "./routes/PublicRoute";
 
-import { Loading } from './components/Loading';
-import { getUserInfo } from './services/auth';
-import { setCurrentUser } from './store/reducers/auth';
-import { useAppDispatch, useAppSelector } from './store/store';
+import { Loading } from "./components/Loading";
+import CreateForm from "./pages/CreateForm";
+import EditForm from "./pages/EditForm";
+import { RoleAndPermissions } from "./pages/RoleAndPermissions";
+import UserTable from "./pages/UserTable";
+import { getUserInfo } from "./services/auth";
+import { setCurrentUser } from "./store/reducers/auth";
+import { useAppDispatch, useAppSelector } from "./store/store";
 
 const { VITE_NODE_ENV } = import.meta.env;
 
@@ -36,7 +40,7 @@ const App = () => {
       try {
         // Await the result of getUserInfo(), since it returns a promise
         let userInfo: any = await getUserInfo();
-        
+
         console.log(userInfo);
 
         if (userInfo) {
@@ -45,7 +49,7 @@ const App = () => {
           dispatch(setCurrentUser(null));
         }
       } catch (error: any) {
-        console.error('Error fetching user info:', error);
+        console.error("Error fetching user info:", error);
 
         // Handle error and reset user state
         dispatch(setCurrentUser(null));
@@ -58,7 +62,6 @@ const App = () => {
     fetchUserInfo();
   }, [dispatch]);
 
-
   useEffect(() => {
     const size = calculateWindowSize(windowSize.width);
     if (screenSize !== size) {
@@ -67,9 +70,9 @@ const App = () => {
   }, [dispatch, screenSize, windowSize]);
 
   useEffect(() => {
-    if (location?.pathname && VITE_NODE_ENV === 'production') {
+    if (location?.pathname && VITE_NODE_ENV === "production") {
       ReactGA.send({
-        hitType: 'pageview',
+        hitType: "pageview",
         page: location.pathname,
       });
     }
@@ -90,6 +93,10 @@ const App = () => {
             <Route path="/sub-menu-2" element={<Blank />} />
             <Route path="/sub-menu-1" element={<SubMenu />} />
             <Route path="/blank" element={<Blank />} />
+            <Route path="/users" element={<UserTable />} />
+            <Route path="/users/create" element={<CreateForm />} />
+            <Route path="/users/edit" element={<EditForm />} />
+            <Route path="/role" element={<RoleAndPermissions />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/" element={<Dashboard />} />
           </Route>

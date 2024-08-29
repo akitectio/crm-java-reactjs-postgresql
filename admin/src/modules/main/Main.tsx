@@ -1,25 +1,25 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { toggleSidebarMenu } from '@app/store/reducers/ui';
+import { Loading } from "@app/components/Loading";
+import ControlSidebar from "@app/modules/main/control-sidebar/ControlSidebar";
+import Footer from "@app/modules/main/footer/Footer";
+import Header from "@app/modules/main/header/Header";
+import { toggleSidebarMenu } from "@app/store/reducers/ui";
+import { useAppDispatch, useAppSelector } from "@app/store/store";
 import {
   addWindowClass,
   removeWindowClass,
   scrollbarVisible,
-} from '@app/utils/helpers';
-import ControlSidebar from '@app/modules/main/control-sidebar/ControlSidebar';
-import Header from '@app/modules/main/header/Header';
-import Footer from '@app/modules/main/footer/Footer';
-import { useAppDispatch, useAppSelector } from '@app/store/store';
-import MenuSidebar from './menu-sidebar/MenuSidebar';
-import { styled } from 'styled-components';
-import { Outlet } from 'react-router-dom';
-import { Loading } from '@app/components/Loading';
+} from "@app/utils/helpers";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Outlet } from "react-router-dom";
+import { styled } from "styled-components";
+import MenuSidebar from "./menu-sidebar/MenuSidebar";
 
 const MENU_WIDTH = 250;
 
 export const Container = styled.div<{ $isScrollbarVisible: boolean }>`
   min-height: 100%;
   ${(props) =>
-    `width: calc(100% - ${props.$isScrollbarVisible ? '16px' : '0px'});`};
+    `width: calc(100% - ${props.$isScrollbarVisible ? "16px" : "0px"});`};
 `;
 
 const Main = () => {
@@ -48,37 +48,37 @@ const Main = () => {
   }, [currentUser]);
 
   useEffect(() => {
-    removeWindowClass('register-page');
-    removeWindowClass('login-page');
-    removeWindowClass('hold-transition');
+    removeWindowClass("register-page");
+    removeWindowClass("login-page");
+    removeWindowClass("hold-transition");
 
-    addWindowClass('sidebar-mini');
+    addWindowClass("sidebar-mini");
 
     // fetchProfile();
     return () => {
-      removeWindowClass('sidebar-mini');
+      removeWindowClass("sidebar-mini");
     };
   }, []);
 
   useEffect(() => {
-    removeWindowClass('sidebar-closed');
-    removeWindowClass('sidebar-collapse');
-    removeWindowClass('sidebar-open');
-    if (menuSidebarCollapsed && screenSize === 'lg') {
-      addWindowClass('sidebar-collapse');
-    } else if (menuSidebarCollapsed && screenSize === 'xs') {
-      addWindowClass('sidebar-open');
-    } else if (!menuSidebarCollapsed && screenSize !== 'lg') {
-      addWindowClass('sidebar-closed');
-      addWindowClass('sidebar-collapse');
+    removeWindowClass("sidebar-closed");
+    removeWindowClass("sidebar-collapse");
+    removeWindowClass("sidebar-open");
+    if (menuSidebarCollapsed && screenSize === "lg") {
+      addWindowClass("sidebar-collapse");
+    } else if (menuSidebarCollapsed && screenSize === "xs") {
+      addWindowClass("sidebar-open");
+    } else if (!menuSidebarCollapsed && screenSize !== "lg") {
+      addWindowClass("sidebar-closed");
+      addWindowClass("sidebar-collapse");
     }
   }, [screenSize, menuSidebarCollapsed]);
 
   useEffect(() => {
     if (controlSidebarCollapsed) {
-      removeWindowClass('control-sidebar-slide-open');
+      removeWindowClass("control-sidebar-slide-open");
     } else {
-      addWindowClass('control-sidebar-slide-open');
+      addWindowClass("control-sidebar-slide-open");
     }
   }, [screenSize, controlSidebarCollapsed]);
 
@@ -87,12 +87,12 @@ const Main = () => {
   };
 
   useEffect(() => {
-    window.document.addEventListener('scroll', handleUIChanges);
-    window.document.addEventListener('resize', handleUIChanges);
+    window.document.addEventListener("scroll", handleUIChanges);
+    window.document.addEventListener("resize", handleUIChanges);
 
     return () => {
-      window.document.removeEventListener('scroll', handleUIChanges);
-      window.document.removeEventListener('resize', handleUIChanges);
+      window.document.removeEventListener("scroll", handleUIChanges);
+      window.document.removeEventListener("resize", handleUIChanges);
     };
   }, []);
 
@@ -109,11 +109,11 @@ const Main = () => {
         <Header
           containered={layoutBoxed}
           style={{
-            marginLeft: !['sm', 'xs'].includes(screenSize)
+            marginLeft: !["sm", "xs"].includes(screenSize)
               ? topNavigation
-                ? '0px'
+                ? "0px"
                 : `${MENU_WIDTH}px`
-              : '0px',
+              : "0px",
           }}
         />
 
@@ -123,15 +123,15 @@ const Main = () => {
           ref={mainRef as any}
           className="content-wrapper"
           style={{
-            marginLeft: !['sm', 'xs'].includes(screenSize)
+            marginLeft: !["sm", "xs"].includes(screenSize)
               ? topNavigation
-                ? '0px'
+                ? "0px"
                 : `${MENU_WIDTH}px`
-              : '0px',
+              : "0px",
           }}
         >
           <section className="content">
-            <div className={layoutBoxed ? 'container' : ''}>
+            <div className={layoutBoxed ? "container" : ""}>
               <Outlet />
             </div>
           </section>
@@ -141,11 +141,11 @@ const Main = () => {
         <Footer
           containered={layoutBoxed}
           style={{
-            marginLeft:
-            !['sm', 'xs'].includes(screenSize)                ? topNavigation
-                  ? '0px'
-                  : `${MENU_WIDTH}px`
-                : '0px',
+            marginLeft: !["sm", "xs"].includes(screenSize)
+              ? topNavigation
+                ? "0px"
+                : `${MENU_WIDTH}px`
+              : "0px",
           }}
         />
         <ControlSidebar />
@@ -156,7 +156,7 @@ const Main = () => {
           onKeyDown={() => {}}
           style={{
             display:
-              screenSize === 'sm' && menuSidebarCollapsed ? 'block' : undefined,
+              screenSize === "sm" && menuSidebarCollapsed ? "block" : undefined,
           }}
         />
       </>
