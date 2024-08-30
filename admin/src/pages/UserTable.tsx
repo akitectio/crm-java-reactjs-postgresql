@@ -1,5 +1,6 @@
 import {
   faEdit,
+  faPlus,
   faSearch,
   faSync,
   faTimes,
@@ -414,7 +415,11 @@ const UserTable = () => {
                 }}
                 onClick={handleButtonCreate}
               >
-                <span style={{ paddingRight: "10px" }}>+</span>
+                {/* <span style={{ paddingRight: "10px" }}>+</span> */}
+                <FontAwesomeIcon
+                  icon={faPlus}
+                  style={{ paddingRight: "10px" }}
+                />
                 <span style={{ fontSize: "15px", fontWeight: "bold" }}>
                   Create
                 </span>

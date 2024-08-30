@@ -10,15 +10,15 @@ import { ToastContainer } from "react-toastify";
 
 import Blank from "@pages/Blank";
 import Dashboard from "@pages/Dashboard";
-import SubMenu from "@pages/SubMenu";
 import Profile from "@pages/profile/Profile";
+import SubMenu from "@pages/SubMenu";
 
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
 
 import { Loading } from "./components/Loading";
 import CreateForm from "./pages/CreateForm";
-import EditForm from "./pages/EditForm";
+import EditForm from "./pages/editFolder/EditForm";
 import { RoleAndPermissions } from "./pages/RoleAndPermissions";
 import UserTable from "./pages/UserTable";
 import { getUserInfo } from "./services/auth";
