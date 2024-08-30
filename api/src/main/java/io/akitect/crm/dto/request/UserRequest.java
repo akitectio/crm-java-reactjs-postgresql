@@ -38,4 +38,6 @@ public class UserRequest {
     private Boolean manageSupers;
 
     private String permissions;
+
+    // private StatusOfUser statusOfUser;
 }

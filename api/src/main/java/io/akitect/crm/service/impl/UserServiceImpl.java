@@ -1,20 +1,24 @@
 package io.akitect.crm.service.impl;
 
-import io.akitect.crm.dto.request.UserRequest;
-import io.akitect.crm.dto.response.UserResponse;
-import io.akitect.crm.model.User;
-import io.akitect.crm.repository.UserRepository;
-import io.akitect.crm.service.UserService;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import io.akitect.crm.dto.request.UserRequest;
+import io.akitect.crm.dto.response.UserResponse;
+import io.akitect.crm.model.User;
+import io.akitect.crm.repository.UserRepository;
+import io.akitect.crm.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -33,6 +37,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse createUser(UserRequest userRequest) {
         User user = mapToEntity(userRequest);
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        // user.setStatus(StatusOfUser.ACTIVATED);
         userRepository.create(user);
         return mapToResponse(user);
     }
@@ -94,4 +99,13 @@ public class UserServiceImpl implements UserService {
         response.setLastLogin(user.getLastLogin());
         return response;
     }
+
+    @Override
+    public Page<UserResponse> paginateWithFilter(PageRequest pageRequest, String sortBy, Direction order,
+            UserRequest userRequest) {
+        List<User> users = userRepository.findWithConditions(Map.of("username", userRequest.getUsername()));
+        List<UserResponse> result = users.stream().map(x -> mapToResponse(x)).collect(Collectors.toList());
+        return PageableExecutionUtils.getPage(result, pageRequest, () -> result.size());
+    }
+
 }

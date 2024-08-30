@@ -4,14 +4,14 @@ server:
     context-path: /api
 jwt:
   secretKey: DCiBQbGc+wM3VYNcTn71tni9gr7Mz7nyqmrbSk8Hrso=
-  expirationTime: 3600000  # 1 hour in milliseconds
+  expirationTime: 3600000 # 1 hour in milliseconds
 spring:
   application:
     name: api-service
   datasource:
     url: jdbc:postgresql://localhost:5432/crm
     username: postgres
-    password: password
+    password: 1234
     driver-class-name: org.postgresql.Driver
     hikari:
       connectionTimeout: 20000
@@ -43,4 +43,4 @@ logging:
         type:
           descriptor:
             sql:
-              BasicBinder: TRACE  # Log the SQL parameters
+              BasicBinder: TRACE # Log the SQL parameters

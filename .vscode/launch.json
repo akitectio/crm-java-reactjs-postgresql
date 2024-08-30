@@ -1,0 +1,24 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot-CrmApplication<crm>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "io.akitect.crm.CrmApplication",
+      "projectName": "crm",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-GenerateSecretKey<crm>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "GenerateSecretKey",
+      "projectName": "crm",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}
