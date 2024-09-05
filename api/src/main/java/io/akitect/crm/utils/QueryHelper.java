@@ -1,14 +1,22 @@
 package io.akitect.crm.utils;
 
-import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
-import lombok.Getter;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import io.akitect.crm.utils.enums.FilterOperation;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
+import lombok.Getter;
+
 public class QueryHelper<T> {
+
+    public class FilterMap {
+        String fieldName;
+        String paramName;
+        String value;
+        FilterOperation operation;
+    };
 
     @Getter
     private final EntityManager entityManager;
@@ -18,7 +26,6 @@ public class QueryHelper<T> {
         this.entityManager = entityManager;
         this.entityClass = entityClass;
     }
-
 
     @Transactional
     public T saveOrUpdate(T entity) {
@@ -54,6 +61,7 @@ public class QueryHelper<T> {
         String queryStr = "SELECT e FROM " + entityClass.getSimpleName() + " e";
         return entityManager.createQuery(queryStr, entityClass).getResultList();
     }
+
     public List<T> findWithConditions(Map<String, Object> conditions) {
         StringBuilder queryStr = new StringBuilder("SELECT e FROM " + entityClass.getSimpleName() + " e WHERE 1=1");
         conditions.forEach((key, value) -> queryStr.append(" AND e.").append(key).append(" = :").append(key));
@@ -67,6 +75,5 @@ public class QueryHelper<T> {
 
         return query.getResultList();
     }
-
 
 }
