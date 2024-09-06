@@ -74,7 +74,7 @@ const CreateForm = () => {
   };
 
   return (
-    <div className="container" style={{ paddingTop: "24px" }}>
+    <div className="container-x1 pt-4 pr-4 pl-4" style={{ paddingTop: "24px" }}>
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item" style={{ fontSize: "13px" }}>
@@ -237,7 +237,7 @@ const CreateForm = () => {
           </div>
         </div>
         <div className="col-md-3 gap-3 d-flex flex-column-reverse flex-md-column mb-md-0 mb-5">
-          <div className="card mt-2">
+          <div className="card mt-2 ml-2">
             <div className="card-header">
               <h4 className="card-title">Publish</h4>
             </div>
@@ -250,7 +250,7 @@ const CreateForm = () => {
           </div>
 
           {/* Card-Bottom */}
-          <div className="card meta-boxes mt-4">
+          <div className="card meta-boxes mt-4 ml-2l">
             <div className="card-header">
               <h4 className="card-title">
                 <label className="form-label">Role</label>

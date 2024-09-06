@@ -31,7 +31,14 @@ button.btn.btn-sm.btn-icon.btn-primary.mr-1.position-relative:hover
   display: block;
 }
 
-button.btn.btn-sm.btn-icon.btn-danger.position-relative:hover span.title-edit {
+.custom-hover:hover span.title-edit {
   display: block;
   left: -12px;
+}
+
+.modal-header-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }

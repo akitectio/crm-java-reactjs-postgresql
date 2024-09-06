@@ -19,4 +19,6 @@ public interface UserService {
     UserResponse getUserById(Long id);
 
     Page<UserResponse> paginatedWithConditions(PageRequest pageRequest, GetUserRequest filter);
+
+    UserResponse removeSuper(Long id);
 }

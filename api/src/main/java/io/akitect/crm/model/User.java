@@ -42,9 +42,9 @@ public class User {
 
     private Long avatarId;
 
-    private boolean superUser;
+    private Boolean superUser;
 
-    private boolean manageSupers;
+    private Boolean manageSupers;
 
     @Column(columnDefinition = "TEXT")  // Define the type of the 'permissions' column
     private String permissions;
@@ -52,6 +52,8 @@ public class User {
     // @Enumerated(EnumType.STRING)
     // @Column(nullable = false, length = 60)
     // private StatusOfUser status = StatusOfUser.ACTIVATED;
+
+    private Boolean active;
 
     private Timestamp emailVerifiedAt;
     private Timestamp createdAt;
@@ -64,6 +66,7 @@ public class User {
     @PrePersist
     protected void onCreate() {
         createdAt = new Timestamp(System.currentTimeMillis());
+        active = true;
     }
 
     @PreUpdate
@@ -73,6 +76,11 @@ public class User {
 
     public void remove() {
         deletedAt = new Timestamp(System.currentTimeMillis());
+        active = false;
     }
 
+    public void removeSuper() {
+        superUser = Boolean.FALSE;
+        manageSupers = Boolean.FALSE;
+    }
 }

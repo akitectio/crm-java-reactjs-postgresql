@@ -1,5 +1,9 @@
-import { deleteUser } from "@app/services/usersService";
-import { Button } from "@app/styles/common";
+import {
+  deleteUser,
+  paginateWithFilters,
+  removeSuper,
+  UserResponse,
+} from "@app/services/usersService";
 import {
   faEdit,
   faPlus,
@@ -9,16 +13,34 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Select from "react-select";
-import { toast } from "react-toastify";
 import "./common.css";
+import DeleteConfirm from "./deleteFolder/DeleteConfirm";
 
 const UserTable = () => {
+  const [users, setUsers] = useState<UserResponse[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const navigator = useNavigate();
+
+  const getAllUsers = async () => {
+    setLoading(true);
+    try {
+      const response = await paginateWithFilters();
+      setUsers(response?.results);
+    } catch (error) {
+      console.error(error);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    getAllUsers();
+  }, []);
 
   const optionsField = [
     { value: "Select field", label: "Select field" },
@@ -41,11 +63,25 @@ const UserTable = () => {
     { value: "Deactivated", label: "Deactivated" },
   ];
 
+  // Bulk
+
   const optionsBulk = [
     { value: "Bulk Actions", label: "Bulk Actions" },
     { value: "Bulk changes", label: "Bulk changes" },
     { value: "Delete", label: "Delete" },
   ];
+
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [selectedAction, setSelectedAction] = useState(null);
+
+  const optionsMenuBulk = [
+    { value: "Username", label: "Username" },
+    { value: "Email", label: "Email" },
+    { value: "Status", label: "Status" },
+    { value: "Created At", label: "Created At" },
+  ];
+
+  //
 
   const [filters, setFilters] = useState([
     { field: optionsField[0], operation: optionsOperation[1], value: "" },
@@ -90,26 +126,15 @@ const UserTable = () => {
   );
 
   // Delete
-  const [isDeleting, setIsDeleting] = useState(false);
-  const { id } = useParams(); // Lấy ID của người dùng từ URL
-  const navigate = useNavigate();
+  const handleDelete = async (id: number) => {
+    await deleteUser(id);
+    getAllUsers();
+  };
 
-  const handleDelete = async () => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this user?"
-    );
-    if (!confirmDelete) return;
-
-    try {
-      setIsDeleting(true);
-      await deleteUser(id); // Gọi API để xóa người dùng
-      toast.success("User deleted successfully!");
-      navigate("/"); // Điều hướng tới trang danh sách hoặc trang chủ sau khi xóa thành công
-    } catch (error) {
-      toast.error("Failed to delete user");
-    } finally {
-      setIsDeleting(false);
-    }
+  // Remove Super
+  const handleRemoveSuper = async (id: number) => {
+    await removeSuper(id);
+    getAllUsers();
   };
 
   const [showFilterCard, setShowFilterCard] = useState(false);
@@ -122,8 +147,8 @@ const UserTable = () => {
     navigator("/users/create");
   };
 
-  const handleButtonEdit = () => {
-    navigator("/users/edit");
+  const handleButtonEdit = (id_user: number) => {
+    navigator(`/users/edit/${id_user}`);
   };
 
   const handleDashboard = () => {
@@ -383,7 +408,11 @@ const UserTable = () => {
       <div className="table-wrapper mt-4">
         <div className="card">
           <div className="card-header d-flex mt-2">
-            <div>
+            <div
+              onMouseEnter={() => setMenuOpen(true)}
+              onMouseLeave={() => setMenuOpen(false)}
+              style={{ position: "relative" }}
+            >
               <Select
                 isClearable
                 className="mr-1"
@@ -402,6 +431,16 @@ const UserTable = () => {
                   document.getElementById("dataTableUserTable") as HTMLElement
                 }
               />
+              {selectedAction && selectedAction.value === "Bulk changes" && (
+                <div>
+                  <Select
+                    isClearable
+                    className="mr-1"
+                    options={optionsMenuBulk}
+                    style={{ marginTop: "10px" }}
+                  />
+                </div>
+              )}
             </div>
             <div>
               <button
@@ -520,69 +559,69 @@ const UserTable = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="odd">
-                    <div className="form-check">
-                      <input
-                        type="checkbox"
-                        className="form-check-input"
-                        style={{ height: "auto", width: "100%" }}
-                      />
-                    </div>
-                  </td>
-                  <td className="text-start">
-                    <a href="#">admin</a>
-                  </td>
-                  <td className="text-start">
-                    <a href="#">duyvu08102003@gmail.com</a>
-                  </td>
-                  <td className="text-start">
-                    <a
-                      href="#"
-                      style={{
-                        textDecoration: "none",
-                        borderBottom: "dashed 1px #0088cc",
-                      }}
-                    >
-                      No role assigned
-                    </a>
-                  </td>
-                  <td className="text-start">0000-00-00</td>
-                  <td className="text-start">
-                    <span className="badge bg-info p-2">Activated</span>
-                  </td>
-                  <td className="text-start">
-                    <span className="badge bg-success pl-3 pr-3 pt-2 pb-2">
-                      Yes
-                    </span>
-                  </td>
-                  <td className="text-center text-nowrap">
-                    <div className="table-actions">
-                      <button
-                        className="btn btn-sm btn-warning mr-1"
-                        style={{ backgroundColor: "orange" }}
+                {users.map((user) => (
+                  <tr>
+                    <td className="odd">
+                      <div className="form-check">
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          style={{ height: "auto", width: "100%" }}
+                        />
+                      </div>
+                    </td>
+                    <td className="text-start">
+                      <a href="#">{user.username}</a>
+                    </td>
+                    <td className="text-start">
+                      <a href="#">{user.email}</a>
+                    </td>
+                    <td className="text-start">
+                      <a
+                        href="#"
+                        style={{
+                          textDecoration: "none",
+                          borderBottom: "dashed 1px #0088cc",
+                        }}
                       >
-                        <span style={{ color: "white" }}>Remove super</span>
-                      </button>
-                      <button
-                        className="btn btn-sm btn-icon btn-primary mr-1 position-relative"
-                        onClick={handleButtonEdit}
-                      >
-                        <FontAwesomeIcon icon={faEdit} />
-                        <span className="title-edit">Edit</span>
-                      </button>
-                      <Button
-                        className="btn btn-sm btn-icon btn-danger position-relative"
-                        onClick={handleDelete}
-                        disabled={isDeleting}
-                      >
-                        <FontAwesomeIcon icon={faTrash} />
-                        <span className="title-edit">Delete</span>
-                        {isDeleting ? "Deleting..." : "Delete"}
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
+                        No role assigned
+                      </a>
+                    </td>
+                    <td className="text-start">{user.createdAt}</td>
+                    <td className="text-start">
+                      <span className="badge bg-info p-2">
+                        {user.active ? "Activated" : "Deactivated"}
+                      </span>
+                    </td>
+                    <td className="text-start">
+                      <span className="badge bg-success pl-3 pr-3 pt-2 pb-2">
+                        {user.superUser ? "Yes" : "No"}
+                      </span>
+                    </td>
+                    <td className="text-center text-nowrap">
+                      <div className="table-actions">
+                        <button
+                          className="btn btn-sm btn-warning mr-1"
+                          style={{ backgroundColor: "orange" }}
+                          onClick={() => handleRemoveSuper(user.id)}
+                        >
+                          <span style={{ color: "white" }}>Remove super</span>
+                        </button>
+                        <button
+                          className="btn btn-sm btn-icon btn-primary mr-1 position-relative"
+                          onClick={() => handleButtonEdit(user.id)}
+                        >
+                          <FontAwesomeIcon icon={faEdit} />
+                          <span className="title-edit">Edit</span>
+                        </button>
+                        <DeleteConfirm
+                          onDelete={() => handleDelete(user.id)}
+                          id={user.id}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

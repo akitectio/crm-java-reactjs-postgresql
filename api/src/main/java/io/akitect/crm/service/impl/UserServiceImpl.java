@@ -104,13 +104,14 @@ public class UserServiceImpl implements UserService {
         response.setLastName(user.getLastName());
         response.setUsername(user.getUsername());
         response.setAvatarId(user.getAvatarId());
-        response.setSuperUser(user.isSuperUser());
-        response.setManageSupers(user.isManageSupers());
+        response.setSuperUser(user.getSuperUser());
+        response.setManageSupers(user.getManageSupers());
         response.setPermissions(user.getPermissions());
         response.setEmailVerifiedAt(user.getEmailVerifiedAt());
         response.setCreatedAt(user.getCreatedAt());
         response.setUpdatedAt(user.getUpdatedAt());
         response.setLastLogin(user.getLastLogin());
+        response.setActive(user.getActive());
         return response;
     }
 
@@ -130,5 +131,13 @@ public class UserServiceImpl implements UserService {
         if (filter.getEmail() != null)
             filters.add(new FilterMap("email", "email", "%" + filter.getEmail() + "%", FilterOperator.ILIKE));
         return filters;
+    }
+
+    @Override
+    public UserResponse removeSuper(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        user.removeSuper();
+        
+        return mapToResponse(userRepository.update(user));
     }
 }

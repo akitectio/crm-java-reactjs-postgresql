@@ -26,11 +26,28 @@ export interface UserResponse {
   superUser: boolean;
   manageSupers: boolean;
   permissions: string;
-  emailVerifiedAt: Date | null; // Date type for timestamps
-  createdAt: Date;
-  updatedAt: Date;
-  lastLogin: Date | null;
+  active: boolean;
+  emailVerifiedAt: String | null; // Date type for timestamps
+  createdAt: String;
+  updatedAt: String;
+  lastLogin: String | null;
 }
+
+export interface Paginated {
+  results: UserResponse[];
+  page: number;
+  total: number;
+  totalPage: number;
+}
+
+export const paginateWithFilters = async () => {
+  try {
+    const response = await getRequest<Paginated>("users/paginate");
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
 
 export const createUser = async (UserRequest: Object) => {
   try {
@@ -68,6 +85,18 @@ export const updateUser = async (id: number, UserRequest: Object) => {
 export const deleteUser = async (id: number) => {
   try {
     const response = await deleteRequest<UserResponse>(`users/delete/ + ${id}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const removeSuper = async (id: number) => {
+  try {
+    const response = await putRequest<UserResponse>(
+      `users/${id}/remove-super`,
+      null
+    );
     return response.data;
   } catch (error) {
     throw error;
