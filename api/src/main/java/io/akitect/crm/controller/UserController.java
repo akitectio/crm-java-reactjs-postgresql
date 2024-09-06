@@ -1,24 +1,29 @@
 package io.akitect.crm.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.akitect.crm.dto.request.GetUserRequest;
 import io.akitect.crm.dto.request.UserRequest;
 import io.akitect.crm.dto.request.UserRequestPut;
+import io.akitect.crm.dto.response.PaginatedResponse;
 import io.akitect.crm.dto.response.UserResponse;
 import io.akitect.crm.service.UserService;
+import io.akitect.crm.utils.PageHelper;
 import jakarta.validation.Valid;
-
 
 @RestController
 @RequestMapping("/users")
@@ -39,7 +44,8 @@ public class UserController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequestPut userRequestPut) {
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id,
+            @Valid @RequestBody UserRequestPut userRequestPut) {
         UserResponse updatedUser = userService.updateUser(id, userRequestPut);
         return ResponseEntity.ok(updatedUser);
     }
@@ -54,6 +60,16 @@ public class UserController {
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
-    
+
+    @GetMapping("/paginate")
+    public ResponseEntity<PaginatedResponse<UserResponse>> paginateUser(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "items_per_page", defaultValue = "10") int perPage,
+            @ModelAttribute() GetUserRequest filter) {
+        PaginatedResponse<UserResponse> result = PageHelper
+                .convertResponse(userService.paginatedWithConditions(PageRequest.of(page, perPage), filter));
+
+        return ResponseEntity.ok(result);
+    }
 
 }

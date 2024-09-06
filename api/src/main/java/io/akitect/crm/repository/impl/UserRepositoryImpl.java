@@ -4,8 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import io.akitect.crm.dto.response.UserResponse;
 import io.akitect.crm.model.User;
 import io.akitect.crm.repository.UserRepository;
 import io.akitect.crm.utils.FilterMap;
@@ -75,6 +78,12 @@ public class UserRepositoryImpl implements UserRepository {
                 .setParameter("username", username)
                 .getSingleResult();
         return count > 0;
+    }
+
+    @Override
+    public Page<UserResponse> paginatedWithConditions(Pageable pageable,
+            List<FilterMap> filters) {
+        return queryHelper.paginatedWithConditions(UserResponse.class, pageable, filters);
     }
 
 }

@@ -3,6 +3,10 @@ package io.akitect.crm.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import io.akitect.crm.dto.response.UserResponse;
 import io.akitect.crm.model.User;
 import io.akitect.crm.utils.FilterMap;
 
@@ -25,4 +29,7 @@ public interface UserRepository {
 
     // Method to check if a username already exists
     boolean existsByUsername(String username);
+
+    Page<UserResponse> paginatedWithConditions(Pageable pageable,
+            List<FilterMap> filters);
 }

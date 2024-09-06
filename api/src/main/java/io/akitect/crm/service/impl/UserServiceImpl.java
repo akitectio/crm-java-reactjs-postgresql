@@ -1,17 +1,25 @@
 package io.akitect.crm.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.akitect.crm.dto.request.GetUserRequest;
 import io.akitect.crm.dto.request.UserRequest;
 import io.akitect.crm.dto.request.UserRequestPut;
 import io.akitect.crm.dto.response.UserResponse;
 import io.akitect.crm.model.User;
 import io.akitect.crm.repository.UserRepository;
 import io.akitect.crm.service.UserService;
+import io.akitect.crm.utils.FilterMap;
+import io.akitect.crm.utils.enums.FilterOperator;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -111,4 +119,16 @@ public class UserServiceImpl implements UserService {
         return mapToResponse(user);
     }
 
+    @Override
+    public Page<UserResponse> paginatedWithConditions(PageRequest pageRequest, GetUserRequest filter) {
+
+        return userRepository.paginatedWithConditions(pageRequest, getFilters(filter));
+    }
+
+    private List<FilterMap> getFilters(GetUserRequest filter) {
+        List<FilterMap> filters = new ArrayList<>();
+        if (filter.getEmail() != null)
+            filters.add(new FilterMap("email", "email", "%" + filter.getEmail() + "%", FilterOperator.ILIKE));
+        return filters;
+    }
 }

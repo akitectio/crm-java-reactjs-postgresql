@@ -1,10 +1,16 @@
 package io.akitect.crm.dto.response;
 
-import lombok.Data;
-
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+import lombok.Data;
+
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(value = Include.ALWAYS)
 public class UserResponse {
 
     private Long id;

@@ -10,7 +10,9 @@ public enum FilterOperator {
     IS("is"),
     IS_NOT("is not"),
     IN("in"),
-    NOT_IN("not in");
+    NOT_IN("not in"),
+    ILIKE("ilike"),
+    LIKE("like");
 
     public String name;
 

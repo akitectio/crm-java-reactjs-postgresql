@@ -2,8 +2,16 @@ package io.akitect.crm.utils;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
 
@@ -67,6 +75,38 @@ public class QueryHelper<T> {
         conditions.forEach(filter -> query.setParameter(filter.paramName, filter.value));
 
         return query.getResultList();
+    }
+
+    public <K> Page<K> paginatedWithConditions(Class<K> dtoClass, Pageable pageable, List<FilterMap> filters) {
+        StringBuilder queryStr = new StringBuilder(
+                "SELECT e FROM " + entityClass.getSimpleName() + " e WHERE 1=1");
+        filters.forEach(
+                filter -> queryStr.append(" AND e.").append(filter.fieldName).append(" " + filter.operator.name + " :")
+                        .append(filter.paramName));
+        TypedQuery<K> query = entityManager.createQuery(queryStr.toString(),
+                dtoClass);
+        filters.forEach(filter -> query.setParameter(filter.paramName, filter.value));
+
+        TypedQuery<Long> countQuery = entityManager.createQuery(getCountQueryString(filters), Long.class);
+
+        query.setMaxResults(pageable.getPageSize());
+        query.setFirstResult((int) pageable.getOffset());
+
+        var results = query.getResultList().stream().map(result -> new ObjectMapper().convertValue(result, dtoClass))
+                .collect(Collectors.toList());
+
+        return PageableExecutionUtils.getPage(results, pageable,
+                countQuery::getSingleResult);
+
+    }
+
+    private String getCountQueryString(List<FilterMap> filters) {
+        StringBuilder queryStr = new StringBuilder(
+                "SELECT COUNT(e.id) AS COUNTER FROM " + entityClass.getSimpleName() + " e WHERE 1=1");
+        filters.forEach(
+                filter -> queryStr.append(" AND e.").append(filter.fieldName).append(" " + filter.operator.name + " :")
+                        .append(filter.paramName));
+        return queryStr.toString();
     }
 
 }
