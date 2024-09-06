@@ -1,3 +1,5 @@
+import { deleteUser } from "@app/services/usersService";
+import { Button } from "@app/styles/common";
 import {
   faEdit,
   faPlus,
@@ -10,8 +12,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Select from "react-select";
+import { toast } from "react-toastify";
 import "./common.css";
 
 const UserTable = () => {
@@ -86,6 +89,29 @@ const UserTable = () => {
     </div>
   );
 
+  // Delete
+  const [isDeleting, setIsDeleting] = useState(false);
+  const { id } = useParams(); // Lấy ID của người dùng từ URL
+  const navigate = useNavigate();
+
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this user?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      setIsDeleting(true);
+      await deleteUser(id); // Gọi API để xóa người dùng
+      toast.success("User deleted successfully!");
+      navigate("/"); // Điều hướng tới trang danh sách hoặc trang chủ sau khi xóa thành công
+    } catch (error) {
+      toast.error("Failed to delete user");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const [showFilterCard, setShowFilterCard] = useState(false);
 
   const handleButtonFilters = () => {
@@ -99,8 +125,28 @@ const UserTable = () => {
   const handleButtonEdit = () => {
     navigator("/users/edit");
   };
+
+  const handleDashboard = () => {
+    navigator("/");
+  };
   return (
     <div className="container" style={{ paddingTop: "24px" }}>
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item" style={{ fontSize: "13px" }}>
+            <a href="#" onClick={handleDashboard}>
+              DASHBOARD
+            </a>
+          </li>
+          <li
+            className="breadcrumb-item active"
+            aria-current="page"
+            style={{ fontSize: "13px" }}
+          >
+            USERS
+          </li>
+        </ol>
+      </nav>
       {showFilterCard && (
         <div
           className="card"
@@ -340,7 +386,7 @@ const UserTable = () => {
             <div>
               <Select
                 isClearable
-                className="mr-1 mb-2"
+                className="mr-1"
                 options={optionsBulk}
                 defaultValue={optionsBulk[0]}
                 menuPosition="fixed"
@@ -400,7 +446,6 @@ const UserTable = () => {
                 display: "flex",
                 gap: 5,
                 alignItems: "center",
-                paddingBottom: "19px",
                 right: "20px",
                 position: "absolute",
               }}
@@ -452,16 +497,18 @@ const UserTable = () => {
             <table className="table card-table mb-0">
               <thead>
                 <tr style={{ cursor: "pointer" }}>
-                  <th className="text-start">
-                    <div
-                      style={{
-                        border: "2px solid #ced4da",
-                        borderRadius: "4px",
-                        height: "22px",
-                        width: "22px",
-                        marginLeft: "7px",
-                      }}
-                    ></div>
+                  <th className="text-start" style={{ verticalAlign: "top" }}>
+                    <div className="form-check">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        style={{
+                          height: "auto",
+                          width: "100%",
+                        }}
+                      />
+                      {/* 1111 */}
+                    </div>
                   </th>
                   <th className="text-start">USERNAME</th>
                   <th className="text-start">EMAIL</th>
@@ -475,15 +522,13 @@ const UserTable = () => {
               <tbody>
                 <tr>
                   <td className="odd">
-                    <div
-                      style={{
-                        border: "2px solid #ced4da",
-                        borderRadius: "4px",
-                        height: "22px",
-                        width: "22px",
-                        marginLeft: "7px",
-                      }}
-                    ></div>
+                    <div className="form-check">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        style={{ height: "auto", width: "100%" }}
+                      />
+                    </div>
                   </td>
                   <td className="text-start">
                     <a href="#">admin</a>
@@ -526,10 +571,15 @@ const UserTable = () => {
                         <FontAwesomeIcon icon={faEdit} />
                         <span className="title-edit">Edit</span>
                       </button>
-                      <button className="btn btn-sm btn-icon btn-danger position-relative">
+                      <Button
+                        className="btn btn-sm btn-icon btn-danger position-relative"
+                        onClick={handleDelete}
+                        disabled={isDeleting}
+                      >
                         <FontAwesomeIcon icon={faTrash} />
                         <span className="title-edit">Delete</span>
-                      </button>
+                        {isDeleting ? "Deleting..." : "Delete"}
+                      </Button>
                     </div>
                   </td>
                 </tr>

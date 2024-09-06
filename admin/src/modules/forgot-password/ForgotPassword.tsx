@@ -1,29 +1,29 @@
-import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { useTranslation } from 'react-i18next';
-import { setWindowClass } from '@app/utils/helpers';
-import * as Yup from 'yup';
-import { useFormik } from 'formik';
-import { Form, InputGroup } from 'react-bootstrap';
-import { Button } from '@profabric/react-components';
+import { setWindowClass } from "@app/utils/helpers";
+import { Button } from "@profabric/react-components";
+import { useFormik } from "formik";
+import { Form, InputGroup } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import * as Yup from "yup";
 
 const ForgotPassword = () => {
   const [t] = useTranslation();
 
   const { handleChange, values, handleSubmit, touched, errors } = useFormik({
     initialValues: {
-      email: '',
+      email: "",
     },
     validationSchema: Yup.object({
-      email: Yup.string().email('Invalid email address').required('Required'),
+      email: Yup.string().email("Invalid email address").required("Required"),
     }),
     onSubmit: (values) => {
-      toast.warn('Not yet functional');
-      console.log('values', values);
+      toast.warn("Not yet functional");
+      console.log("values", values);
     },
   });
 
-  setWindowClass('hold-transition login-page');
+  setWindowClass("hold-transition login-page");
 
   return (
     <div className="login-box">
@@ -35,7 +35,7 @@ const ForgotPassword = () => {
           </Link>
         </div>
         <div className="card-body">
-          <p className="login-box-msg">{t('recover.forgotYourPassword')}</p>
+          <p className="login-box-msg">{t("recover.forgotYourPassword")}</p>
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <InputGroup className="mb-3">
@@ -64,12 +64,12 @@ const ForgotPassword = () => {
             </div>
             <div className="row">
               <div className="col-12">
-                <Button>{t('recover.requestNewPassword')}</Button>
+                <Button>{t("recover.requestNewPassword")}</Button>
               </div>
             </div>
           </form>
           <p className="mt-3 mb-1">
-            <Link to="/login">{t('login.button.signIn.label')}</Link>
+            <Link to="/login">{t("login.button.signIn.label")}</Link>
           </p>
         </div>
       </div>

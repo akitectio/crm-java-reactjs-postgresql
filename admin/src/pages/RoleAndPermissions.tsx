@@ -1,14 +1,14 @@
 import {
-    faEdit,
-    faSearch,
-    faSync,
-    faTimes,
-    faTrash,
-    faShareAltSquare
+  faEdit,
+  faPlus,
+  faSearch,
+  faShareAltSquare,
+  faSync,
+  faTimes,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
@@ -17,7 +17,7 @@ import "./common.css";
 export interface RoleAndPermissionsProps {}
 
 export function RoleAndPermissions(props: RoleAndPermissionsProps) {
-    const navigator = useNavigate();
+  const navigator = useNavigate();
 
   const optionsField = [
     { value: "Select field", label: "Select field" },
@@ -92,8 +92,28 @@ export function RoleAndPermissions(props: RoleAndPermissionsProps) {
   const handleButtonEdit = () => {
     navigator("/users/edit");
   };
+
+  const handleDashboard = () => {
+    navigator("/");
+  };
   return (
     <div className="container" style={{ paddingTop: "24px" }}>
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item" style={{ fontSize: "13px" }}>
+            <a href="#" onClick={handleDashboard}>
+              DASHBOARD
+            </a>
+          </li>
+          <li
+            className="breadcrumb-item active"
+            aria-current="page"
+            style={{ fontSize: "13px" }}
+          >
+            ROLES AND PERMISSIONS
+          </li>
+        </ol>
+      </nav>
       {showFilterCard && (
         <div
           className="card"
@@ -284,7 +304,7 @@ export function RoleAndPermissions(props: RoleAndPermissionsProps) {
             <div>
               <Select
                 isClearable
-                className="mr-1 mb-2"
+                className="mr-1"
                 options={optionsBulk}
                 defaultValue={optionsBulk[0]}
                 menuPosition="fixed"
@@ -344,7 +364,6 @@ export function RoleAndPermissions(props: RoleAndPermissionsProps) {
                 display: "flex",
                 gap: 5,
                 alignItems: "center",
-                paddingBottom: "19px",
                 right: "20px",
                 position: "absolute",
               }}
@@ -359,7 +378,10 @@ export function RoleAndPermissions(props: RoleAndPermissionsProps) {
                 }}
                 onClick={handleButtonCreate}
               >
-                <span style={{ paddingRight: "10px" }}>+</span>
+                <FontAwesomeIcon
+                  icon={faPlus}
+                  style={{ paddingRight: "10px" }}
+                />
                 <span style={{ fontSize: "15px", fontWeight: "bold" }}>
                   Create
                 </span>
@@ -435,7 +457,10 @@ export function RoleAndPermissions(props: RoleAndPermissionsProps) {
                   </td>
                   <td className="text-start">2024-07-22</td>
                   <td className="text-start">
-                    <a href="#"><span className="mr-1">System</span> <FontAwesomeIcon icon={faShareAltSquare} /></a>
+                    <a href="#">
+                      <span className="mr-1">System</span>{" "}
+                      <FontAwesomeIcon icon={faShareAltSquare} />
+                    </a>
                   </td>
                   <td className="text-center text-nowrap">
                     <div className="table-actions">
