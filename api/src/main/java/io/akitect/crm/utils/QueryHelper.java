@@ -56,7 +56,7 @@ public class QueryHelper<T> {
     public List<T> findWithConditions(List<FilterMap> conditions) {
         StringBuilder queryStr = new StringBuilder("SELECT e FROM " + entityClass.getSimpleName() + " e WHERE 1=1");
         conditions.forEach(
-                filter -> queryStr.append(" AND e.").append(filter.fieldName).append(" " + filter.operator + " :")
+                filter -> queryStr.append(" AND e.").append(filter.fieldName).append(" " + filter.operator.name + " :")
                         .append(filter.paramName));
 
         // Log the generated query

@@ -12,9 +12,9 @@ public enum FilterOperator {
     IN("in"),
     NOT_IN("not in");
 
-    public String operator;
+    public String name;
 
-    private FilterOperator(String operator) {
-        this.operator = operator;
+    private FilterOperator(String name) {
+        this.name = name;
     };
 }
