@@ -9,7 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import io.akitect.crm.dto.request.GetUserRequest;
 import io.akitect.crm.dto.request.UserRequest;
@@ -20,6 +19,7 @@ import io.akitect.crm.repository.UserRepository;
 import io.akitect.crm.service.UserService;
 import io.akitect.crm.utils.FilterMap;
 import io.akitect.crm.utils.enums.FilterOperator;
+import jakarta.transaction.Transactional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -134,10 +134,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserResponse removeSuper(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+
+        assert user.getSuperUser() : "This user is not super";
+
         user.removeSuper();
-        
+
         return mapToResponse(userRepository.update(user));
     }
 }

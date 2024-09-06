@@ -72,9 +72,9 @@ public class UserController {
         return ResponseEntity.ok(result);
     }
 
-    @PutMapping("/{id}/remove-super")
-    public ResponseEntity<UserResponse> removeSuper (@PathVariable Long id) {
-        
+    @PutMapping("/{id}/remove-supper")
+    public ResponseEntity<UserResponse> removeSuper(@PathVariable Long id) {
+
         return ResponseEntity.ok(userService.removeSuper(id));
     }
 

@@ -11,7 +11,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/crm
     username: postgres
-    password: 1234
+    password: postgres
     driver-class-name: org.postgresql.Driver
     hikari:
       connectionTimeout: 20000
@@ -28,9 +28,9 @@ spring:
 
 springdoc:
   api-docs:
-    path: /v3/api-docs
+    path: /api-docs
   swagger-ui:
-    path: /swagger-ui.html
+    path: /swagger
 
 logging:
   io:

@@ -25,19 +25,19 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 191, unique = true)  // Define the size and uniqueness of the 'email' column
+    @Column(length = 191, unique = true) // Define the size and uniqueness of the 'email' column
     private String email;
 
-    @Column(length = 120)  // Define the size of the 'password' column
+    @Column(length = 120) // Define the size of the 'password' column
     private String password;
 
-    @Column(length = 120)  // Define the size of the 'firstName' column
+    @Column(length = 120) // Define the size of the 'firstName' column
     private String firstName;
 
-    @Column(length = 120)  // Define the size of the 'lastName' column
+    @Column(length = 120) // Define the size of the 'lastName' column
     private String lastName;
 
-    @Column(length = 60, unique = true)  // Define the size and uniqueness of the 'username' column
+    @Column(length = 60, unique = true) // Define the size and uniqueness of the 'username' column
     private String username;
 
     private Long avatarId;
@@ -46,7 +46,7 @@ public class User {
 
     private Boolean manageSupers;
 
-    @Column(columnDefinition = "TEXT")  // Define the type of the 'permissions' column
+    @Column(columnDefinition = "TEXT") // Define the type of the 'permissions' column
     private String permissions;
 
     // @Enumerated(EnumType.STRING)
@@ -61,7 +61,6 @@ public class User {
     private Timestamp lastLogin;
 
     private Timestamp deletedAt;
-
 
     @PrePersist
     protected void onCreate() {
@@ -80,7 +79,8 @@ public class User {
     }
 
     public void removeSuper() {
-        superUser = Boolean.FALSE;
-        manageSupers = Boolean.FALSE;
+        superUser = false;
+        manageSupers = false;
     }
+
 }

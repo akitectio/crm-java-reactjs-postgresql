@@ -13,7 +13,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
-import jakarta.transaction.Transactional.TxType;
 import lombok.Getter;
 
 public class QueryHelper<T> {
@@ -27,13 +26,14 @@ public class QueryHelper<T> {
         this.entityClass = entityClass;
     }
 
-    @Transactional(value = TxType.REQUIRED)
+    @Transactional
     public T saveOrUpdate(T entity) {
         if (entityManager.contains(entity)) {
-            entityManager.persist(entity); 
+            entityManager.merge(entity);
             return entity;
         } else {
-            return entityManager.merge(entity);
+            entityManager.persist(entity);
+            return entity;
         }
     }
 
