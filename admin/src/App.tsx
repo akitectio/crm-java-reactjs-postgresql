@@ -95,7 +95,7 @@ const App = () => {
             <Route path="/blank" element={<Blank />} />
             <Route path="/users" element={<UserTable />} />
             <Route path="/users/create" element={<CreateForm />} />
-            <Route path="/users/edit" element={<EditForm />} />
+            <Route path="/users/edit/:id" element={<EditForm />} />
             <Route path="/role" element={<RoleAndPermissions />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/" element={<Dashboard />} />

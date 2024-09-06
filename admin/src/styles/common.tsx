@@ -1,11 +1,11 @@
-import styled from 'styled-components';
 import {
   Dropdown,
   Image,
   Button as RawButton,
   Checkbox as RawCheckbox,
   Select as RawSelect,
-} from '@profabric/react-components';
+} from "@profabric/react-components";
+import styled from "styled-components";
 
 export const Button = styled(RawButton)`
   --pf-display: block;
