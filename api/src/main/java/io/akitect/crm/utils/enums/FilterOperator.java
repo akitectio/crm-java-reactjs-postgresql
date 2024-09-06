@@ -1,6 +1,6 @@
 package io.akitect.crm.utils.enums;
 
-public enum FilterOperation {
+public enum FilterOperator {
     EQUAL("="),
     NOT_EQUAL("!="),
     LESS_THAN("<"),
@@ -9,11 +9,12 @@ public enum FilterOperation {
     MORE_OR_EQUAL(">="),
     IS("is"),
     IS_NOT("is not"),
-    IN("in");
+    IN("in"),
+    NOT_IN("not in");
 
     public String operator;
 
-    private FilterOperation(String operator) {
+    private FilterOperator(String operator) {
         this.operator = operator;
     };
 }

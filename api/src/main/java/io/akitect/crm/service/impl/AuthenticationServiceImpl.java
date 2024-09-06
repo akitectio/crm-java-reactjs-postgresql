@@ -1,17 +1,19 @@
 package io.akitect.crm.service.impl;
 
-import io.akitect.crm.dto.response.UserResponse;
-import io.akitect.crm.model.User;
-import io.akitect.crm.repository.UserRepository;
-import io.akitect.crm.service.AuthenticationService;
-import io.akitect.crm.component.JwtUtil;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-import java.util.Optional;
+import io.akitect.crm.component.JwtUtil;
+import io.akitect.crm.dto.response.UserResponse;
+import io.akitect.crm.model.User;
+import io.akitect.crm.repository.UserRepository;
+import io.akitect.crm.service.AuthenticationService;
+import io.akitect.crm.utils.FilterMap;
+import io.akitect.crm.utils.enums.FilterOperator;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -20,18 +22,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-
     @Autowired
-    public AuthenticationServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+    public AuthenticationServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder,
+            JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
     }
 
-
     @Override
     public Optional<String> login(String email, String password) {
-        Optional<User> user = userRepository.findWithConditions(Map.of("email", email))
+        Optional<User> user = userRepository
+                .findWithConditions(List.of(new FilterMap("email", "email", email, FilterOperator.EQUAL)))
                 .stream().findFirst();
 
         if (user.isPresent()) {
@@ -52,7 +54,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         return Optional.empty();
     }
-
 
     @Override
     public Optional<UserResponse> getUserInfoByToken() {

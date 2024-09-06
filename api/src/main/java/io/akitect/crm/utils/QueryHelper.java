@@ -1,22 +1,13 @@
 package io.akitect.crm.utils;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-import io.akitect.crm.utils.enums.FilterOperation;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
 
 public class QueryHelper<T> {
-
-    public class FilterMap {
-        String fieldName;
-        String paramName;
-        String value;
-        FilterOperation operation;
-    };
 
     @Getter
     private final EntityManager entityManager;
@@ -62,16 +53,18 @@ public class QueryHelper<T> {
         return entityManager.createQuery(queryStr, entityClass).getResultList();
     }
 
-    public List<T> findWithConditions(Map<String, Object> conditions) {
+    public List<T> findWithConditions(List<FilterMap> conditions) {
         StringBuilder queryStr = new StringBuilder("SELECT e FROM " + entityClass.getSimpleName() + " e WHERE 1=1");
-        conditions.forEach((key, value) -> queryStr.append(" AND e.").append(key).append(" = :").append(key));
+        conditions.forEach(
+                filter -> queryStr.append(" AND e.").append(filter.fieldName).append(" " + filter.operator + " :")
+                        .append(filter.paramName));
 
         // Log the generated query
         System.out.println("Generated Query: " + queryStr.toString());
         System.out.println("Parameters: " + conditions);
 
         var query = entityManager.createQuery(queryStr.toString(), entityClass);
-        conditions.forEach(query::setParameter);
+        conditions.forEach(filter -> query.setParameter(filter.paramName, filter.value));
 
         return query.getResultList();
     }

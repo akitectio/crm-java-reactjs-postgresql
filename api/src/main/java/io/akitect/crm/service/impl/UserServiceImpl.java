@@ -1,7 +1,6 @@
 package io.akitect.crm.service.impl;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +18,8 @@ import io.akitect.crm.dto.response.UserResponse;
 import io.akitect.crm.model.User;
 import io.akitect.crm.repository.UserRepository;
 import io.akitect.crm.service.UserService;
+import io.akitect.crm.utils.FilterMap;
+import io.akitect.crm.utils.enums.FilterOperator;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -58,8 +59,6 @@ public class UserServiceImpl implements UserService {
     public void deleteUserById(Long id) {
         userRepository.deleteById(id);
     }
-
-
 
     private User mapToEntity(UserRequest userRequest) {
         User user = new User();
@@ -103,7 +102,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<UserResponse> paginateWithFilter(PageRequest pageRequest, String sortBy, Direction order,
             UserRequest userRequest) {
-        List<User> users = userRepository.findWithConditions(Map.of("username", userRequest.getUsername()));
+        List<User> users = userRepository.findWithConditions(
+                List.of(new FilterMap("username", "username", userRequest.getUsername(), FilterOperator.EQUAL)));
         List<UserResponse> result = users.stream().map(x -> mapToResponse(x)).collect(Collectors.toList());
         return PageableExecutionUtils.getPage(result, pageRequest, () -> result.size());
     }

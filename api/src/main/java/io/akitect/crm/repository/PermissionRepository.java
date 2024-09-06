@@ -11,4 +11,6 @@ public interface PermissionRepository {
 
     List<Permission> findById(Set<Long> id);
 
+    Permission insertOrUpdate(Permission newPermission);
+
 }

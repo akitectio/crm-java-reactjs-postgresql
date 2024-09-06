@@ -1,16 +1,16 @@
 package io.akitect.crm.repository.impl;
 
-import io.akitect.crm.model.User;
-import io.akitect.crm.repository.UserRepository;
-import io.akitect.crm.utils.QueryHelper;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import io.akitect.crm.model.User;
+import io.akitect.crm.repository.UserRepository;
+import io.akitect.crm.utils.FilterMap;
+import io.akitect.crm.utils.QueryHelper;
 import jakarta.persistence.EntityManager;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -53,7 +53,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> findWithConditions(Map<String, Object> conditions) {
+    public List<User> findWithConditions(List<FilterMap> conditions) {
         return queryHelper.findWithConditions(conditions);
     }
 
@@ -76,6 +76,5 @@ public class UserRepositoryImpl implements UserRepository {
                 .getSingleResult();
         return count > 0;
     }
-
 
 }

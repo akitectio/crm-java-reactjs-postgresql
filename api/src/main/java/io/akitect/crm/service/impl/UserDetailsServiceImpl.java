@@ -1,14 +1,17 @@
 package io.akitect.crm.service.impl;
 
-import io.akitect.crm.model.User;
-import io.akitect.crm.repository.UserRepository;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import io.akitect.crm.model.User;
+import io.akitect.crm.repository.UserRepository;
+import io.akitect.crm.utils.FilterMap;
+import io.akitect.crm.utils.enums.FilterOperator;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -18,13 +21,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findWithConditions(Map.of("email", email))
+        User user = userRepository
+                .findWithConditions(List.of(new FilterMap("email", "email", email, FilterOperator.EQUAL)))
                 .stream().findFirst()
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
         return org.springframework.security.core.userdetails.User.withUsername(user.getEmail())
                 .password(user.getPassword())
-                .authorities("USER")  // Điều chỉnh quyền tùy theo ứng dụng của bạn
+                .authorities("USER") // Điều chỉnh quyền tùy theo ứng dụng của bạn
                 .accountExpired(false)
                 .accountLocked(false)
                 .credentialsExpired(false)
