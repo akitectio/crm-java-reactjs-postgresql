@@ -58,6 +58,9 @@ public class User {
     private Timestamp updatedAt;
     private Timestamp lastLogin;
 
+    private Timestamp deletedAt;
+
+
     @PrePersist
     protected void onCreate() {
         createdAt = new Timestamp(System.currentTimeMillis());
@@ -67,4 +70,9 @@ public class User {
     protected void onUpdate() {
         updatedAt = new Timestamp(System.currentTimeMillis());
     }
+
+    public void remove() {
+        deletedAt = new Timestamp(System.currentTimeMillis());
+    }
+
 }
