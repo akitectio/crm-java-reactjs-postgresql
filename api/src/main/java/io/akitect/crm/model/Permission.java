@@ -3,6 +3,7 @@ package io.akitect.crm.model;
 import java.sql.Timestamp;
 import java.util.Set;
 
+import io.akitect.crm.dto.response.PermissionResponse;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -54,5 +55,10 @@ public class Permission {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = new Timestamp(System.currentTimeMillis());
+    }
+
+    public PermissionResponse convertSelf() {
+        return PermissionResponse.builder().id(this.id).key(this.key).name(this.name).description(this.description)
+                .createdAt(createdAt).updatedAt(updatedAt).deletedAt(deletedAt).build();
     }
 }

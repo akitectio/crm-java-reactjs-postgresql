@@ -17,11 +17,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(value = Include.ALWAYS)
-public class PermissionResponse {
+public class RoleResponse {
     private Long id;
     private String name;
-    private String description;
-    private String key;
+    private Boolean active;
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private Timestamp deletedAt;

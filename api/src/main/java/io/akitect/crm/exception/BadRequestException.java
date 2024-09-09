@@ -10,4 +10,10 @@ public class BadRequestException extends AbstractException {
     public String message = "INVALID DATA";
     public int errorStatus = 400;
     public Map<String, ?> detail = new HashMap<>();
+
+    public BadRequestException(String message, Map<String, ?> detail) {
+        this.message = message;
+        this.detail = detail;
+        this.errorStatus = 400;
+    };
 }

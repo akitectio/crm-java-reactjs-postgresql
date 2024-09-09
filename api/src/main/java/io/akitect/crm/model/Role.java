@@ -50,6 +50,7 @@ public class Role {
     @PrePersist
     protected void onCreate() {
         createdAt = new Timestamp(System.currentTimeMillis());
+        active = true;
     }
 
     @PreUpdate
