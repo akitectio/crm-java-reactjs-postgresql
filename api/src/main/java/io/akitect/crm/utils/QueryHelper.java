@@ -6,6 +6,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.support.PageableExecutionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,6 +19,13 @@ import jakarta.transaction.Transactional;
 import lombok.Getter;
 
 public class QueryHelper<T> {
+
+    public record SortMap(String sortBy, Direction order) {
+        public SortMap(String sortBy, Direction order) {
+            this.sortBy = sortBy;
+            this.order = order;
+        }
+    }
 
     @Getter
     private final EntityManager entityManager;
@@ -71,7 +81,7 @@ public class QueryHelper<T> {
 
         // Log the generated query
         System.out.println("Generated Query: " + queryStr.toString());
-        System.out.println("Parameters: " + conditions);
+        // System.out.println("Parameters: " + conditions);
 
         var query = entityManager.createQuery(queryStr.toString(), entityClass);
         conditions.forEach(filter -> query.setParameter(filter.paramName, filter.value));
@@ -82,9 +92,13 @@ public class QueryHelper<T> {
     public <K> Page<K> paginatedWithConditions(Class<K> dtoClass, Pageable pageable, List<FilterMap> filters) {
         StringBuilder queryStr = new StringBuilder(
                 "SELECT e FROM " + entityClass.getSimpleName() + " e WHERE 1=1");
+
         filters.forEach(
                 filter -> queryStr.append(" AND e.").append(filter.fieldName).append(" " + filter.operator.name + " :")
                         .append(filter.paramName));
+
+        queryStr.append(" " + getSortByParam(pageable.getSort()));
+
         TypedQuery<K> query = entityManager.createQuery(queryStr.toString(),
                 dtoClass);
         filters.forEach(filter -> query.setParameter(filter.paramName, filter.value));
@@ -94,10 +108,10 @@ public class QueryHelper<T> {
         query.setMaxResults(pageable.getPageSize());
         query.setFirstResult((int) pageable.getOffset());
 
-        var results = query.getResultList().stream().map(result -> new ObjectMapper().convertValue(result, dtoClass))
-                .collect(Collectors.toList());
-
-        return PageableExecutionUtils.getPage(results, pageable,
+        return PageableExecutionUtils.getPage(
+                query.getResultList().stream().map(result -> new ObjectMapper().convertValue(result, dtoClass))
+                        .collect(Collectors.toList()),
+                pageable,
                 countQuery::getSingleResult);
 
     }
@@ -108,6 +122,22 @@ public class QueryHelper<T> {
         filters.forEach(
                 filter -> queryStr.append(" AND e.").append(filter.fieldName).append(" " + filter.operator.name + " :")
                         .append(filter.paramName));
+        return queryStr.toString();
+    }
+
+    private String getSortByParam(Sort data) {
+
+        List<Order> sorts = data.toList();
+
+        if (sorts.size() == 0) {
+            return "";
+        }
+
+        StringBuilder queryStr = new StringBuilder("ORDER BY ");
+
+        sorts.forEach(sort -> queryStr.append(sort.getProperty()).append(" " + sort.getDirection())
+                .append(sorts.indexOf(sort) == sorts.size() - 1 ? "" : ", "));
+
         return queryStr.toString();
     }
 

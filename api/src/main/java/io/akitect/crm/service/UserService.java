@@ -2,6 +2,7 @@ package io.akitect.crm.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 
 import io.akitect.crm.dto.request.GetUserRequest;
 import io.akitect.crm.dto.request.UserRequest;
@@ -20,5 +21,6 @@ public interface UserService {
 
     UserResponse removeSuper(Long id);
 
-    Page<UserResponse> paginatedWithConditions(PageRequest pageRequest, GetUserRequest filter);
+    Page<UserResponse> paginatedWithConditions(PageRequest pageRequest, String sortBy, Direction order,
+            GetUserRequest filter);
 }

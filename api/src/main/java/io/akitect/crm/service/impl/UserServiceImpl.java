@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -121,8 +122,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserResponse> paginatedWithConditions(PageRequest pageRequest, GetUserRequest filter) {
-
+    public Page<UserResponse> paginatedWithConditions(PageRequest pageRequest, String sortBy, Direction order,
+            GetUserRequest filter) {
+        pageRequest = pageRequest.withSort(order, sortBy);
         return userRepository.paginatedWithConditions(pageRequest, getFilters(filter));
     }
 

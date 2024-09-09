@@ -1,4 +1,4 @@
-package io.akitect.crm.dto.exception;
+package io.akitect.crm.exception;
 
 import java.util.HashMap;
 import java.util.Map;

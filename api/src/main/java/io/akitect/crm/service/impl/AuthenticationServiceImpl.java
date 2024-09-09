@@ -41,8 +41,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             String storedPasswordHash = user.get().getPassword().trim();
 
             // Debugging logs
-            System.out.println("Entered Password: " + enteredPassword);
-            System.out.println("Stored Password Hash: " + storedPasswordHash);
+            // System.out.println("Entered Password: " + enteredPassword);
+            // System.out.println("Stored Password Hash: " + storedPasswordHash);
 
             if (passwordEncoder.matches(enteredPassword, storedPasswordHash)) {
 

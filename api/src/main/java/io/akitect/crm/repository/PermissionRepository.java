@@ -3,7 +3,12 @@ package io.akitect.crm.repository;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import io.akitect.crm.dto.response.PermissionResponse;
 import io.akitect.crm.model.Permission;
+import io.akitect.crm.utils.FilterMap;
 
 public interface PermissionRepository {
 
@@ -12,5 +17,8 @@ public interface PermissionRepository {
     List<Permission> findById(Set<Long> id);
 
     Permission insertOrUpdate(Permission newPermission);
+
+    Page<PermissionResponse> paginatedWithConditions(Pageable pageable,
+            List<FilterMap> filters);
 
 }

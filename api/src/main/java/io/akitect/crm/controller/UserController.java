@@ -2,6 +2,7 @@ package io.akitect.crm.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -65,9 +66,13 @@ public class UserController {
     public ResponseEntity<PaginatedResponse<UserResponse>> paginateUser(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "items_per_page", defaultValue = "10") int perPage,
+            @RequestParam(name = "sort_by", defaultValue = "id") String sortBy,
+            @RequestParam(name = "order", defaultValue = "ASC") Direction order,
             @ModelAttribute() GetUserRequest filter) {
+
         PaginatedResponse<UserResponse> result = PageHelper
-                .convertResponse(userService.paginatedWithConditions(PageRequest.of(page, perPage), filter));
+                .convertResponse(
+                        userService.paginatedWithConditions(PageRequest.of(page, perPage), sortBy, order, filter));
 
         return ResponseEntity.ok(result);
     }
