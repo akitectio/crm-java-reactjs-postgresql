@@ -6,7 +6,7 @@ import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import io.akitect.crm.dto.response.RoleResponse;
+import io.akitect.crm.dto.response.PaginateRoleResponse;
 import io.akitect.crm.model.Role;
 import io.akitect.crm.utils.FilterMap;
 
@@ -17,6 +17,6 @@ public interface RoleRepository {
 
     Role insertOrUpdate(Role data);
 
-    Page<RoleResponse> paginatedWithConditions(Pageable pageable,
+    Page<PaginateRoleResponse> paginatedWithConditions(Pageable pageable,
             List<FilterMap> filters);
 }

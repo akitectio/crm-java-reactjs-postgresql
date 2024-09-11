@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort.Direction;
 
 import io.akitect.crm.dto.request.GetRoleRequest;
 import io.akitect.crm.dto.request.PostPutRoleRequest;
+import io.akitect.crm.dto.response.PaginateRoleResponse;
 import io.akitect.crm.dto.response.RoleResponse;
 
 public interface RoleService {
@@ -17,6 +18,6 @@ public interface RoleService {
 
     List<String> getPermissionByRole(Long id);
 
-    Page<RoleResponse> paginatedWithConditions(PageRequest pageRequest, String sortBy, Direction order,
+    Page<PaginateRoleResponse> paginatedWithConditions(PageRequest pageRequest, String sortBy, Direction order,
             GetRoleRequest filter);
 }

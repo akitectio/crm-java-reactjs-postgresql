@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.akitect.crm.dto.request.GetRoleRequest;
 import io.akitect.crm.dto.request.PostPutRoleRequest;
+import io.akitect.crm.dto.response.PaginateRoleResponse;
 import io.akitect.crm.dto.response.PaginatedResponse;
 import io.akitect.crm.dto.response.RoleResponse;
 import io.akitect.crm.service.RoleService;
@@ -30,7 +31,7 @@ public class RoleController {
     RoleService roleService;
 
     @GetMapping("/paginated")
-    public ResponseEntity<PaginatedResponse<RoleResponse>> paginated(
+    public ResponseEntity<PaginatedResponse<PaginateRoleResponse>> paginated(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "items_per_page", defaultValue = "10") int perPage,
             @RequestParam(name = "sort_by", defaultValue = "id") String sortBy,

@@ -1,7 +1,9 @@
 package io.akitect.crm.model;
 
 import java.sql.Timestamp;
-import java.util.Set;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.akitect.crm.dto.response.PermissionResponse;
 import jakarta.persistence.Entity;
@@ -44,8 +46,9 @@ public class Permission {
 
     private Timestamp deletedAt;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "permissions", fetch = FetchType.LAZY)
-    private Set<Role> roles;
+    private List<Role> roles;
 
     @PrePersist
     protected void onCreate() {

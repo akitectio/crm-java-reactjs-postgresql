@@ -8,7 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import io.akitect.crm.dto.response.RoleResponse;
+import io.akitect.crm.dto.response.PaginateRoleResponse;
+import io.akitect.crm.exception.BadRequestException;
 import io.akitect.crm.model.Role;
 import io.akitect.crm.repository.RoleRepository;
 import io.akitect.crm.utils.FilterMap;
@@ -29,7 +30,7 @@ public class RoleRepositoryImpl implements RoleRepository {
     @Override
     @Transactional
     public Role findOneById(Long id) {
-        return queryHelper.findById(id).orElseThrow();
+        return queryHelper.findById(id).orElseThrow(() -> new BadRequestException("Invalid id", null));
     }
 
     @Override
@@ -46,8 +47,8 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
     @Override
-    public Page<RoleResponse> paginatedWithConditions(Pageable pageable, List<FilterMap> filters) {
+    public Page<PaginateRoleResponse> paginatedWithConditions(Pageable pageable, List<FilterMap> filters) {
 
-        return queryHelper.paginatedWithConditions(RoleResponse.class, pageable, filters);
+        return queryHelper.paginatedWithConditions(PaginateRoleResponse.class, pageable, filters);
     }
 }

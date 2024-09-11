@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import io.akitect.crm.dto.request.GetRoleRequest;
 import io.akitect.crm.dto.request.PostPutRoleRequest;
+import io.akitect.crm.dto.response.PaginateRoleResponse;
 import io.akitect.crm.dto.response.RoleResponse;
 import io.akitect.crm.exception.BadRequestException;
 import io.akitect.crm.model.Permission;
@@ -42,7 +43,9 @@ public class RoleServiceImpl implements RoleService {
 
     private RoleResponse convertToResponse(Role data) {
         return RoleResponse.builder().id(data.getId()).name(data.getName()).active(data.getActive())
-                .createdAt(data.getCreatedAt()).updatedAt(data.getUpdatedAt()).deletedAt(data.getDeletedAt()).build();
+                .createdAt(data.getCreatedAt()).updatedAt(data.getUpdatedAt()).deletedAt(data.getDeletedAt())
+                .permissions(data.getPermissions().stream().map(Permission::convertSelf).collect(Collectors.toList()))
+                .build();
     }
 
     @Override
@@ -56,13 +59,14 @@ public class RoleServiceImpl implements RoleService {
                 .name(data.getName())
                 .build();
 
-        newRole.setPermissions(permissionService.getById(data.getPermissionIds()).stream().collect(Collectors.toSet()));
+        newRole.setPermissions(
+                permissionService.getById(data.getPermissionIds()).stream().collect(Collectors.toList()));
 
         return convertToResponse(roleRepository.insertOrUpdate(newRole));
     }
 
     @Override
-    public Page<RoleResponse> paginatedWithConditions(PageRequest pageRequest, String sortBy, Direction order,
+    public Page<PaginateRoleResponse> paginatedWithConditions(PageRequest pageRequest, String sortBy, Direction order,
             GetRoleRequest filter) {
 
         return roleRepository.paginatedWithConditions(pageRequest, getFilters(filter));
@@ -77,7 +81,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     @Transactional(value = TxType.REQUIRED)
     public List<String> getPermissionByRole(Long id) {
-        Set<Long> ids = roleRepository.findOneById(id).getPermissions().stream().map(Permission::getId)
+        Set<Long> ids = roleRepository.findOneById(id).getPermissions().stream().map(x -> x.getId())
                 .collect(Collectors.toSet());
         return permissionService.getById(ids).stream().map(Permission::getKey).collect(Collectors.toList());
     }

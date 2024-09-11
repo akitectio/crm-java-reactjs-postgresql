@@ -99,14 +99,15 @@ public class QueryHelper<T> {
 
         queryStr.append(" " + getSortByParam(pageable.getSort()));
 
-        TypedQuery<K> query = entityManager.createQuery(queryStr.toString(),
-                dtoClass);
+        TypedQuery<K> query = entityManager.createQuery(queryStr.toString(), dtoClass);
         filters.forEach(filter -> query.setParameter(filter.paramName, filter.value));
 
         TypedQuery<Long> countQuery = entityManager.createQuery(getCountQueryString(filters), Long.class);
 
         query.setMaxResults(pageable.getPageSize());
         query.setFirstResult((int) pageable.getOffset());
+
+        var resulta = query.getResultList();
 
         return PageableExecutionUtils.getPage(
                 query.getResultList().stream().map(result -> new ObjectMapper().convertValue(result, dtoClass))

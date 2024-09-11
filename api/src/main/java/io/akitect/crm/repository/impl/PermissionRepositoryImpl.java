@@ -44,6 +44,7 @@ public class PermissionRepositoryImpl implements PermissionRepository {
     }
 
     @Override
+    @Transactional
     public Page<PermissionResponse> paginatedWithConditions(Pageable pageable, List<FilterMap> filters) {
 
         return queryHelper.paginatedWithConditions(PermissionResponse.class, pageable, filters);

@@ -1,9 +1,12 @@
 package io.akitect.crm.model;
 
 import java.sql.Timestamp;
-import java.util.Set;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -43,9 +46,10 @@ public class Role {
 
     private Timestamp deletedAt;
 
-    @ManyToMany
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "role_permission", joinColumns = @JoinColumn(name = "roles_id"), inverseJoinColumns = @JoinColumn(name = "permissions_id"))
-    private Set<Permission> permissions;
+    private List<Permission> permissions;
 
     @PrePersist
     protected void onCreate() {
