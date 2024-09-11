@@ -13,5 +13,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PostPutRoleRequest {
     private String name;
+    private String description;
     private Set<Long> permissionIds;
 }

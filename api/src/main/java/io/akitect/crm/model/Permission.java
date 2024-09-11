@@ -36,8 +36,6 @@ public class Permission {
 
     private String name;
 
-    private String description;
-
     private String key;
 
     private Timestamp createdAt;
@@ -61,7 +59,7 @@ public class Permission {
     }
 
     public PermissionResponse convertSelf() {
-        return PermissionResponse.builder().id(this.id).key(this.key).name(this.name).description(this.description)
+        return PermissionResponse.builder().id(this.id).key(this.key).name(this.name)
                 .createdAt(createdAt).updatedAt(updatedAt).deletedAt(deletedAt).build();
     }
 }

@@ -107,8 +107,6 @@ public class QueryHelper<T> {
         query.setMaxResults(pageable.getPageSize());
         query.setFirstResult((int) pageable.getOffset());
 
-        var resulta = query.getResultList();
-
         return PageableExecutionUtils.getPage(
                 query.getResultList().stream().map(result -> new ObjectMapper().convertValue(result, dtoClass))
                         .collect(Collectors.toList()),

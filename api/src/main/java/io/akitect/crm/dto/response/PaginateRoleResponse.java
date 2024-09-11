@@ -18,6 +18,8 @@ import lombok.NoArgsConstructor;
 public class PaginateRoleResponse {
     private Long id;
     private String name;
-    private Boolean active;
+    private String description;
+    private Long createdBy;
     private Timestamp createdAt;
+
 }

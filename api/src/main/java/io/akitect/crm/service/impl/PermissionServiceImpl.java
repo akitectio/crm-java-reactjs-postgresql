@@ -36,7 +36,6 @@ public class PermissionServiceImpl implements PermissionService {
         PermissionResponse result = PermissionResponse.builder()
                 .id(data.getId())
                 .key(data.getKey())
-                .description(data.getDescription())
                 .name(data.getName())
                 .createdAt(data.getCreatedAt())
                 .updatedAt(data.getUpdatedAt())
@@ -57,7 +56,6 @@ public class PermissionServiceImpl implements PermissionService {
         Permission newPermission = Permission.builder()
                 .name(data.getName())
                 .key(data.getKey())
-                .description(data.getDescription())
                 .build();
 
         return convertToResponse(permissionRepository.insertOrUpdate(newPermission));

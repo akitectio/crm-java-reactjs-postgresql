@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import io.akitect.crm.utils.JwtHelper;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -38,7 +39,11 @@ public class Role {
 
     private String name;
 
-    private Boolean active;
+    private String description;
+
+    private Long createdBy;
+
+    private String createdByName;
 
     private Timestamp createdAt;
 
@@ -54,7 +59,7 @@ public class Role {
     @PrePersist
     protected void onCreate() {
         createdAt = new Timestamp(System.currentTimeMillis());
-        active = true;
+        createdBy = Long.parseLong(JwtHelper.getCurrentUserId());
     }
 
     @PreUpdate

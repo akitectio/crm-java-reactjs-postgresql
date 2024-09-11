@@ -15,13 +15,16 @@ import io.akitect.crm.dto.request.GetRoleRequest;
 import io.akitect.crm.dto.request.PostPutRoleRequest;
 import io.akitect.crm.dto.response.PaginateRoleResponse;
 import io.akitect.crm.dto.response.RoleResponse;
+import io.akitect.crm.dto.response.UserResponse;
 import io.akitect.crm.exception.BadRequestException;
 import io.akitect.crm.model.Permission;
 import io.akitect.crm.model.Role;
 import io.akitect.crm.repository.RoleRepository;
 import io.akitect.crm.service.PermissionService;
 import io.akitect.crm.service.RoleService;
+import io.akitect.crm.service.UserService;
 import io.akitect.crm.utils.FilterMap;
+import io.akitect.crm.utils.JwtHelper;
 import jakarta.transaction.Transactional;
 import jakarta.transaction.Transactional.TxType;
 
@@ -34,6 +37,9 @@ public class RoleServiceImpl implements RoleService {
     @Autowired
     PermissionService permissionService;
 
+    @Autowired
+    UserService userService;
+
     @Override
     @Transactional
     public RoleResponse getOneById(Long id) {
@@ -42,7 +48,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     private RoleResponse convertToResponse(Role data) {
-        return RoleResponse.builder().id(data.getId()).name(data.getName()).active(data.getActive())
+        return RoleResponse.builder().id(data.getId()).name(data.getName()).description(data.getDescription())
                 .createdAt(data.getCreatedAt()).updatedAt(data.getUpdatedAt()).deletedAt(data.getDeletedAt())
                 .permissions(data.getPermissions().stream().map(Permission::convertSelf).collect(Collectors.toList()))
                 .build();
@@ -55,8 +61,12 @@ public class RoleServiceImpl implements RoleService {
             throw new BadRequestException("Permission list can not be empty", null);
         }
 
+        UserResponse createdBy = userService.getUserById(Long.parseLong(JwtHelper.getCurrentUserId()));
+
         Role newRole = Role.builder()
                 .name(data.getName())
+                .description(data.getDescription())
+                .createdByName(createdBy.getFirstName() + " " + createdBy.getLastName())
                 .build();
 
         newRole.setPermissions(
@@ -66,6 +76,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Transactional
     public Page<PaginateRoleResponse> paginatedWithConditions(PageRequest pageRequest, String sortBy, Direction order,
             GetRoleRequest filter) {
 

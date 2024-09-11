@@ -21,7 +21,8 @@ import lombok.NoArgsConstructor;
 public class RoleResponse {
     private Long id;
     private String name;
-    private Boolean active;
+    private String description;
+    private Long createdBy;
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private Timestamp deletedAt;

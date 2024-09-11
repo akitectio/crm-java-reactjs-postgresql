@@ -47,6 +47,7 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
     @Override
+    @Transactional
     public Page<PaginateRoleResponse> paginatedWithConditions(Pageable pageable, List<FilterMap> filters) {
 
         return queryHelper.paginatedWithConditions(PaginateRoleResponse.class, pageable, filters);
