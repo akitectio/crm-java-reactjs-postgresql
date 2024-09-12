@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort.Direction;
 
 import io.akitect.crm.dto.request.GetPermissionRequest;
 import io.akitect.crm.dto.request.PostPutPermissionRequest;
+import io.akitect.crm.dto.response.PaginatePermissionResponse;
 import io.akitect.crm.dto.response.PermissionResponse;
 import io.akitect.crm.model.Permission;
 
@@ -20,6 +21,11 @@ public interface PermissionService {
 
     List<Permission> getById(Set<Long> ids);
 
-    Page<PermissionResponse> paginatedWithConditions(PageRequest pageRequest, String sortBy, Direction order,
+    Page<PaginatePermissionResponse> paginatedWithConditions(PageRequest pageRequest, String sortBy, Direction order,
             GetPermissionRequest filter);
+
+    Boolean delete(Long id);
+
+    PermissionResponse update(Long id, PostPutPermissionRequest data);
+
 }

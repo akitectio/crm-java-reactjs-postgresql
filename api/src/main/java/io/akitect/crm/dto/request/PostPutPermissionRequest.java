@@ -11,6 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PostPutPermissionRequest {
     private String name;
-    private String description;
-    private String key;
+    private Long parentId;
 }

@@ -66,6 +66,7 @@ public class RoleServiceImpl implements RoleService {
         Role newRole = Role.builder()
                 .name(data.getName())
                 .description(data.getDescription())
+                .isDefault(data.getIsDefault())
                 .createdByName(createdBy.getFirstName() + " " + createdBy.getLastName())
                 .build();
 

@@ -15,13 +15,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(value = Include.ALWAYS)
-public class PaginateRoleResponse {
-
+public class PaginatePermissionResponse {
     private Long id;
     private String name;
-    private String description;
-    private String createdByName;
-    private Long createdBy;
+    private String key;
     private Timestamp createdAt;
-
+    private Timestamp updatedAt;
+    private Timestamp deletedAt;
 }

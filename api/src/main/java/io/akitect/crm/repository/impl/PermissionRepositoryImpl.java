@@ -8,7 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import io.akitect.crm.dto.response.PermissionResponse;
+import io.akitect.crm.dto.response.PaginatePermissionResponse;
+import io.akitect.crm.exception.BadRequestException;
 import io.akitect.crm.model.Permission;
 import io.akitect.crm.repository.PermissionRepository;
 import io.akitect.crm.utils.FilterMap;
@@ -27,8 +28,9 @@ public class PermissionRepositoryImpl implements PermissionRepository {
     }
 
     @Override
+    @Transactional
     public Permission findOneById(Long id) {
-        return queryHelper.findById(id).orElseThrow();
+        return queryHelper.findById(id).orElseThrow(() -> new BadRequestException("Permission not found", null));
     }
 
     @Override
@@ -45,9 +47,19 @@ public class PermissionRepositoryImpl implements PermissionRepository {
 
     @Override
     @Transactional
-    public Page<PermissionResponse> paginatedWithConditions(Pageable pageable, List<FilterMap> filters) {
+    public Page<PaginatePermissionResponse> paginatedWithConditions(Pageable pageable, List<FilterMap> filters) {
 
-        return queryHelper.paginatedWithConditions(PermissionResponse.class, pageable, filters);
+        return queryHelper.paginatedWithConditions(PaginatePermissionResponse.class, pageable, filters);
+    }
+
+    @Override
+    public Boolean delete(Long id) {
+        try {
+            queryHelper.deleteById(id);
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 
 }

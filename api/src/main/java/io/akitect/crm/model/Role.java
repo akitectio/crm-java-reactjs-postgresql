@@ -43,6 +43,8 @@ public class Role {
 
     private Long createdBy;
 
+    private Boolean isDefault;
+
     private String createdByName;
 
     private Timestamp createdAt;

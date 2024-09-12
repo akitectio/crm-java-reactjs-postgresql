@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import io.akitect.crm.dto.request.GetPermissionRequest;
 import io.akitect.crm.dto.request.PostPutPermissionRequest;
+import io.akitect.crm.dto.response.PaginatePermissionResponse;
 import io.akitect.crm.dto.response.PermissionResponse;
 import io.akitect.crm.model.Permission;
 import io.akitect.crm.repository.PermissionRepository;
@@ -27,6 +28,7 @@ public class PermissionServiceImpl implements PermissionService {
     PermissionRepository permissionRepository;
 
     @Override
+    @Transactional
     public PermissionResponse getOneById(Long id) {
 
         return convertToResponse(permissionRepository.findOneById(id));
@@ -41,6 +43,7 @@ public class PermissionServiceImpl implements PermissionService {
                 .updatedAt(data.getUpdatedAt())
                 .deletedAt(data.getDeletedAt())
                 .build();
+        result.setChildren(data.getChildren());
         return result;
     }
 
@@ -52,17 +55,24 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     @Transactional
     public PermissionResponse insert(PostPutPermissionRequest data) {
+        Permission parentPermission = null;
+        if (data.getParentId() != null) {
+            parentPermission = permissionRepository.findOneById(data.getParentId());
+        }
 
         Permission newPermission = Permission.builder()
                 .name(data.getName())
-                .key(data.getKey())
+                .parent(parentPermission)
+                .key(parentPermission != null ? parentPermission.getKey() + "." + data.getName().toLowerCase()
+                        : data.getName().toLowerCase())
                 .build();
 
         return convertToResponse(permissionRepository.insertOrUpdate(newPermission));
     }
 
     @Override
-    public Page<PermissionResponse> paginatedWithConditions(PageRequest pageRequest, String sortBy, Direction order,
+    public Page<PaginatePermissionResponse> paginatedWithConditions(PageRequest pageRequest, String sortBy,
+            Direction order,
             GetPermissionRequest filter) {
         pageRequest = pageRequest.withSort(order, sortBy);
         return permissionRepository.paginatedWithConditions(pageRequest, getFilters(filter));
@@ -83,6 +93,23 @@ public class PermissionServiceImpl implements PermissionService {
         if (filter.getKey() != null)
             filters.add(new FilterMap("key", "key", "%" + filter.getKey() + "%", FilterOperator.ILIKE));
         return filters;
+    }
+
+    @Override
+    public Boolean delete(Long id) {
+        Permission target = permissionRepository.findOneById(id);
+        target.delete();
+        permissionRepository.insertOrUpdate(target);
+        return true;
+    }
+
+    @Override
+    public PermissionResponse update(Long id, PostPutPermissionRequest data) {
+        Permission target = permissionRepository.findOneById(id);
+
+        target.update(target.getName(), data.getName());
+        permissionRepository.insertOrUpdate(target);
+        return target.convertSelf();
     }
 
 }
