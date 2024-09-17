@@ -3,6 +3,7 @@ package io.akitect.crm.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import io.akitect.crm.dto.request.GetPermissionRequest;
 import io.akitect.crm.dto.request.PostPutPermissionRequest;
+import io.akitect.crm.dto.response.GetDisplay;
 import io.akitect.crm.dto.response.PaginatePermissionResponse;
 import io.akitect.crm.dto.response.PermissionResponse;
 import io.akitect.crm.model.Permission;
@@ -111,5 +113,22 @@ public class PermissionServiceImpl implements PermissionService {
         permissionRepository.insertOrUpdate(target);
         return target.convertSelf();
     }
+
+    @Override
+    public List<GetDisplay> getDisplay() {
+        
+        return permissionRepository.findAllWithFilter(List.of()).stream().map(permission -> convertToDisplay(permission)).collect(Collectors.toList());
+    }
+
+    private GetDisplay convertToDisplay (Permission data) {
+        GetDisplay result = new GetDisplay();
+
+        result.setLabel(data.getName());
+        result.setValue(data.getId());
+        result.setExtra(data.getParent() != null ? data.getParent().getId(): null);
+
+        return result;
+    }
+
 
 }

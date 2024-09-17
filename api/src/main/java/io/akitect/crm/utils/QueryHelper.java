@@ -115,7 +115,7 @@ public class QueryHelper<T> {
 
     }
 
-    private String getCountQueryString(List<FilterMap> filters) {
+    public String getCountQueryString(List<FilterMap> filters) {
         StringBuilder queryStr = new StringBuilder(
                 "SELECT COUNT(e.id) AS COUNTER FROM " + entityClass.getSimpleName() + " e WHERE 1=1");
         filters.forEach(

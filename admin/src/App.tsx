@@ -17,9 +17,13 @@ import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
 
 import { Loading } from "./components/Loading";
-import CreateForm from "./pages/CreateForm";
-import EditForm from "./pages/editFolder/EditForm";
-import { RoleAndPermissions } from "./pages/RoleAndPermissions";
+import CreateFormPermissions from "./pages/CreateFormPermissions";
+import CreateFormRoles from "./pages/CreateFormRoles";
+import CreateForm from "./pages/CreateFormUsers";
+import EditFormRole from "./pages/editFolder/EditFormRole";
+import EditForm from "./pages/editFolder/EditFormUser";
+import Permissions from "./pages/Permissions";
+import Roles from "./pages/Roles";
 import UserTable from "./pages/UserTable";
 import { getUserInfo } from "./services/auth";
 import { setCurrentUser } from "./store/reducers/auth";
@@ -96,7 +100,14 @@ const App = () => {
             <Route path="/users" element={<UserTable />} />
             <Route path="/users/create" element={<CreateForm />} />
             <Route path="/users/edit/:id" element={<EditForm />} />
-            <Route path="/role" element={<RoleAndPermissions />} />
+            <Route path="/role" element={<Roles />} />
+            <Route path="/role/create" element={<CreateFormRoles />}></Route>
+            <Route path="role/edit/:id" element={<EditFormRole />}></Route>
+            <Route path="/permission" element={<Permissions />}></Route>
+            <Route
+              path="/permission/create"
+              element={<CreateFormPermissions />}
+            ></Route>
             <Route path="/profile" element={<Profile />} />
             <Route path="/" element={<Dashboard />} />
           </Route>

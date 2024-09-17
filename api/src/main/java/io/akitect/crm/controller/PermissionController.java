@@ -1,5 +1,7 @@
 package io.akitect.crm.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.akitect.crm.dto.request.GetPermissionRequest;
 import io.akitect.crm.dto.request.PostPutPermissionRequest;
+import io.akitect.crm.dto.response.GetDisplay;
 import io.akitect.crm.dto.response.PaginatePermissionResponse;
 import io.akitect.crm.dto.response.PaginatedResponse;
 import io.akitect.crm.dto.response.PermissionResponse;
@@ -61,6 +64,11 @@ public class PermissionController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
         return ResponseEntity.ok(permissionService.delete(id));
+    }
+
+    @GetMapping("/display")
+    public ResponseEntity<List<GetDisplay>> getDisplayPermission(){
+        return ResponseEntity.ok(permissionService.getDisplay());
     }
 
 }

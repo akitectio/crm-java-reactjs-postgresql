@@ -23,4 +23,5 @@ public interface PermissionRepository {
 
     Boolean delete(Long id);
 
+    List<Permission> findAllWithFilter(List<FilterMap> filters);
 }

@@ -23,5 +23,5 @@ public class PaginateRoleResponse {
     private String createdByName;
     private Long createdBy;
     private Timestamp createdAt;
-
+    private Timestamp deletedAt;
 }

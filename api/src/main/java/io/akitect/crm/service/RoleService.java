@@ -20,4 +20,8 @@ public interface RoleService {
 
     Page<PaginateRoleResponse> paginatedWithConditions(PageRequest pageRequest, String sortBy, Direction order,
             GetRoleRequest filter);
+
+    RoleResponse updateRole(PostPutRoleRequest data, Long id);
+
+    void deleteRoleById (Long id);
 }

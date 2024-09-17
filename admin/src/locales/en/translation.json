@@ -82,7 +82,8 @@
       "subMenu": "Sub Menu",
       "platformAdministration": "Administration",
       "users": "Users",
-      "role": "Roles and Permissions"
+      "role": "Roles",
+      "permission": "Permissions"
     }
   },
   "footer": {

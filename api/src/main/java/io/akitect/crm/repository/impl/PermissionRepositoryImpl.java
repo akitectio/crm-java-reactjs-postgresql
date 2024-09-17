@@ -62,4 +62,8 @@ public class PermissionRepositoryImpl implements PermissionRepository {
         }
     }
 
+    @Override
+    public List<Permission> findAllWithFilter(List<FilterMap> filters) {
+        return queryHelper.findWithConditions(filters);
+    }
 }

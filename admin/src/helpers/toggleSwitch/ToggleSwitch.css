@@ -1,0 +1,29 @@
+.toggle-switch {
+  width: 50px;
+  height: 25px;
+  border-radius: 25px;
+  background-color: #d4e6f5; /* Màu nền xanh nhạt khi tắt */
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-switch.on {
+  background-color: #1e73d1; /* Màu nền xanh đậm khi bật */
+}
+
+.switch-handle {
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 5px;
+  transform: translateY(-50%);
+  transition: left 0.3s ease;
+}
+
+.toggle-switch.on .switch-handle {
+  left: 25px; /* Di chuyển nút sang phải khi bật */
+}

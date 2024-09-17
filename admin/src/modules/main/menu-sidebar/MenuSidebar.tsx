@@ -55,6 +55,11 @@ export const MENU: IMenuItem[] = [
         icon: "fas fa-key nav-icon",
         path: "/role",
       },
+      {
+        name: i18n.t("menusidebar.label.permission"),
+        icon: "fas fa-lock nav-icon",
+        path: "/permission",
+      },
     ],
   },
 ];

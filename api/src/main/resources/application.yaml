@@ -11,7 +11,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/crm
     username: postgres
-    password: postgres
+    password: 1234
     driver-class-name: org.postgresql.Driver
     hikari:
       connectionTimeout: 20000

@@ -98,4 +98,31 @@ public class RoleServiceImpl implements RoleService {
         return permissionService.getById(ids).stream().map(Permission::getKey).collect(Collectors.toList());
     }
 
+    @Override
+    public RoleResponse updateRole(PostPutRoleRequest data, Long id) {
+        if (data.getPermissionIds() == null || data.getPermissionIds().size() == 0) {
+            throw new BadRequestException("Permission list can not be empty", null);
+        }
+
+        Role oldRole = roleRepository.findOneById(id);
+
+        oldRole.setName(data.getName());
+        oldRole.setDescription(data.getDescription());
+        oldRole.setIsDefault(data.getIsDefault());
+
+        oldRole.setPermissions(
+                permissionService.getById(data.getPermissionIds()).stream().collect(Collectors.toList()));
+
+        return convertToResponse(roleRepository.insertOrUpdate(oldRole));
+    }
+
+    @Override
+    public void deleteRoleById(Long id) {
+        Role oldRole = roleRepository.findOneById(id);
+
+        oldRole.remove();
+
+        roleRepository.insertOrUpdate(oldRole);
+    }
+
 }

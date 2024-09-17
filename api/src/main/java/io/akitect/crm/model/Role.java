@@ -68,4 +68,8 @@ public class Role {
     protected void onUpdate() {
         updatedAt = new Timestamp(System.currentTimeMillis());
     }
+
+    public void remove() {
+        deletedAt = new Timestamp(System.currentTimeMillis());
+    }
 }

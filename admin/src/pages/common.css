@@ -42,3 +42,7 @@ button.btn.btn-sm.btn-icon.btn-primary.mr-1.position-relative:hover
   align-items: center;
   text-align: center;
 }
+
+tbody > :hover {
+  background-color: #d1d5db;
+}

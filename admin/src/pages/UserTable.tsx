@@ -24,6 +24,7 @@ import DeleteConfirm from "./deleteFolder/DeleteConfirm";
 const UserTable = () => {
   const [users, setUsers] = useState<UserResponse[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
 
   const navigator = useNavigate();
 
@@ -70,18 +71,6 @@ const UserTable = () => {
     { value: "Bulk changes", label: "Bulk changes" },
     { value: "Delete", label: "Delete" },
   ];
-
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [selectedAction, setSelectedAction] = useState(null);
-
-  const optionsMenuBulk = [
-    { value: "Username", label: "Username" },
-    { value: "Email", label: "Email" },
-    { value: "Status", label: "Status" },
-    { value: "Created At", label: "Created At" },
-  ];
-
-  //
 
   const [filters, setFilters] = useState([
     { field: optionsField[0], operation: optionsOperation[1], value: "" },
@@ -154,6 +143,30 @@ const UserTable = () => {
   const handleDashboard = () => {
     navigator("/");
   };
+
+  // Hàm xử lý khi nhấn chọn tất cả
+  const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      // Chọn tất cả user IDs
+      const allUserIds = users.map((user) => user.id);
+      setSelectedUsers(allUserIds);
+    } else {
+      // Bỏ chọn tất cả
+      setSelectedUsers([]);
+    }
+  };
+
+  // Hàm xử lý khi chọn từng hàng
+  const handleSelectRow = (id: number) => {
+    if (selectedUsers.includes(id)) {
+      // Nếu hàng đã được chọn, bỏ chọn hàng đó
+      setSelectedUsers(selectedUsers.filter((userId) => userId !== id));
+    } else {
+      // Nếu hàng chưa được chọn, thêm hàng đó vào danh sách
+      setSelectedUsers([...selectedUsers, id]);
+    }
+  };
+
   return (
     <div className="container" style={{ paddingTop: "24px" }}>
       <nav aria-label="breadcrumb">
@@ -408,11 +421,7 @@ const UserTable = () => {
       <div className="table-wrapper mt-4">
         <div className="card">
           <div className="card-header d-flex mt-2">
-            <div
-              onMouseEnter={() => setMenuOpen(true)}
-              onMouseLeave={() => setMenuOpen(false)}
-              style={{ position: "relative" }}
-            >
+            <div>
               <Select
                 isClearable
                 className="mr-1"
@@ -431,16 +440,6 @@ const UserTable = () => {
                   document.getElementById("dataTableUserTable") as HTMLElement
                 }
               />
-              {selectedAction && selectedAction.value === "Bulk changes" && (
-                <div>
-                  <Select
-                    isClearable
-                    className="mr-1"
-                    options={optionsMenuBulk}
-                    style={{ marginTop: "10px" }}
-                  />
-                </div>
-              )}
             </div>
             <div>
               <button
@@ -450,7 +449,8 @@ const UserTable = () => {
                   color: "black",
                   border: "1px solid #d1d5db",
                   borderRadius: "4px",
-                  padding: "10.5px 15px",
+                  padding: "10.9px 15px",
+                  paddingBottom: "11px",
                 }}
                 onClick={handleButtonFilters}
               >
@@ -536,14 +536,23 @@ const UserTable = () => {
             <table className="table card-table mb-0">
               <thead>
                 <tr style={{ cursor: "pointer" }}>
-                  <th className="text-start" style={{ verticalAlign: "top" }}>
+                  <th
+                    className="text-start position-relative"
+                    style={{ verticalAlign: "top", paddingLeft: "19px" }}
+                  >
                     <div className="form-check">
                       <input
                         type="checkbox"
-                        className="form-check-input"
+                        className="form-check-input position-absolute"
+                        onChange={handleSelectAll}
+                        checked={
+                          users.length > 0 &&
+                          selectedUsers.length === users.length
+                        }
                         style={{
-                          height: "auto",
-                          width: "100%",
+                          height: "20px",
+                          width: "20px",
+                          bottom: "-20px",
                         }}
                       />
                       {/* 1111 */}
@@ -560,18 +569,27 @@ const UserTable = () => {
               </thead>
               <tbody>
                 {users.map((user) => (
-                  <tr>
-                    <td className="odd">
-                      <div className="form-check">
+                  <tr
+                    key={user.id}
+                    className={
+                      selectedUsers.includes(user.id) ? "table-active" : ""
+                    }
+                  >
+                    <td className="odd" style={{ paddingLeft: "19px" }}>
+                      <div className="form-check" style={{ width: "22px" }}>
                         <input
                           type="checkbox"
                           className="form-check-input"
-                          style={{ height: "auto", width: "100%" }}
+                          checked={selectedUsers.includes(user.id)}
+                          onChange={() => handleSelectRow(user.id)}
+                          style={{ height: "20px", width: "20px" }}
                         />
                       </div>
                     </td>
                     <td className="text-start">
-                      <a href="#">{user.username}</a>
+                      <a href="#" onClick={() => handleButtonEdit(user.id)}>
+                        {user.username}
+                      </a>
                     </td>
                     <td className="text-start">
                       <a href="#">{user.email}</a>

@@ -1,23 +1,46 @@
 import {
+  deleteRole,
+  paginatedWithConditions,
+  PaginateRoleResponse,
+} from "@app/services/roles";
+import {
   faEdit,
   faPlus,
   faSearch,
-  faShareAltSquare,
+  faShareFromSquare,
   faSync,
   faTimes,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import "./common.css";
+import DeleteConfirm from "./deleteFolder/DeleteConfirm";
 
-export interface RoleAndPermissionsProps {}
+const Roles = () => {
+  const [roles, setRoles] = useState<PaginateRoleResponse[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
 
-export function RoleAndPermissions(props: RoleAndPermissionsProps) {
   const navigator = useNavigate();
+
+  const getAllRoles = async () => {
+    setLoading(true);
+    try {
+      const response = await paginatedWithConditions();
+      setRoles(response?.results);
+    } catch (error) {
+      console.error(error);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    getAllRoles();
+  }, []);
 
   const optionsField = [
     { value: "Select field", label: "Select field" },
@@ -31,12 +54,7 @@ export function RoleAndPermissions(props: RoleAndPermissionsProps) {
     { value: "Less than", label: "Less than" },
   ];
 
-  const optionsStatus = [
-    { value: "Select option", label: "Select option" },
-    { value: "Activated", label: "Activated" },
-    { value: "Deactivated", label: "Deactivated" },
-  ];
-
+  // Bulk
   const optionsBulk = [
     { value: "Bulk Actions", label: "Bulk Actions" },
     { value: "Bulk changes", label: "Bulk changes" },
@@ -79,6 +97,12 @@ export function RoleAndPermissions(props: RoleAndPermissionsProps) {
     setFilters(newFilters);
   };
 
+  // Delete
+  const handleDelete = async (id: number) => {
+    await deleteRole(id);
+    getAllRoles();
+  };
+
   const [showFilterCard, setShowFilterCard] = useState(false);
 
   const handleButtonFilters = () => {
@@ -86,16 +110,40 @@ export function RoleAndPermissions(props: RoleAndPermissionsProps) {
   };
 
   const handleButtonCreate = () => {
-    navigator("/users/create");
+    navigator("/role/create");
   };
 
-  const handleButtonEdit = () => {
-    navigator("/users/edit");
+  const handleButtonEdit = (id_role: number) => {
+    navigator(`/role/edit/${id_role}`);
   };
 
   const handleDashboard = () => {
     navigator("/");
   };
+
+  // Hàm xử lý khi nhấn chọn tất cả
+  const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      // Chọn tất cả user IDs
+      const allRolesIds = roles.map((role) => role.id);
+      setSelectedRoles(allRolesIds);
+    } else {
+      // Bỏ chọn tất cả
+      setSelectedRoles([]);
+    }
+  };
+
+  // Hàm xử lý khi chọn từng hàng
+  const handleSelectRow = (id: number) => {
+    if (selectedRoles.includes(id)) {
+      // Nếu hàng đã được chọn, bỏ chọn hàng đó
+      setSelectedRoles(selectedRoles.filter((roleId) => roleId !== id));
+    } else {
+      // Nếu hàng chưa được chọn, thêm hàng đó vào danh sách
+      setSelectedRoles([...selectedRoles, id]);
+    }
+  };
+
   return (
     <div className="container" style={{ paddingTop: "24px" }}>
       <nav aria-label="breadcrumb">
@@ -110,7 +158,7 @@ export function RoleAndPermissions(props: RoleAndPermissionsProps) {
             aria-current="page"
             style={{ fontSize: "13px" }}
           >
-            ROLES AND PERMISSIONS
+            ROLES
           </li>
         </ol>
       </nav>
@@ -175,12 +223,12 @@ export function RoleAndPermissions(props: RoleAndPermissionsProps) {
                     menuPosition="fixed"
                     menuPlacement="auto"
                     styles={{
-                      menu: (base: any) => ({
+                      menu: (base) => ({
                         ...base,
                         zIndex: 9999,
                         top: 5,
                       }),
-                      control: (base: any) => ({
+                      control: (base) => ({
                         ...base,
                         width: "100%",
                         padding: "3px",
@@ -244,6 +292,7 @@ export function RoleAndPermissions(props: RoleAndPermissionsProps) {
                   <button
                     onClick={() => removeFilter(index)}
                     style={{
+                      border: "none",
                       background: "none",
                       cursor: "pointer",
                       marginLeft: "10px",
@@ -329,7 +378,8 @@ export function RoleAndPermissions(props: RoleAndPermissionsProps) {
                   color: "black",
                   border: "1px solid #d1d5db",
                   borderRadius: "4px",
-                  padding: "10.5px 15px",
+                  padding: "10.9px 15px",
+                  paddingBottom: "11px",
                 }}
                 onClick={handleButtonFilters}
               >
@@ -378,6 +428,7 @@ export function RoleAndPermissions(props: RoleAndPermissionsProps) {
                 }}
                 onClick={handleButtonCreate}
               >
+                {/* <span style={{ paddingRight: "10px" }}>+</span> */}
                 <FontAwesomeIcon
                   icon={faPlus}
                   style={{ paddingRight: "10px" }}
@@ -414,70 +465,98 @@ export function RoleAndPermissions(props: RoleAndPermissionsProps) {
             <table className="table card-table mb-0">
               <thead>
                 <tr style={{ cursor: "pointer" }}>
-                  <th className="text-start">
-                    <div
-                      style={{
-                        border: "2px solid #ced4da",
-                        borderRadius: "4px",
-                        height: "22px",
-                        width: "22px",
-                        marginLeft: "7px",
-                      }}
-                    ></div>
+                  <th
+                    className="text-start position-relative"
+                    style={{ verticalAlign: "top", paddingLeft: "19px" }}
+                  >
+                    <div className="form-check">
+                      <input
+                        type="checkbox"
+                        className="form-check-input position-absolute"
+                        onChange={handleSelectAll}
+                        checked={
+                          roles.length > 0 &&
+                          selectedRoles.length === roles.length
+                        }
+                        style={{
+                          height: "20px",
+                          width: "20px",
+                          bottom: "-20px",
+                        }}
+                      />
+                      {/* 1111 */}
+                    </div>
                   </th>
                   <th className="text-start">ID</th>
                   <th className="text-start">NAME</th>
                   <th className="text-start">DESCRIPTION</th>
                   <th className="text-start">CREATED AT</th>
                   <th className="text-start">CREATED BY</th>
+                  <th className="text-start">DELETED AT</th>
                   <th className="text-center">OPERATIONS</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="odd">
-                    <div
-                      style={{
-                        border: "2px solid #ced4da",
-                        borderRadius: "4px",
-                        height: "22px",
-                        width: "22px",
-                        marginLeft: "7px",
-                      }}
-                    ></div>
-                  </td>
-                  <td className="text-start">
-                    <p>1</p>
-                  </td>
-                  <td className="text-start">
-                    <a href="#">Admin</a>
-                  </td>
-                  <td className="text-start">
-                    <p>Admin role</p>
-                  </td>
-                  <td className="text-start">2024-07-22</td>
-                  <td className="text-start">
-                    <a href="#">
-                      <span className="mr-1">System</span>{" "}
-                      <FontAwesomeIcon icon={faShareAltSquare} />
-                    </a>
-                  </td>
-                  <td className="text-center text-nowrap">
-                    <div className="table-actions">
-                      <button
-                        className="btn btn-sm btn-icon btn-primary mr-1 position-relative"
-                        onClick={handleButtonEdit}
-                      >
-                        <FontAwesomeIcon icon={faEdit} />
-                        <span className="title-edit">Edit</span>
-                      </button>
-                      <button className="btn btn-sm btn-icon btn-danger position-relative">
-                        <FontAwesomeIcon icon={faTrash} />
-                        <span className="title-edit">Delete</span>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                {roles.map((role) => (
+                  <tr
+                    key={role.id}
+                    className={
+                      selectedRoles.includes(role.id) ? "table-active" : ""
+                    }
+                  >
+                    <td className="odd" style={{ paddingLeft: "19px" }}>
+                      <div className="form-check" style={{ width: "22px" }}>
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          checked={selectedRoles.includes(role.id)}
+                          onChange={() => handleSelectRow(role.id)}
+                          style={{ height: "20px", width: "20px" }}
+                        />
+                      </div>
+                    </td>
+                    <td className="text-start">
+                      <span>{role.id}</span>
+                    </td>
+                    <td className="text-start">
+                      <a href="#">{role.name}</a>
+                    </td>
+                    <td className="text-start">
+                      <span>{role.description}</span>
+                    </td>
+                    <td className="text-start">{role.createdAt}</td>
+                    <td className="text-start">
+                      <a href="#">
+                        {/* {permission.createdBy} */}
+                        <span>{role.createdByName}</span>
+                        <FontAwesomeIcon
+                          icon={faShareFromSquare}
+                          style={{ paddingLeft: "5px", color: "#206BC4" }}
+                        />
+                      </a>
+                    </td>
+                    <td className="text-start">
+                      <span className="badge bg-info p-2">
+                        {role.deletedAt == null ? "Activated" : "Deactivated"}
+                      </span>
+                    </td>
+                    <td className="text-center text-nowrap">
+                      <div className="table-actions">
+                        <button
+                          className="btn btn-sm btn-icon btn-primary mr-1 position-relative"
+                          onClick={() => handleButtonEdit(role.id)}
+                        >
+                          <FontAwesomeIcon icon={faEdit} />
+                          <span className="title-edit">Edit</span>
+                        </button>
+                        <DeleteConfirm
+                          onDelete={() => handleDelete(role.id)}
+                          id={role.id}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -485,4 +564,8 @@ export function RoleAndPermissions(props: RoleAndPermissionsProps) {
       </div>
     </div>
   );
-}
+};
+
+export default Roles;
+
+// table-vcenter table-striped table-hover no-footer dtr-inline

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort.Direction;
 
 import io.akitect.crm.dto.request.GetPermissionRequest;
 import io.akitect.crm.dto.request.PostPutPermissionRequest;
+import io.akitect.crm.dto.response.GetDisplay;
 import io.akitect.crm.dto.response.PaginatePermissionResponse;
 import io.akitect.crm.dto.response.PermissionResponse;
 import io.akitect.crm.model.Permission;
@@ -28,4 +29,5 @@ public interface PermissionService {
 
     PermissionResponse update(Long id, PostPutPermissionRequest data);
 
+    List<GetDisplay> getDisplay();
 }

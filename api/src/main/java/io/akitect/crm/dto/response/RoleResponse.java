@@ -27,4 +27,5 @@ public class RoleResponse {
     private Timestamp updatedAt;
     private Timestamp deletedAt;
     private List<PermissionResponse> permissions;
+
 }

@@ -250,7 +250,7 @@ const CreateForm = () => {
           </div>
 
           {/* Card-Bottom */}
-          <div className="card meta-boxes mt-4 ml-2l">
+          <div className="card meta-boxes mt-4 ml-2">
             <div className="card-header">
               <h4 className="card-title">
                 <label className="form-label">Role</label>
