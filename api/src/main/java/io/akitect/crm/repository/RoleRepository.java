@@ -17,6 +17,10 @@ public interface RoleRepository {
 
     Role insertOrUpdate(Role data);
 
+    List<Role> saveAll(List<Role> data);
+
     Page<PaginateRoleResponse> paginatedWithConditions(Pageable pageable,
             List<FilterMap> filters);
+
+    List<Role> findWithConditions(List<FilterMap> filters);
 }

@@ -60,7 +60,7 @@ const CreateFormRoles = () => {
   };
 
   return (
-    <div className="container-x1 pt-4 pr-4 pl-4" style={{ paddingTop: "24px" }}>
+    <div className="container-x1 pt-4 pr-4 pl-4">
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item" style={{ fontSize: "13px" }}>
@@ -195,7 +195,9 @@ const CreateFormRoles = () => {
               </div>
             </div>
             <div className="card-body">
-              <PermissionList />
+              <PermissionList onValueChange={() => {
+                
+              }} />
             </div>
           </div>
         </div>

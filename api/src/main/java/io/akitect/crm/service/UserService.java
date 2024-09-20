@@ -23,4 +23,6 @@ public interface UserService {
 
     Page<UserResponse> paginatedWithConditions(PageRequest pageRequest, String sortBy, Direction order,
             GetUserRequest filter);
+
+    UserResponse setRole(Long id, Long roleId);
 }

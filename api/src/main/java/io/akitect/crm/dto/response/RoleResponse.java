@@ -22,6 +22,7 @@ public class RoleResponse {
     private Long id;
     private String name;
     private String description;
+    private Boolean isDefault;
     private Long createdBy;
     private Timestamp createdAt;
     private Timestamp updatedAt;

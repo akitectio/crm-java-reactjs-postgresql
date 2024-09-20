@@ -1,6 +1,7 @@
 package io.akitect.crm.model;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -90,4 +91,21 @@ public class Permission {
         converted.setChildren(children);
         return converted;
     }
+
+    public PermissionResponse convertSelfWithoutChildren() {
+        PermissionResponse converted = PermissionResponse.builder().id(this.id).key(this.key).name(this.name)
+                .createdAt(createdAt).updatedAt(updatedAt).deletedAt(deletedAt).build();
+        return converted;
+    }
+
+    public List<Permission> getAllChildren() {
+        List<Permission> result = new ArrayList<>();
+        result.addAll(children);
+        for (Permission permission : children) {
+            result.addAll(permission.getAllChildren());
+        }
+        return result;
+
+    }
+
 }

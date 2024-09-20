@@ -15,7 +15,9 @@ import io.akitect.crm.dto.request.GetUserRequest;
 import io.akitect.crm.dto.request.UserRequest;
 import io.akitect.crm.dto.request.UserRequestPut;
 import io.akitect.crm.dto.response.UserResponse;
+import io.akitect.crm.model.Role;
 import io.akitect.crm.model.User;
+import io.akitect.crm.repository.RoleRepository;
 import io.akitect.crm.repository.UserRepository;
 import io.akitect.crm.service.UserService;
 import io.akitect.crm.utils.FilterMap;
@@ -33,6 +35,9 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Override
     @Transactional
@@ -106,6 +111,7 @@ public class UserServiceImpl implements UserService {
         response.setUsername(user.getUsername());
         response.setAvatarId(user.getAvatarId());
         response.setSuperUser(user.getSuperUser());
+        response.setRoleId(user.getRole().getId());
         response.setManageSupers(user.getManageSupers());
         response.setPermissions(user.getPermissions());
         response.setEmailVerifiedAt(user.getEmailVerifiedAt());
@@ -116,12 +122,14 @@ public class UserServiceImpl implements UserService {
         return response;
     }
 
+    @Transactional
     public UserResponse getUserById(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
         return mapToResponse(user);
     }
 
     @Override
+    @Transactional
     public Page<UserResponse> paginatedWithConditions(PageRequest pageRequest, String sortBy, Direction order,
             GetUserRequest filter) {
         pageRequest = pageRequest.withSort(order, sortBy);
@@ -145,5 +153,15 @@ public class UserServiceImpl implements UserService {
         user.removeSuper();
 
         return mapToResponse(userRepository.update(user));
+    }
+
+    @Override
+    @Transactional
+    public UserResponse setRole(Long id, Long roleId) {
+        User target = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        Role roleTarget = roleRepository.findOneById(roleId);
+        target.setRole(roleTarget);
+
+        return mapToResponse(userRepository.update(target));
     }
 }

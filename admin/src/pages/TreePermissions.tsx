@@ -42,13 +42,27 @@ const PermissionChildren: React.FC<{ children: PermissionWithChildren[] }> = ({
   return (
     <ul>
       {children.map((child) => (
-        <li key={child.value}>
-          <input type="checkbox" id={`permission-${child.value}`} />
-          <label htmlFor={`permission-${child.value}`}>{child.label}</label>
-          {/* Nếu còn có children thì tiếp tục đệ quy */}
-          {child.children.length > 0 && (
-            <PermissionChildren children={child.children} />
-          )}
+        <li key={child.value} style={{listStyleType:"none"}}>
+            <input className="mt-2" type="checkbox" id={`permission-${child.value}`} style={{
+                height: "20px",
+                width: "20px"
+                }} 
+            />
+
+            <label
+            htmlFor={`permission-${child.label}`}
+            style={{
+                border: "1px solid #EAF7EC",
+                borderRadius: "2px",
+            }}
+            className="badge"
+            >
+            {child.label}
+            </label>
+            {/* Nếu còn có children thì tiếp tục đệ quy */}
+            {child.children.length > 0 && (
+                <PermissionChildren children={child.children} />
+            )}
         </li>
       ))}
     </ul>
@@ -62,14 +76,13 @@ const PermissionCard: React.FC<{ node: PermissionWithChildren }> = ({
   return (
     <div className="card mb-3">
       {/* Hiển thị mục cha ở Header */}
-      <div className="card-header" style={{ backgroundColor: "#F2F5F7" }}>
+      <div className="card-header" style={{ backgroundColor: "#F2F5F7" }}> 
         <input
           type="checkbox"
           id={`permission-${node.value}`}
           style={{
             height: "20px",
             width: "20px",
-            marginTop: "5px",
           }}
         />
         <label
@@ -78,11 +91,9 @@ const PermissionCard: React.FC<{ node: PermissionWithChildren }> = ({
             border: "1px solid #EAF7EC",
             borderRadius: "2px",
             backgroundColor: "#EAF7EC",
-            marginLeft: "9px",
             color: "#41B344",
-            padding: "5px",
           }}
-          className="badge"
+          className="badge mt-2"
         >
           {node.label}
         </label>
@@ -94,7 +105,7 @@ const PermissionCard: React.FC<{ node: PermissionWithChildren }> = ({
           style={{
             backgroundColor: "#F6F8FB",
             justifyContent: "space-between",
-            paddingLeft: "50px",
+            paddingLeft: "10px",
           }}
         >
           <PermissionChildren children={node.children} />
@@ -104,7 +115,7 @@ const PermissionCard: React.FC<{ node: PermissionWithChildren }> = ({
   );
 };
 
-const PermissionList: React.FC = () => {
+const PermissionList = ({onValueChange}) => {
   const [permissions, setPermissions] = useState<PermissionWithChildren[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -129,9 +140,10 @@ const PermissionList: React.FC = () => {
   }
 
   return (
+
     <div className="container">
       {permissions.map((permission) => (
-        <PermissionCard key={permission.value} node={permission} />
+            <PermissionCard key={permission.value} node={permission} />
       ))}
     </div>
   );

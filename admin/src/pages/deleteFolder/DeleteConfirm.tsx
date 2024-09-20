@@ -1,6 +1,6 @@
 import {
-  faTrash,
-  faTriangleExclamation,
+    faTrash,
+    faTriangleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
@@ -19,10 +19,10 @@ const DeleteConfirm = ({ onDelete, id }) => {
     setIsDeleting(true);
     try {
       await onDelete(id); // Truyền id vào hàm onDelete
-      toast.success("User deleted successfully!");
+      toast.success("Successfully deleted!");
       handleClose();
     } catch (error) {
-      toast.error("Failed to delete user");
+      toast.error("An error occured");
     } finally {
       setIsDeleting(false);
     }

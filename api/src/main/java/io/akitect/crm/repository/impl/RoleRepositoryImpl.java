@@ -52,4 +52,15 @@ public class RoleRepositoryImpl implements RoleRepository {
 
         return queryHelper.paginatedWithConditions(PaginateRoleResponse.class, pageable, filters);
     }
+
+    @Override
+    public List<Role> saveAll(List<Role> data) {
+        return queryHelper.saveOrUpdateAll(data);
+    }
+
+    @Override
+    public List<Role> findWithConditions(List<FilterMap> filters) {
+
+        return queryHelper.findWithConditions(filters);
+    }
 }
