@@ -1,6 +1,6 @@
 import { getAllPermissions } from "@app/services/permissions";
-import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap styles
-import React, { useEffect, useState } from "react"; // Giả sử đây là nơi chứa API service
+import "bootstrap/dist/css/bootstrap.min.css";
+import React, { useEffect, useState } from "react";
 
 interface Permission {
   label: string;
@@ -10,13 +10,14 @@ interface Permission {
 
 interface PermissionWithChildren extends Permission {
   children: PermissionWithChildren[];
+  checked: boolean;
 }
 
 const buildTree = (permissions: Permission[]) => {
   const map = new Map<number, PermissionWithChildren>();
 
   permissions.forEach((permission) => {
-    map.set(permission.value, { ...permission, children: [] });
+    map.set(permission.value, { ...permission, children: [], checked: false });
   });
 
   const tree: PermissionWithChildren[] = [];
@@ -35,19 +36,69 @@ const buildTree = (permissions: Permission[]) => {
   return tree;
 };
 
-// Component hiển thị các mục con (bao gồm con của con)
-const PermissionChildren: React.FC<{ children: PermissionWithChildren[] }> = ({
-  children,
-}) => {
+// Recursive function to update checked state of parent and children
+const updateCheckedState = (
+  permissions: PermissionWithChildren[],
+  value: number,
+  checked: boolean
+) => {
+  return permissions.map((permission) => {
+    if (permission.value === value) {
+      return {
+        ...permission,
+        checked,
+        children: permission.children.map(
+          (child) => updateCheckedState([child], child.value, checked)[0]
+        ),
+      };
+    }
+    return {
+      ...permission,
+      children: updateCheckedState(permission.children, value, checked),
+    };
+  });
+};
+
+const PermissionChildren: React.FC<{
+  children: PermissionWithChildren[];
+  onCheckboxChange: (value: number, checked: boolean) => void;
+}> = ({ children, onCheckboxChange }) => {
   return (
-    <ul>
+    <ul style={{ paddingLeft: "25px" }}>
       {children.map((child) => (
-        <li key={child.value}>
-          <input type="checkbox" id={`permission-${child.value}`} />
-          <label htmlFor={`permission-${child.value}`}>{child.label}</label>
-          {/* Nếu còn có children thì tiếp tục đệ quy */}
+        <li
+          key={child.value}
+          style={{ listStyle: "none", marginBottom: "8px" }}
+        >
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <input
+              type="checkbox"
+              id={`permission-${child.value}`}
+              checked={child.checked}
+              onChange={(e) => onCheckboxChange(child.value, e.target.checked)}
+              style={{ height: "20px", width: "20px" }}
+            />
+            <label
+              htmlFor={`permission-${child.value}`}
+              style={{
+                marginLeft: "9px",
+                color: "#FF9F43", // Màu cam cho các quyền con con
+                fontSize: "13px",
+                marginTop: "8px",
+                border: "1px solid #FEF5E6",
+                borderRadius: "3px",
+                backgroundColor: "#FEF5E6",
+                padding: "0px 2px",
+              }}
+            >
+              {child.label}
+            </label>
+          </div>
           {child.children.length > 0 && (
-            <PermissionChildren children={child.children} />
+            <PermissionChildren
+              children={child.children}
+              onCheckboxChange={onCheckboxChange}
+            />
           )}
         </li>
       ))}
@@ -55,56 +106,120 @@ const PermissionChildren: React.FC<{ children: PermissionWithChildren[] }> = ({
   );
 };
 
-// Component hiển thị Card
-const PermissionCard: React.FC<{ node: PermissionWithChildren }> = ({
-  node,
-}) => {
+const PermissionCard: React.FC<{
+  node: PermissionWithChildren;
+  onCheckboxChange: (value: number, checked: boolean) => void;
+}> = ({ node, onCheckboxChange }) => {
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = e.target.checked;
+    onCheckboxChange(node.value, checked);
+  };
+
   return (
     <div className="card mb-3">
-      {/* Hiển thị mục cha ở Header */}
-      <div className="card-header" style={{ backgroundColor: "#F2F5F7" }}>
+      <div
+        className="card-header"
+        style={{
+          backgroundColor: "#F2F5F7", // Màu xanh lá cho quyền cha
+          height: "40px",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
         <input
           type="checkbox"
           id={`permission-${node.value}`}
-          style={{
-            height: "20px",
-            width: "20px",
-            marginTop: "5px",
-          }}
+          checked={node.checked}
+          onChange={handleCheckboxChange}
+          style={{ height: "20px", width: "20px" }}
         />
         <label
           htmlFor={`permission-${node.value}`}
           style={{
-            border: "1px solid #EAF7EC",
-            borderRadius: "2px",
-            backgroundColor: "#EAF7EC",
             marginLeft: "9px",
-            color: "#41B344",
-            padding: "5px",
+            color: "#41B344", // Màu xanh lá
+            fontSize: "14px",
+            marginTop: "8px",
+            border: "1px solid #EAF7EC",
+            borderRadius: "3px",
+            backgroundColor: "#EAF7EC",
+            padding: "0px 2px",
           }}
-          className="badge"
         >
           {node.label}
         </label>
       </div>
-      {/* Hiển thị các mục con ở Body */}
       {node.children.length > 0 && (
         <div
-          className="card-body d-flex"
-          style={{
-            backgroundColor: "#F6F8FB",
-            justifyContent: "space-between",
-            paddingLeft: "50px",
-          }}
+          className="card-body"
+          style={{ backgroundColor: "#F6F8FB", padding: "15px 20px" }}
         >
-          <PermissionChildren children={node.children} />
+          <ul
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)", // 3 quyền con trên mỗi hàng
+              gap: "10px", // Khoảng cách giữa các quyền con
+            }}
+          >
+            {node.children.map((child) => (
+              <li
+                key={child.value}
+                style={{ listStyle: "none", marginBottom: "8px" }}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <input
+                    type="checkbox"
+                    id={`permission-${child.value}`}
+                    checked={child.checked}
+                    onChange={(e) =>
+                      onCheckboxChange(child.value, e.target.checked)
+                    }
+                    style={{ height: "20px", width: "20px" }}
+                  />
+                  <label
+                    htmlFor={`permission-${child.value}`}
+                    style={{
+                      marginLeft: "9px",
+                      color: "#206BCE", // Màu xanh nước cho quyền con
+                      fontSize: "13px",
+                      marginTop: "8px",
+                      border: "1px solid #E9F0F9",
+                      borderRadius: "3px",
+                      backgroundColor: "#E9F0F9",
+                      padding: "0px 2px",
+                    }}
+                  >
+                    {child.label}
+                  </label>
+                </div>
+                {child.children.length > 0 && (
+                  <PermissionChildren
+                    children={child.children}
+                    onCheckboxChange={onCheckboxChange}
+                  />
+                )}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>
   );
 };
 
-const PermissionList: React.FC = () => {
+interface PermissionListProps {
+  onPermissionSelectedEvent: (permId: number, value: boolean) => void;
+  valueDetails: any;
+}
+
+const PermissionList: React.FC<PermissionListProps> = ({
+  onPermissionSelectedEvent,
+  valueDetails,
+}) => {
+  useEffect(() => {
+    console.log(valueDetails, "valueDetails");
+  }, [valueDetails]);
+
   const [permissions, setPermissions] = useState<PermissionWithChildren[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -113,6 +228,7 @@ const PermissionList: React.FC = () => {
       try {
         const data = await getAllPermissions();
         const permissionTree = buildTree(data);
+        console.log(permissionTree, "permission tree");
         setPermissions(permissionTree);
         setLoading(false);
       } catch (error) {
@@ -124,6 +240,12 @@ const PermissionList: React.FC = () => {
     fetchPermissions();
   }, []);
 
+  const handleCheckboxChange = (value: number, checked: boolean) => {
+    const updatedPermissions = updateCheckedState(permissions, value, checked);
+    setPermissions(updatedPermissions);
+    onPermissionSelectedEvent(value, checked);
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -131,7 +253,11 @@ const PermissionList: React.FC = () => {
   return (
     <div className="container">
       {permissions.map((permission) => (
-        <PermissionCard key={permission.value} node={permission} />
+        <PermissionCard
+          key={permission.value}
+          node={permission}
+          onCheckboxChange={handleCheckboxChange}
+        />
       ))}
     </div>
   );

@@ -1,5 +1,4 @@
 import ToggleSwitch from "@app/helpers/toggleSwitch/ToggleSwitch";
-import { createRoles } from "@app/services/roles";
 import { Button } from "@app/styles/common";
 import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,7 +6,6 @@ import { useFormik } from "formik";
 import { useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import * as Yup from "yup";
 import PermissionList from "./TreePermissions";
 
@@ -19,7 +17,7 @@ const CreateFormRoles = () => {
     initialValues: {
       name: "",
       description: "",
-      permissionIds: [1],
+      permissionIds: [],
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Required"),
@@ -36,18 +34,18 @@ const CreateFormRoles = () => {
         description: description,
         permissionIds: permissionIds,
       };
-
-      try {
-        setIsLoading(true);
-        const response = await createRoles(rolesRequest);
-        console.log(response);
-        toast.success("Roles and permissions created successfully!");
-        navigate("/role");
-      } catch (error) {
-        toast.error("Failed to create roles and permissions");
-      } finally {
-        setIsLoading(false);
-      }
+      console.log(rolesRequest, "ROLESREQUEST");
+      // try {
+      //   setIsLoading(true);
+      //   const response = await createRoles(rolesRequest);
+      //   console.log(response);
+      //   toast.success("Roles and permissions created successfully!");
+      //   navigate("/role");
+      // } catch (error) {
+      //   toast.error("Failed to create roles and permissions");
+      // } finally {
+      //   setIsLoading(false);
+      // }
     },
   });
 
@@ -195,7 +193,17 @@ const CreateFormRoles = () => {
               </div>
             </div>
             <div className="card-body">
-              <PermissionList />
+              <PermissionList
+                onPermissionSelectedEvent={(permId: number, value: boolean) => {
+                  if (value) {
+                    values.permissionIds.push(permId);
+                  } else {
+                    values.permissionIds = values.permissionIds.filter(
+                      (item) => item !== permId
+                    );
+                  }
+                }}
+              />
             </div>
           </div>
         </div>

@@ -21,7 +21,7 @@ export interface RoleResponse {
   createdAt: String;
   updatedAt: String;
   deletedAt: string;
-  permissionIds: PermissionResponse[];
+  permissions: PermissionResponse[];
 }
 
 export interface Paginated {
