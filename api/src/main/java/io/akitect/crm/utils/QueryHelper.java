@@ -1,5 +1,6 @@
 package io.akitect.crm.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,6 +46,21 @@ public class QueryHelper<T> {
             entityManager.persist(entity);
             return entity;
         }
+    }
+
+    @Transactional
+    public List<T> saveOrUpdateAll(List<T> entities) {
+        List<T> result = new ArrayList<>();
+        for (T entity : entities) {
+            if (entityManager.contains(entity)) {
+                result.add(entityManager.merge(entity));
+
+            } else {
+                entityManager.persist(entity);
+                result.add(entity);
+            }
+        }
+        return result;
     }
 
     @Transactional

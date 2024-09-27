@@ -58,7 +58,7 @@ const CreateFormRoles = () => {
   };
 
   return (
-    <div className="container-x1 pt-4 pr-4 pl-4" style={{ paddingTop: "24px" }}>
+    <div className="container-x1 pt-4 pr-4 pl-4">
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item" style={{ fontSize: "13px" }}>
@@ -193,6 +193,7 @@ const CreateFormRoles = () => {
               </div>
             </div>
             <div className="card-body">
+<<<<<<< HEAD
               <PermissionList
                 onPermissionSelectedEvent={(permId: number, value: boolean) => {
                   if (value) {
@@ -204,6 +205,11 @@ const CreateFormRoles = () => {
                   }
                 }}
               />
+=======
+              <PermissionList onValueChange={() => {
+                
+              }} />
+>>>>>>> 5589d261262e08b7f46182b35bdc109a3a85e245
             </div>
           </div>
         </div>

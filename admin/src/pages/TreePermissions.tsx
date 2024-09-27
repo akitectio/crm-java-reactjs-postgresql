@@ -66,6 +66,7 @@ const PermissionChildren: React.FC<{
   return (
     <ul style={{ paddingLeft: "25px" }}>
       {children.map((child) => (
+<<<<<<< HEAD
         <li
           key={child.value}
           style={{ listStyle: "none", marginBottom: "8px" }}
@@ -100,6 +101,29 @@ const PermissionChildren: React.FC<{
               onCheckboxChange={onCheckboxChange}
             />
           )}
+=======
+        <li key={child.value} style={{listStyleType:"none"}}>
+            <input className="mt-2" type="checkbox" id={`permission-${child.value}`} style={{
+                height: "20px",
+                width: "20px"
+                }} 
+            />
+
+            <label
+            htmlFor={`permission-${child.label}`}
+            style={{
+                border: "1px solid #EAF7EC",
+                borderRadius: "2px",
+            }}
+            className="badge"
+            >
+            {child.label}
+            </label>
+            {/* Nếu còn có children thì tiếp tục đệ quy */}
+            {child.children.length > 0 && (
+                <PermissionChildren children={child.children} />
+            )}
+>>>>>>> 5589d261262e08b7f46182b35bdc109a3a85e245
         </li>
       ))}
     </ul>
@@ -117,6 +141,7 @@ const PermissionCard: React.FC<{
 
   return (
     <div className="card mb-3">
+<<<<<<< HEAD
       <div
         className="card-header"
         style={{
@@ -132,10 +157,22 @@ const PermissionCard: React.FC<{
           checked={node.checked}
           onChange={handleCheckboxChange}
           style={{ height: "20px", width: "20px" }}
+=======
+      {/* Hiển thị mục cha ở Header */}
+      <div className="card-header" style={{ backgroundColor: "#F2F5F7" }}> 
+        <input
+          type="checkbox"
+          id={`permission-${node.value}`}
+          style={{
+            height: "20px",
+            width: "20px",
+          }}
+>>>>>>> 5589d261262e08b7f46182b35bdc109a3a85e245
         />
         <label
           htmlFor={`permission-${node.value}`}
           style={{
+<<<<<<< HEAD
             marginLeft: "9px",
             color: "#41B344", // Màu xanh lá
             fontSize: "14px",
@@ -145,14 +182,31 @@ const PermissionCard: React.FC<{
             backgroundColor: "#EAF7EC",
             padding: "0px 2px",
           }}
+=======
+            border: "1px solid #EAF7EC",
+            borderRadius: "2px",
+            backgroundColor: "#EAF7EC",
+            color: "#41B344",
+          }}
+          className="badge mt-2"
+>>>>>>> 5589d261262e08b7f46182b35bdc109a3a85e245
         >
           {node.label}
         </label>
       </div>
       {node.children.length > 0 && (
         <div
+<<<<<<< HEAD
           className="card-body"
           style={{ backgroundColor: "#F6F8FB", padding: "15px 20px" }}
+=======
+          className="card-body d-flex"
+          style={{
+            backgroundColor: "#F6F8FB",
+            justifyContent: "space-between",
+            paddingLeft: "10px",
+          }}
+>>>>>>> 5589d261262e08b7f46182b35bdc109a3a85e245
         >
           <ul
             style={{
@@ -207,6 +261,7 @@ const PermissionCard: React.FC<{
   );
 };
 
+<<<<<<< HEAD
 interface PermissionListProps {
   onPermissionSelectedEvent: (permId: number, value: boolean) => void;
   valueDetails: any;
@@ -220,6 +275,9 @@ const PermissionList: React.FC<PermissionListProps> = ({
     console.log(valueDetails, "valueDetails");
   }, [valueDetails]);
 
+=======
+const PermissionList = ({onValueChange}) => {
+>>>>>>> 5589d261262e08b7f46182b35bdc109a3a85e245
   const [permissions, setPermissions] = useState<PermissionWithChildren[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -251,13 +309,18 @@ const PermissionList: React.FC<PermissionListProps> = ({
   }
 
   return (
+
     <div className="container">
       {permissions.map((permission) => (
+<<<<<<< HEAD
         <PermissionCard
           key={permission.value}
           node={permission}
           onCheckboxChange={handleCheckboxChange}
         />
+=======
+            <PermissionCard key={permission.value} node={permission} />
+>>>>>>> 5589d261262e08b7f46182b35bdc109a3a85e245
       ))}
     </div>
   );
