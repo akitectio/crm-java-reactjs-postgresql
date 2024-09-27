@@ -29,6 +29,9 @@ public class UserRequest {
     @UniqueUsername(message = "Username is already in use")
     private String username;
 
+    @NotNull
+    private Long roleId;
+
     private Long avatarId;
 
     @NotNull(message = "Super user flag is required")

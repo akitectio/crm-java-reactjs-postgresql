@@ -63,4 +63,12 @@ public class RoleRepositoryImpl implements RoleRepository {
 
         return queryHelper.findWithConditions(filters);
     }
+
+    @Override
+    public Role findDefault() {
+
+        return queryHelper
+                .findWithConditions(List.of(new FilterMap("isDefault", "isDefault", true, FilterOperator.EQUAL)))
+                .getFirst();
+    }
 }

@@ -21,7 +21,7 @@ import io.akitect.crm.repository.RoleRepository;
 import io.akitect.crm.repository.UserRepository;
 import io.akitect.crm.service.UserService;
 import io.akitect.crm.utils.FilterMap;
-import io.akitect.crm.utils.enums.FilterOperator;
+import io.akitect.crm.utils.converters.StringToTimestamp;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -75,6 +75,12 @@ public class UserServiceImpl implements UserService {
     }
 
     private User getUser(UserRequest userRequest, User user) {
+
+        if (userRequest.getRoleId() != null)
+            user.setRole(roleRepository.findOneById(userRequest.getRoleId()));
+        else
+            user.setRole(roleRepository.findDefault());
+
         user.setEmail(userRequest.getEmail());
         user.setFirstName(userRequest.getFirstName());
         user.setLastName(userRequest.getLastName());
@@ -131,15 +137,23 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public Page<UserResponse> paginatedWithConditions(PageRequest pageRequest, String sortBy, Direction order,
-            GetUserRequest filter) {
+            List<GetUserRequest> filter) {
         pageRequest = pageRequest.withSort(order, sortBy);
         return userRepository.paginatedWithConditions(pageRequest, getFilters(filter));
     }
 
-    private List<FilterMap> getFilters(GetUserRequest filter) {
+    private List<FilterMap> getFilters(List<GetUserRequest> filter) {
         List<FilterMap> filters = new ArrayList<>();
-        if (filter.getEmail() != null)
-            filters.add(new FilterMap("email", "email", "%" + filter.getEmail() + "%", FilterOperator.ILIKE));
+        for (GetUserRequest needToFilter : filter) {
+
+            if (List.of("email, firstName, lastName, username").contains(needToFilter.getKey()))
+                needToFilter.setValue("%" + needToFilter.getValue() + "%");
+            if (List.of("createdAt", "updatedAt", "lastLogin").contains(needToFilter.getKey()))
+                needToFilter.setValue(StringToTimestamp.convert((String) needToFilter.getValue(), null));
+
+            filters.add(new FilterMap(needToFilter.getKey(), needToFilter.getKey(), needToFilter.getValue(),
+                    needToFilter.getOperator()));
+        }
         return filters;
     }
 

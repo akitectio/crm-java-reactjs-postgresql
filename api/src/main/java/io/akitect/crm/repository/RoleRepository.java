@@ -15,6 +15,8 @@ public interface RoleRepository {
 
     Role findOneById(Long id);
 
+    Role findDefault();
+
     Role insertOrUpdate(Role data);
 
     List<Role> saveAll(List<Role> data);

@@ -1,5 +1,7 @@
 package io.akitect.crm.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
@@ -22,7 +24,7 @@ public interface UserService {
     UserResponse removeSuper(Long id);
 
     Page<UserResponse> paginatedWithConditions(PageRequest pageRequest, String sortBy, Direction order,
-            GetUserRequest filter);
+            List<GetUserRequest> filter);
 
     UserResponse setRole(Long id, Long roleId);
 }
