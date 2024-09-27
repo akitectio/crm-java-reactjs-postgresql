@@ -1,4 +1,4 @@
-import { getRequest, postRequest } from "@app/helpers/apiService";
+import { getRequest, postRequest, putRequest } from "@app/helpers/apiService";
 
 export interface PermissionRequest {
   name: string;
@@ -71,6 +71,21 @@ export const getAllPermissions = async (): Promise<
     return response.data;
   } catch (error) {
     console.error("Error fetching permissions:", error);
+    throw error;
+  }
+};
+
+export const updatePermission = async (
+  id: number,
+  PermissionRequest: Object
+) => {
+  try {
+    const response = await putRequest<PermissionResponse>(
+      `permissions/ + ${id}`,
+      PermissionRequest
+    );
+    return response.data;
+  } catch (error) {
     throw error;
   }
 };

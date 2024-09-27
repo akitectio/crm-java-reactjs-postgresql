@@ -1,9 +1,13 @@
-import { createPermissions } from "@app/services/permissions";
+import {
+  createPermissions,
+  paginatedWithConditions,
+  PermissionResponse,
+} from "@app/services/permissions";
 import { Button } from "@app/styles/common";
 import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useFormik } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -13,10 +17,27 @@ const CreateFormPermissions = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  const [permissions, setPermissions] = useState<PermissionResponse[]>([]);
+
+  const getNamePermissions = async () => {
+    setIsLoading(true);
+    try {
+      const response = await paginatedWithConditions();
+      setPermissions(response?.results);
+    } catch (error) {
+      console.error(error);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    getNamePermissions();
+  }, []);
+
   const { handleChange, values, handleSubmit, touched, errors } = useFormik({
     initialValues: {
       name: "",
-      parentId: "Select category",
+      parentId: "",
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Required"),
@@ -24,7 +45,7 @@ const CreateFormPermissions = () => {
     }),
     onSubmit: async (values) => {
       // debugger;
-      const { name, parentId  } = values;
+      const { name, parentId } = values;
 
       const permissionsRequest = {
         name: name,
@@ -105,21 +126,27 @@ const CreateFormPermissions = () => {
 
                   <div className="mb-3 col-lg-12">
                     <label htmlFor="">Category</label>
+
                     <InputGroup>
-                  <Form.Control
-                    as="select"
-                    id="permission"
-                    name="permission"
-                    onChange={handleChange}
-                    value={values.parentId}
-                  >
-                    <option value="Select role">Select category</option>
-                    <option value="Admin">Admin</option>
-                  </Form.Control>
-                </InputGroup>
+                      <Form.Control
+                        as="select"
+                        id="parentId"
+                        name="parentId"
+                        onChange={handleChange}
+                        value={values.parentId}
+                      >
+                        <option value="" disabled>
+                          Select a permission
+                        </option>
+                        {permissions.map((permission) => (
+                          <option key={permission.id} value={permission.id}>
+                            {permission.name}
+                          </option>
+                        ))}
+                      </Form.Control>
+                    </InputGroup>
                   </div>
                 </div>
-          
               </form>
             </div>
           </div>

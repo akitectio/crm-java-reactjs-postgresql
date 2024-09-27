@@ -9,6 +9,7 @@ import { Form, InputGroup } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
+import PermissionList from "../TreePermissions";
 
 interface PermissionResponse {
   id: number;
@@ -24,13 +25,13 @@ interface PermissionResponse {
 interface ResponseData {
   name: string;
   description: string;
-  permissionIds: PermissionResponse[];
+  permissions: PermissionResponse[];
 }
 
 const defaultValue = {
   name: "",
   description: "",
-  permissionIds: [],
+  permissions: [],
 };
 
 const EditFormRole = () => {
@@ -44,11 +45,20 @@ const EditFormRole = () => {
     const loadRoleData = async () => {
       try {
         const response = await getOneById(id);
+        const { permissions } = response;
+        console.log(permissions, "permission");
+        const result = permissions.map((item: any) => {
+          return {
+            ...item,
+            checked: true,
+          };
+        });
+        console.log(result, "result có checked");
         setInitialValues({
           name: response.name,
           description: response.description,
           // isDefault: response.isDefault
-          permissionIds: response.permissionIds,
+          permissions: result,
         });
       } catch (error) {
         toast.error("Failed to load role data");
@@ -94,7 +104,7 @@ const EditFormRole = () => {
     navigate("/");
   };
 
-  const handleRandR = () => {
+  const handleRoles = () => {
     navigate("/role");
   };
 
@@ -108,7 +118,7 @@ const EditFormRole = () => {
             </a>
           </li>
           <li className="breadcrumb-item" style={{ fontSize: "13px" }}>
-            <a href="#" onClick={handleRandR}>
+            <a href="#" onClick={handleRoles}>
               ROLES
             </a>
           </li>
@@ -117,7 +127,7 @@ const EditFormRole = () => {
             aria-current="page"
             style={{ fontSize: "13px" }}
           >
-            CREATE NEW ROLE
+            UPDATE
           </li>
         </ol>
       </nav>
@@ -235,136 +245,13 @@ const EditFormRole = () => {
             </div>
 
             <div className="card-body">
-              <div className="container">
-                <div className="card">
-                  <div
-                    className="card-header"
-                    style={{ backgroundColor: "#F2F5F7" }}
-                  >
-                    <div className="form-check card-title">
-                      <input
-                        type="checkbox"
-                        className="form-check-input"
-                        // checked={selectedUsers.includes(user.id)}
-                        // onChange={() => handleSelectRow(user.id)}
-                        style={{
-                          height: "20px",
-                          width: "20px",
-                          marginTop: "5px",
-                        }}
-                      />
-                      <span
-                        className="badge"
-                        style={{
-                          border: "1px solid #EAF7EC",
-                          borderRadius: "2px",
-                          backgroundColor: "#EAF7EC",
-                          marginLeft: "9px",
-                          color: "#41B344",
-                          padding: "5px",
-                        }}
-                      >
-                        Ads
-                      </span>
-                    </div>
-                  </div>
-                  <div
-                    className="card-body d-flex"
-                    style={{
-                      backgroundColor: "#F6F8FB",
-                      justifyContent: "space-between",
-                      paddingLeft: "50px",
-                    }}
-                  >
-                    <div className="d-flex">
-                      <div className="form-check" style={{ width: "22px" }}>
-                        <input
-                          type="checkbox"
-                          className="form-check-input"
-                          // checked={selectedUsers.includes(user.id)}
-                          // onChange={() => handleSelectRow(user.id)}
-                          style={{
-                            height: "20px",
-                            width: "20px",
-                            marginTop: "2px",
-                          }}
-                        />
-                      </div>
-                      <span
-                        className="badge"
-                        style={{
-                          border: "1px solid #E9F0F9",
-                          borderRadius: "3px",
-                          backgroundColor: "#E9F0F9",
-                          marginLeft: "9px",
-                          color: "#206BCE",
-                          padding: "5px",
-                        }}
-                      >
-                        Create
-                      </span>
-                    </div>
-
-                    <div className="d-flex">
-                      <div className="form-check" style={{ width: "22px" }}>
-                        <input
-                          type="checkbox"
-                          className="form-check-input"
-                          // checked={selectedUsers.includes(user.id)}
-                          // onChange={() => handleSelectRow(user.id)}
-                          style={{
-                            height: "20px",
-                            width: "20px",
-                            marginTop: "2px",
-                          }}
-                        />
-                      </div>
-                      <span
-                        className="badge"
-                        style={{
-                          border: "1px solid #E9F0F9",
-                          borderRadius: "3px",
-                          backgroundColor: "#E9F0F9",
-                          marginLeft: "9px",
-                          color: "#206BCE",
-                          padding: "5px",
-                        }}
-                      >
-                        Edit
-                      </span>
-                    </div>
-
-                    <div className="d-flex">
-                      <div className="form-check" style={{ width: "22px" }}>
-                        <input
-                          type="checkbox"
-                          className="form-check-input"
-                          // checked={selectedUsers.includes(user.id)}
-                          // onChange={() => handleSelectRow(user.id)}
-                          style={{
-                            height: "20px",
-                            width: "20px",
-                            marginTop: "2px",
-                          }}
-                        />
-                      </div>
-                      <span
-                        className="badge"
-                        style={{
-                          border: "1px solid #E9F0F9",
-                          borderRadius: "3px",
-                          backgroundColor: "#E9F0F9",
-                          marginLeft: "9px",
-                          color: "#206BCE",
-                          padding: "5px",
-                        }}
-                      >
-                        Delete
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <PermissionList
+                onPermissionSelectedEvent={(
+                  permId: number,
+                  value: boolean
+                ) => {}}
+                valueDetails={initialValues}
+              />
             </div>
           </div>
         </div>
