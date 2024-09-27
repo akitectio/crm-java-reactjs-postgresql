@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import io.akitect.crm.dto.request.GetRoleRequest;
 import io.akitect.crm.dto.request.PostPutRoleRequest;
+import io.akitect.crm.dto.response.GetDisplay;
 import io.akitect.crm.dto.response.PaginateRoleResponse;
 import io.akitect.crm.dto.response.RoleResponse;
 import io.akitect.crm.dto.response.UserResponse;
@@ -137,6 +138,12 @@ public class RoleServiceImpl implements RoleService {
         oldRole.remove();
 
         roleRepository.insertOrUpdate(oldRole);
+    }
+
+    @Override
+    public List<GetDisplay> getAll() {
+        return roleRepository.findWithConditions(List.of()).stream().map(x -> x.toDisplay())
+                .collect(Collectors.toList());
     }
 
 }

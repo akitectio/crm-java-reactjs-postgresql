@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.akitect.crm.dto.request.GetRoleRequest;
 import io.akitect.crm.dto.request.PostPutRoleRequest;
+import io.akitect.crm.dto.response.GetDisplay;
 import io.akitect.crm.dto.response.PaginateRoleResponse;
 import io.akitect.crm.dto.response.PaginatedResponse;
 import io.akitect.crm.dto.response.RoleResponse;
@@ -44,6 +45,11 @@ public class RoleController {
                         roleService.paginatedWithConditions(PageRequest.of(page, perPage), sortBy, order, filter)));
     }
 
+    @GetMapping("/display")
+    public ResponseEntity<List<GetDisplay>> getAll() {
+        return ResponseEntity.ok(roleService.getAll());
+    }
+
     @PostMapping("")
     public ResponseEntity<RoleResponse> postRole(@RequestBody PostPutRoleRequest data) {
         return ResponseEntity.ok(roleService.insert(data));
@@ -65,7 +71,7 @@ public class RoleController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteRole (@PathVariable Long id) {
+    public ResponseEntity<String> deleteRole(@PathVariable Long id) {
         roleService.deleteRoleById(id);
 
         return ResponseEntity.ok("Delete success!");

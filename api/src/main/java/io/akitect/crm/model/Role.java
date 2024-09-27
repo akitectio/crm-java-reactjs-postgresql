@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import io.akitect.crm.dto.response.GetDisplay;
 import io.akitect.crm.utils.JwtHelper;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -75,5 +76,9 @@ public class Role {
 
     public void remove() {
         deletedAt = new Timestamp(System.currentTimeMillis());
+    }
+
+    public GetDisplay toDisplay() {
+        return GetDisplay.builder().label(name).value(id).extra(isDefault).build();
     }
 }
