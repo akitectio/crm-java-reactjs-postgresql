@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         // Update user entity with values from userRequest
-        user = updateUserEntity(user, userRequestPut);
+        user = putUser(userRequestPut, user);
         userRepository.update(user);
         return mapToResponse(user);
     }
@@ -77,9 +77,9 @@ public class UserServiceImpl implements UserService {
     private User getUser(UserRequest userRequest, User user) {
 
         if (userRequest.getRoleId() != null)
-            user.setRole(roleRepository.findOneById(userRequest.getRoleId()));
+            user.setRoleId(userRequest.getRoleId());
         else
-            user.setRole(roleRepository.findDefault());
+            user.setRoleId(roleRepository.findDefault().getId());
 
         user.setEmail(userRequest.getEmail());
         user.setFirstName(userRequest.getFirstName());
@@ -88,7 +88,6 @@ public class UserServiceImpl implements UserService {
         user.setAvatarId(userRequest.getAvatarId());
         user.setSuperUser(userRequest.getSuperUser());
         user.setManageSupers(userRequest.getManageSupers());
-        user.setPermissions(userRequest.getPermissions());
         return user;
     }
 
@@ -96,16 +95,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userRequest.getEmail());
         user.setFirstName(userRequest.getFirstName());
         user.setLastName(userRequest.getLastName());
-        user.setUsername(userRequest.getUsername());
-        user.setAvatarId(userRequest.getAvatarId());
-        user.setSuperUser(userRequest.getSuperUser());
-        user.setManageSupers(userRequest.getManageSupers());
-        user.setPermissions(userRequest.getPermissions());
         return user;
-    }
-
-    private User updateUserEntity(User user, UserRequestPut userRequest) {
-        return putUser(userRequest, user);
     }
 
     private UserResponse mapToResponse(User user) {
@@ -117,9 +107,8 @@ public class UserServiceImpl implements UserService {
         response.setUsername(user.getUsername());
         response.setAvatarId(user.getAvatarId());
         response.setSuperUser(user.getSuperUser());
-        response.setRoleId(user.getRole().getId());
+        response.setRoleId(user.getRoleId());
         response.setManageSupers(user.getManageSupers());
-        response.setPermissions(user.getPermissions());
         response.setEmailVerifiedAt(user.getEmailVerifiedAt());
         response.setCreatedAt(user.getCreatedAt());
         response.setUpdatedAt(user.getUpdatedAt());
@@ -174,8 +163,25 @@ public class UserServiceImpl implements UserService {
     public UserResponse setRole(Long id, Long roleId) {
         User target = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
         Role roleTarget = roleRepository.findOneById(roleId);
-        target.setRole(roleTarget);
+        target.setRoleId(roleTarget.getId());
 
         return mapToResponse(userRepository.update(target));
+    }
+
+    @Override
+    @Transactional
+    public UserResponse changePassword(Long id, String oldPassword, String newPassword) {
+        User target = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        if (!passwordEncoder.matches(oldPassword, target.getPassword()))
+            throw new RuntimeException("Wrong password");
+        target.setPassword(passwordEncoder.encode(newPassword));
+
+        return mapToResponse(userRepository.update(target));
+    }
+
+    @Override
+    public UserResponse changeAvatar(Long id, Long avatarId) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

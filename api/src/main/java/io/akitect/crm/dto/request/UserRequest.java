@@ -39,8 +39,4 @@ public class UserRequest {
 
     @NotNull(message = "Manage supers flag is required")
     private Boolean manageSupers;
-
-    private String permissions;
-
-    // private StatusOfUser statusOfUser;
 }

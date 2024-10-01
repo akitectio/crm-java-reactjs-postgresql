@@ -68,7 +68,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             response.setAvatarId(user.getAvatarId());
             response.setSuperUser(user.getSuperUser());
             response.setManageSupers(user.getManageSupers());
-            response.setPermissions(user.getPermissions());
             response.setEmailVerifiedAt(user.getEmailVerifiedAt());
             response.setCreatedAt(user.getCreatedAt());
             response.setUpdatedAt(user.getUpdatedAt());

@@ -27,4 +27,8 @@ public interface UserService {
             List<GetUserRequest> filter);
 
     UserResponse setRole(Long id, Long roleId);
+
+    UserResponse changePassword(Long id, String oldPassword, String newPassword);
+
+    UserResponse changeAvatar(Long id, Long avatarId);
 }

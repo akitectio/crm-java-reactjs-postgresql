@@ -21,9 +21,8 @@ public class UserResponse {
     private Long avatarId;
     private Boolean superUser;
     private Boolean manageSupers;
-    private String permissions;
-    private Boolean active;
     private Long roleId;
+    private Boolean active;
     private Timestamp emailVerifiedAt;
     private Timestamp createdAt;
     private Timestamp updatedAt;

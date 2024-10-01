@@ -84,4 +84,19 @@ public class UserController {
         return ResponseEntity.ok(userService.removeSuper(id));
     }
 
+    @PutMapping("/{id}/set-role")
+    public ResponseEntity<UserResponse> setRole(@PathVariable Long id, @RequestParam Long roleId) {
+
+        return ResponseEntity.ok(userService.setRole(id, roleId));
+    }
+
+    public record RequestChangePassword(String oldPassword, String newPassword) {
+    }
+
+    @PutMapping("/{id}/change-password")
+    public ResponseEntity<String> changePassword(@PathVariable Long id, @RequestBody RequestChangePassword data) {
+        userService.changePassword(id, data.oldPassword(), data.newPassword());
+        return ResponseEntity.ok("Change password successfully");
+    }
+
 }
