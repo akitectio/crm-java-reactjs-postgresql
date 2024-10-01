@@ -22,6 +22,7 @@ public class UserResponse {
     private Boolean superUser;
     private Boolean manageSupers;
     private Long roleId;
+    private String roleName;
     private Boolean active;
     private Timestamp emailVerifiedAt;
     private Timestamp createdAt;

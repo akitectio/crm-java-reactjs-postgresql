@@ -2,6 +2,9 @@ package io.akitect.crm.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -128,7 +131,18 @@ public class UserServiceImpl implements UserService {
     public Page<UserResponse> paginatedWithConditions(PageRequest pageRequest, String sortBy, Direction order,
             List<GetUserRequest> filter) {
         pageRequest = pageRequest.withSort(order, sortBy);
-        return userRepository.paginatedWithConditions(pageRequest, getFilters(filter));
+        Page<UserResponse> result = userRepository.paginatedWithConditions(pageRequest, getFilters(filter));
+        Set<Long> roleIds = result.getContent().stream().map(x -> x.getRoleId()).filter(x -> x != null)
+                .collect(Collectors.toSet());
+
+        Map<Long, String> roleMapper = roleRepository.findById(roleIds).stream()
+                .collect(Collectors.toMap(Role::getId, Role::getName));
+        result.getContent().stream().forEach(user -> {
+            if (user.getRoleId() != null)
+                user.setRoleName(roleMapper.get(user.getRoleId()));
+        });
+
+        return result;
     }
 
     private List<FilterMap> getFilters(List<GetUserRequest> filter) {
