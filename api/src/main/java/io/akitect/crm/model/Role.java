@@ -62,7 +62,11 @@ public class Role {
     @PrePersist
     protected void onCreate() {
         createdAt = new Timestamp(System.currentTimeMillis());
-        createdBy = Long.parseLong(JwtHelper.getCurrentUserId());
+        try {
+            createdBy = Long.parseLong(JwtHelper.getCurrentUserId());
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
     }
 
     @PreUpdate

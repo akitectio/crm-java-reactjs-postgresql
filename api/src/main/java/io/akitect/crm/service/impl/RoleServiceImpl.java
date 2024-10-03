@@ -66,26 +66,43 @@ public class RoleServiceImpl implements RoleService {
             throw new BadRequestException("Permission list can not be empty", null);
         }
 
-        UserResponse createdBy = userService.getUserById(Long.parseLong(JwtHelper.getCurrentUserId()));
+        Role newRole = new Role();
+        newRole.setName(data.getName());
+        newRole.setDescription(data.getDescription());
+        newRole.setIsDefault(data.getIsDefault() != null ? data.getIsDefault() : false);
 
-        Role newRole = Role.builder()
-                .name(data.getName())
-                .description(data.getDescription())
-                .isDefault(data.getIsDefault() != null ? data.getIsDefault() : false)
-                .createdByName(createdBy.getFirstName() + " " + createdBy.getLastName())
-                .build();
+        try {
+            UserResponse createdBy = userService.getUserById(Long.parseLong(JwtHelper.getCurrentUserId()));
+            newRole.setCreatedByName(createdBy.getFirstName() + " " + createdBy.getLastName());
+        } catch (Exception e) {
+            newRole.setCreatedByName("System");
+        }
 
-        newRole.setPermissions(
-                permissionService.getById(data.getPermissionIds()).stream().collect(Collectors.toList()));
+        List<Permission> permissions = permissionService.getById(data.getPermissionIds()).stream()
+                .collect(Collectors.toList());
+        List<Permission> childPermission = new ArrayList<>();
+
+        for (Permission permission : permissions) {
+            childPermission.addAll(permission.getAllChildren());
+        }
+
+        permissions.addAll(childPermission);
+
+        newRole.setPermissions(permissions);
 
         if (data.getIsDefault() != null && data.getIsDefault()) {
             List<Role> oldDefaultRole = roleRepository
                     .findWithConditions(List.of(new FilterMap("isDefault", "isDefault", true, FilterOperator.EQUAL)));
-            oldDefaultRole.stream().forEach(role -> role.setIsDefault(false));
-            roleRepository.saveAll(oldDefaultRole);
+            if (oldDefaultRole.size() > 0) {
+                oldDefaultRole.stream().forEach(role -> role.setIsDefault(false));
+                roleRepository.saveAll(oldDefaultRole);
+            }
+
         }
 
-        return convertToResponse(roleRepository.insertOrUpdate(newRole));
+        Role result = roleRepository.insertOrUpdate(newRole);
+
+        return convertToResponse(result);
     }
 
     @Override
@@ -116,19 +133,28 @@ public class RoleServiceImpl implements RoleService {
             throw new BadRequestException("Permission list can not be empty", null);
         }
 
-        Role oldRole = roleRepository.findOneById(id);
+        Role target = roleRepository.findOneById(id);
 
         if (data.getName() != null)
-            oldRole.setName(data.getName());
+            target.setName(data.getName());
         if (data.getDescription() != null)
-            oldRole.setDescription(data.getDescription());
+            target.setDescription(data.getDescription());
         if (data.getIsDefault() != null)
-            oldRole.setIsDefault(data.getIsDefault());
+            target.setIsDefault(data.getIsDefault());
 
-        oldRole.setPermissions(
-                permissionService.getById(data.getPermissionIds()).stream().collect(Collectors.toList()));
+        List<Permission> permissions = permissionService.getById(data.getPermissionIds()).stream()
+                .collect(Collectors.toList());
+        List<Permission> childPermission = new ArrayList<>();
 
-        return convertToResponse(roleRepository.insertOrUpdate(oldRole));
+        for (Permission permission : permissions) {
+            childPermission.addAll(permission.getAllChildren());
+        }
+
+        permissions.addAll(childPermission);
+
+        target.setPermissions(permissions);
+
+        return convertToResponse(roleRepository.insertOrUpdate(target));
     }
 
     @Override

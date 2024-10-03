@@ -87,14 +87,16 @@ public class Permission {
 
     public PermissionResponse convertSelf() {
         PermissionResponse converted = PermissionResponse.builder().id(this.id).key(this.key).name(this.name)
-                .createdAt(createdAt).updatedAt(updatedAt).deletedAt(deletedAt).build();
+                .createdAt(createdAt).updatedAt(updatedAt).deletedAt(deletedAt)
+                .parentId(parent != null ? parent.getId() : null).build();
         converted.setChildren(children);
         return converted;
     }
 
     public PermissionResponse convertSelfWithoutChildren() {
         PermissionResponse converted = PermissionResponse.builder().id(this.id).key(this.key).name(this.name)
-                .createdAt(createdAt).updatedAt(updatedAt).deletedAt(deletedAt).build();
+                .createdAt(createdAt).updatedAt(updatedAt).deletedAt(deletedAt)
+                .parentId(parent != null ? parent.getId() : null).build();
         return converted;
     }
 
@@ -107,6 +109,5 @@ public class Permission {
         return result;
 
     }
-
 
 }

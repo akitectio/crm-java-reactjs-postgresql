@@ -27,6 +27,7 @@ public class PermissionResponse {
     private Long id;
     private String name;
     private String key;
+    private Long parentId;
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private Timestamp deletedAt;

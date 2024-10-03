@@ -40,6 +40,7 @@ public class PermissionServiceImpl implements PermissionService {
         PermissionResponse result = PermissionResponse.builder()
                 .id(data.getId())
                 .key(data.getKey())
+                .parentId(data.getParent() != null ? data.getParent().getId() : null)
                 .name(data.getName())
                 .createdAt(data.getCreatedAt())
                 .updatedAt(data.getUpdatedAt())
@@ -116,34 +117,35 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public List<GetDisplay> getDisplay() {
-        
-        return permissionRepository.findAllWithFilter(List.of()).stream().map(permission -> convertToDisplay(permission)).collect(Collectors.toList());
+
+        return permissionRepository.findAllWithFilter(List.of()).stream()
+                .map(permission -> convertToDisplay(permission)).collect(Collectors.toList());
     }
 
-    private GetDisplay convertToDisplay (Permission data) {
+    private GetDisplay convertToDisplay(Permission data) {
         GetDisplay result = new GetDisplay();
 
         result.setLabel(data.getName());
         result.setValue(data.getId());
-        result.setExtra(data.getParent() != null ? data.getParent().getId(): null);
+        result.setExtra(data.getParent() != null ? data.getParent().getId() : null);
 
         return result;
     }
 
     @Override
     public List<GetDisplay> getDisplayWithKey() {
-        return permissionRepository.findAllWithFilter(List.of()).stream().map(perm -> convertToDisplayWithKey(perm)).collect(Collectors.toList());
+        return permissionRepository.findAllWithFilter(List.of()).stream().map(perm -> convertToDisplayWithKey(perm))
+                .collect(Collectors.toList());
     }
 
-    private GetDisplay convertToDisplayWithKey (Permission data) {
+    private GetDisplay convertToDisplayWithKey(Permission data) {
         GetDisplay result = new GetDisplay();
 
         result.setLabel(data.getName() + " (" + data.getKey() + ")");
         result.setValue(data.getId());
-        result.setExtra(data.getParent() != null ? data.getParent().getId(): null);
+        result.setExtra(data.getParent() != null ? data.getParent().getId() : null);
 
         return result;
     }
-
 
 }
