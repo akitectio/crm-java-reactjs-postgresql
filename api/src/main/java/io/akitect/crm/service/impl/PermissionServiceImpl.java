@@ -84,6 +84,8 @@ public class PermissionServiceImpl implements PermissionService {
     private List<FilterMap> getFilters(GetPermissionRequest filter) {
         List<FilterMap> filters = new ArrayList<>();
 
+        filters.add(new FilterMap("deletedAt", "deletedAt", null, FilterOperator.IS));
+
         if (filter.getName() != null) {
             filters.add(new FilterMap("name", "name", "%" + filter.getName() + "%", FilterOperator.ILIKE));
         }
