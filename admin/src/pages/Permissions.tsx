@@ -1,12 +1,18 @@
-import { paginatedWithConditions, PermissionResponse } from "@app/services/permissions";
+import PaginationCustom from "@app/helpers/pagination/PaginationCustom";
 import {
-  deleteUser
-} from "@app/services/usersService";
+  removeNullFields,
+  useDebounce,
+} from "@app/helpers/pagination/PaginationInfo";
+import {
+  paginatedWithConditions,
+  PermissionResponse,
+} from "@app/services/permissions";
+import { deleteUser } from "@app/services/usersService";
 import {
   faEdit,
   faPlus,
   faSearch,
-  faSync
+  faSync,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
@@ -17,17 +23,48 @@ import "./common.css";
 import DeleteConfirm from "./deleteFolder/DeleteConfirm";
 
 const Permissions = () => {
+  const [objectSearch, setObjectSearch] = useState<any>({
+    page: 0,
+    items_per_page: 10,
+  });
+  const [objectFilter, setObjectFilter] = useState<any>(objectSearch);
+  const [totalRecords, setTotalRecords] = useState(0);
   const [permissions, setPermissions] = useState<PermissionResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPermissions, setSelectedPermissions] = useState<number[]>([]);
 
   const navigator = useNavigate();
 
+  const debouncedSearchNo = useDebounce(objectFilter, 300);
+
+  const onPageChange = (event: any) => {
+    setObjectFilter({
+      ...objectFilter,
+      page: event.first,
+      items_per_page: event.rows,
+    });
+  };
+  const onRowsChange = (event: any) => {
+    setObjectFilter({
+      ...objectFilter,
+      page: 0,
+      items_per_page: event.target?.value,
+    });
+  };
+
   const getAllPermissions = async () => {
+    const objectTemp = {
+      ...objectFilter,
+      page: objectFilter?.page / objectFilter?.items_per_page,
+      items_per_page: objectFilter?.items_per_page,
+    };
+    const filteredObject = removeNullFields(objectTemp);
+    const objString = new URLSearchParams(filteredObject).toString();
     setLoading(true);
     try {
-      const response = await paginatedWithConditions();
+      const response = await paginatedWithConditions(objString);
       setPermissions(response?.results);
+      setTotalRecords(response?.total);
     } catch (error) {
       console.error(error);
     }
@@ -35,8 +72,10 @@ const Permissions = () => {
   };
 
   useEffect(() => {
-    getAllPermissions();
-  }, []);
+    if (objectFilter) {
+      getAllPermissions();
+    }
+  }, [debouncedSearchNo]);
 
   // Bulk
   const optionsBulk = [
@@ -55,9 +94,9 @@ const Permissions = () => {
     navigator("/permission/create");
   };
 
-  // const handleButtonEdit = (id_permissions: number) => {
-  //   navigator(`/role/edit/${id_permissions}`);
-  // };
+  const handleButtonEdit = (id_permissions: number) => {
+    navigator(`/permission/edit/${id_permissions}`);
+  };
 
   const handleDashboard = () => {
     navigator("/");
@@ -79,7 +118,9 @@ const Permissions = () => {
   const handleSelectRow = (id: number) => {
     if (selectedPermissions.includes(id)) {
       // Nếu hàng đã được chọn, bỏ chọn hàng đó
-      setSelectedPermissions(selectedPermissions.filter((permissionId) => permissionId !== id));
+      setSelectedPermissions(
+        selectedPermissions.filter((permissionId) => permissionId !== id)
+      );
     } else {
       // Nếu hàng chưa được chọn, thêm hàng đó vào danh sách
       setSelectedPermissions([...selectedPermissions, id]);
@@ -128,8 +169,7 @@ const Permissions = () => {
                 }
               />
             </div>
-            <div>
-            </div>
+            <div></div>
             <div style={{ position: "relative" }}>
               <input
                 type="search"
@@ -243,7 +283,9 @@ const Permissions = () => {
                   <tr
                     key={permission.id}
                     className={
-                      selectedPermissions.includes(permission.id) ? "table-active" : ""
+                      selectedPermissions.includes(permission.id)
+                        ? "table-active"
+                        : ""
                     }
                   >
                     <td className="odd" style={{ paddingLeft: "19px" }}>
@@ -258,23 +300,20 @@ const Permissions = () => {
                       </div>
                     </td>
                     <td className="text-start">
-                      
                       <span>{permission.id}</span>
                     </td>
                     <td className="text-start">
-                      <a href="#">
-                      {permission.name}
-                      </a>
+                      <a href="#">{permission.name}</a>
                     </td>
                     <td className="text-start">
-                        <span>{permission.key}</span>
+                      <span>{permission.key}</span>
                     </td>
                     <td className="text-start">{permission.createdAt}</td>
                     <td className="text-center text-nowrap">
                       <div className="table-actions">
                         <button
                           className="btn btn-sm btn-icon btn-primary mr-1 position-relative"
-                          // onClick={() => handleButtonEdit(permission.id)}
+                          onClick={() => handleButtonEdit(permission.id)}
                         >
                           <FontAwesomeIcon icon={faEdit} />
                           <span className="title-edit">Edit</span>
@@ -291,6 +330,20 @@ const Permissions = () => {
             </table>
           </div>
         </div>
+        <PaginationCustom
+          setPage={(e: any) =>
+            setObjectFilter({
+              ...objectFilter,
+              page: e,
+            })
+          }
+          page={objectFilter?.page}
+          items_per_page={objectFilter?.items_per_page}
+          totalRecords={totalRecords}
+          dataTable={permissions}
+          onPageChange={onPageChange}
+          onRowsChange={onRowsChange}
+        />
       </div>
     </div>
   );

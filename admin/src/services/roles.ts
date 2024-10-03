@@ -45,9 +45,15 @@ export interface PaginateRoleResponse {
   deletedAt: string;
 }
 
-export const paginatedWithConditions = async () => {
+export interface GetAllRolesResponse {
+  label: string;
+  value: number;
+  extra: number | null;
+}
+
+export const paginatedWithConditions = async (param?: any) => {
   try {
-    const response = await getRequest<Paginated>("roles/paginated");
+    const response = await getRequest<Paginated>(`roles/paginated?${param}`);
     return response.data;
   } catch (error) {
     throw error;
@@ -89,6 +95,16 @@ export const deleteRole = async (id: number) => {
     const response = await deleteRequest<RoleResponse>(`roles/ + ${id}`);
     return response.data;
   } catch (error) {
+    throw error;
+  }
+};
+
+export const getAllRoles = async (): Promise<GetAllRolesResponse[]> => {
+  try {
+    const response = await getRequest<GetAllRolesResponse[]>("roles/display");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching roles:", error);
     throw error;
   }
 };

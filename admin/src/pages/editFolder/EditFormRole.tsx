@@ -46,14 +46,13 @@ const EditFormRole = () => {
       try {
         const response = await getOneById(id);
         const { permissions } = response;
-        console.log(permissions, "permission");
         const result = permissions.map((item: any) => {
           return {
             ...item,
             checked: true,
           };
         });
-        console.log(result, "result có checked");
+        console.log(result, "fdfd");
         setInitialValues({
           name: response.name,
           description: response.description,

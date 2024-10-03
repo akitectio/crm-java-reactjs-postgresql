@@ -1,4 +1,8 @@
-import { getUserById, updateUser } from "@app/services/usersService";
+import {
+  changePassword,
+  getUserById,
+  updateUser,
+} from "@app/services/usersService";
 import { Button } from "@app/styles/common";
 import {
   faCheckCircle,
@@ -19,15 +23,78 @@ import "./editCss.css";
 
 const EditForm = () => {
   const [isLoading, setIsLoading] = useState(false);
+
+  const navigate = useNavigate();
+
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [reTypePassword, setReTypePassword] = useState("");
+
+  const [errs, setErrs] = useState({
+    oldPassword: "",
+    newPassword: "",
+    reTypePassword: "",
+  });
+
+  function validateForm() {
+    let valid = true;
+
+    const errorsCopy = { ...errs };
+
+    if (oldPassword) {
+      errorsCopy.oldPassword = "";
+    } else {
+      errorsCopy.oldPassword = "Current Password is required";
+      valid = false;
+    }
+
+    if (newPassword) {
+      errorsCopy.newPassword = "";
+    } else {
+      errorsCopy.newPassword = "New Password is required";
+      valid = false;
+    }
+    if (!reTypePassword) {
+      errorsCopy.reTypePassword = "Confirm New Password is required";
+      valid = false;
+    } else if (reTypePassword !== newPassword) {
+      console.log("Test confirm", reTypePassword, newPassword);
+      errorsCopy.reTypePassword = "Passwords must match";
+      valid = false;
+    } else {
+      errorsCopy.reTypePassword = "";
+    }
+
+    setErrs(errorsCopy);
+
+    return valid;
+  }
+
+  function handleChangePassword(e) {
+    e.preventDefault();
+
+    if (validateForm()) {
+      const objectPassword = { oldPassword, newPassword };
+      changePassword(id, objectPassword)
+        .then((response) => {
+          console.log(response);
+          toast.success("Password updated successfully");
+          navigate("/users");
+        })
+        .catch((error) => {
+          console.error(error);
+          toast.error("Failed to update password");
+        });
+    }
+  }
+
   const [initialValues, setInitialValues] = useState({
     email: "",
     firstName: "",
     lastName: "",
     username: "",
-    role: "Select role", // Default role value
   });
   const { id } = useParams(); // Get the user ID from the route params
-  const navigate = useNavigate();
 
   // Load user data when component mounts
   useEffect(() => {
@@ -39,7 +106,6 @@ const EditForm = () => {
           firstName: response.firstName,
           lastName: response.lastName,
           username: response.username,
-          role: response.permissions ? "Admin" : "Select role",
         });
       } catch (error) {
         toast.error("Failed to load user data");
@@ -58,7 +124,7 @@ const EditForm = () => {
       username: Yup.string().required("Required"),
     }),
     onSubmit: async (values) => {
-      const { email, firstName, lastName, username, role } = values;
+      const { email, firstName, lastName, username } = values;
 
       const userRequest = {
         email,
@@ -68,14 +134,13 @@ const EditForm = () => {
         avatarId: 0,
         superUser: true,
         manageSupers: true,
-        permissions: role === "Admin",
       };
 
       try {
         setIsLoading(true);
         const respone = await updateUser(id, userRequest);
         console.log(respone);
-        toast.success("User updated successfully!");
+        toast.success("User updated successfully");
         navigate("/users"); // Redirect to home or another page
       } catch (error) {
         toast.error("Failed to update user");
@@ -226,6 +291,7 @@ const EditForm = () => {
                           value={values.username}
                           isValid={touched.username && !errors.username}
                           isInvalid={touched.username && !!errors.username}
+                          disabled
                         />
                         {touched.username && errors.username ? (
                           <Form.Control.Feedback type="invalid">
@@ -309,35 +375,56 @@ const EditForm = () => {
                   <div className="row row-cols-lg-2">
                     <div className="col-lg-12">
                       <div className="mb-3">
-                        <label className="form-label required">
-                          Current Password
-                        </label>
+                        <label className="form-label">Current Password</label>
                         <input
-                          type="text"
-                          className="form-control"
-                          aria-required="true"
+                          type="password"
+                          placeholder="Current Password"
+                          name="oldPassword"
+                          value={oldPassword}
+                          className={`form-control ${errs.oldPassword ? "is-invalid" : ""}`}
+                          onChange={(e) => setOldPassword(e.target.value)}
                         />
+                        {errs.oldPassword && (
+                          <div className="invalid-feedback">
+                            {" "}
+                            {errs.oldPassword}{" "}
+                          </div>
+                        )}
                       </div>
                     </div>
                     <div className="mb-3 col">
-                      <label className="form-label required">
-                        New Password
-                      </label>
+                      <label className="form-label">New Password</label>
                       <input
-                        type="text"
-                        className="form-control"
-                        aria-required="true"
+                        type="password"
+                        placeholder="New Password"
+                        name="newPassword"
+                        value={newPassword}
+                        className={`form-control ${errs.newPassword ? "is-invalid" : ""}`}
+                        onChange={(e) => setNewPassword(e.target.value)}
                       />
+                      {errs.newPassword && (
+                        <div className="invalid-feedback">
+                          {" "}
+                          {errs.newPassword}{" "}
+                        </div>
+                      )}
                     </div>
                     <div className="mb-3 col">
-                      <label className="form-label required">
-                        Confirm New Password
-                      </label>
+                      <label className="form-label">Confirm New Password</label>
                       <input
-                        type="text"
-                        className="form-control"
-                        aria-required="true"
+                        type="password"
+                        placeholder="Confirm New Password"
+                        name="reTypePassword"
+                        value={reTypePassword}
+                        className={`form-control ${errs.reTypePassword ? "is-invalid" : ""}`}
+                        onChange={(e) => setReTypePassword(e.target.value)}
                       />
+                      {errs.reTypePassword && (
+                        <div className="invalid-feedback">
+                          {" "}
+                          {errs.reTypePassword}{" "}
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="card-footer bg-transparent mt-3 p-0 pt-3">
@@ -349,6 +436,7 @@ const EditForm = () => {
                           right: "19px",
                           bottom: "12px",
                         }}
+                        onClick={handleChangePassword}
                       >
                         <FontAwesomeIcon
                           icon={faCheckCircle}

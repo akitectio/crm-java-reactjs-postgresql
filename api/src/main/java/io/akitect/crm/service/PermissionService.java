@@ -30,4 +30,7 @@ public interface PermissionService {
     PermissionResponse update(Long id, PostPutPermissionRequest data);
 
     List<GetDisplay> getDisplay();
+
+    List<GetDisplay> getDisplayWithKey();
+
 }

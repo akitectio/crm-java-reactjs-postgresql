@@ -1,4 +1,5 @@
 import ToggleSwitch from "@app/helpers/toggleSwitch/ToggleSwitch";
+import { createRoles } from "@app/services/roles";
 import { Button } from "@app/styles/common";
 import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,6 +7,7 @@ import { useFormik } from "formik";
 import { useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import * as Yup from "yup";
 import PermissionList from "./TreePermissions";
 
@@ -35,17 +37,17 @@ const CreateFormRoles = () => {
         permissionIds: permissionIds,
       };
       console.log(rolesRequest, "ROLESREQUEST");
-      // try {
-      //   setIsLoading(true);
-      //   const response = await createRoles(rolesRequest);
-      //   console.log(response);
-      //   toast.success("Roles and permissions created successfully!");
-      //   navigate("/role");
-      // } catch (error) {
-      //   toast.error("Failed to create roles and permissions");
-      // } finally {
-      //   setIsLoading(false);
-      // }
+      try {
+        setIsLoading(true);
+        const response = await createRoles(rolesRequest);
+        console.log(response);
+        toast.success("Roles and permissions created successfully!");
+        navigate("/role");
+      } catch (error) {
+        toast.error("Failed to create roles and permissions");
+      } finally {
+        setIsLoading(false);
+      }
     },
   });
 
@@ -58,7 +60,7 @@ const CreateFormRoles = () => {
   };
 
   return (
-    <div className="container-x1 pt-4 pr-4 pl-4">
+    <div className="container-x1 pt-4 pr-4 pl-4" style={{ paddingTop: "24px" }}>
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item" style={{ fontSize: "13px" }}>
@@ -193,7 +195,6 @@ const CreateFormRoles = () => {
               </div>
             </div>
             <div className="card-body">
-<<<<<<< HEAD
               <PermissionList
                 onPermissionSelectedEvent={(permId: number, value: boolean) => {
                   if (value) {
@@ -205,11 +206,6 @@ const CreateFormRoles = () => {
                   }
                 }}
               />
-=======
-              <PermissionList onValueChange={() => {
-                
-              }} />
->>>>>>> 5589d261262e08b7f46182b35bdc109a3a85e245
             </div>
           </div>
         </div>

@@ -24,6 +24,10 @@ import CreateForm from "./pages/CreateFormUsers";
 import EditFormRole from "./pages/editFolder/EditFormRole";
 import EditForm from "./pages/editFolder/EditFormUser";
 
+import "primereact/resources/themes/lara-light-indigo/theme.css";
+//core
+import "primereact/resources/primereact.min.css";
+import EditFormPermission from "./pages/editFolder/EditFormPermission";
 import Permissions from "./pages/Permissions";
 import Roles from "./pages/Roles";
 import UserTable from "./pages/UserTable";
@@ -113,13 +117,16 @@ const App = () => {
             ></Route>
 
             <Route path="/role/create" element={<CreateFormRoles />}></Route>
-            <Route path="role/edit/:id" element={<CreateFormRoles />}></Route>
+            <Route path="role/edit/:id" element={<EditFormRole />}></Route>
             <Route path="/permission" element={<Permissions />}></Route>
             <Route
               path="/permission/create"
               element={<CreateFormPermissions />}
             ></Route>
-
+            <Route
+              path="permission/edit/:id"
+              element={<EditFormPermission />}
+            ></Route>
             <Route path="/profile" element={<Profile />} />
             <Route path="/" element={<Dashboard />} />
           </Route>

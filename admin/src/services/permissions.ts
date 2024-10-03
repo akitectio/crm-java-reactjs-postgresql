@@ -8,7 +8,6 @@ export interface PermissionRequest {
 export interface PermissionResponse {
   id: number;
   name: string;
-  parentId: number;
   key: string;
   createdAt: string;
   updatedAt: string;
@@ -26,12 +25,13 @@ export interface Paginated {
 export interface GetAllPermissionsResponse {
   label: string;
   value: number;
-  extra: number | null;
+  extra: number | any;
 }
-
-export const paginatedWithConditions = async () => {
+export const paginatedWithConditions = async (params?: any) => {
   try {
-    const response = await getRequest<Paginated>("permissions/paginated");
+    const response = await getRequest<Paginated>(
+      `permissions/paginated?${params}`
+    );
     return response.data;
   } catch (error) {
     throw error;
@@ -67,6 +67,20 @@ export const getAllPermissions = async (): Promise<
   try {
     const response = await getRequest<GetAllPermissionsResponse[]>(
       "permissions/display"
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching permissions:", error);
+    throw error;
+  }
+};
+
+export const getAllPermissionsWithKey = async (): Promise<
+  GetAllPermissionsResponse[]
+> => {
+  try {
+    const response = await getRequest<GetAllPermissionsResponse[]>(
+      "permissions/displayWithKey"
     );
     return response.data;
   } catch (error) {

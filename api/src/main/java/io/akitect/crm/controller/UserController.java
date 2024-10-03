@@ -69,7 +69,7 @@ public class UserController {
             @RequestParam(name = "items_per_page", defaultValue = "10") int perPage,
             @RequestParam(name = "sort_by", defaultValue = "id") String sortBy,
             @RequestParam(name = "order", defaultValue = "ASC") Direction order,
-            @RequestBody() List<GetUserRequest> filter) {
+            @RequestBody(required = false) List<GetUserRequest> filter) {
 
         PaginatedResponse<UserResponse> result = PageHelper
                 .convertResponse(

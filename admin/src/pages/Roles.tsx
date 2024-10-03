@@ -1,3 +1,8 @@
+import PaginationCustom from "@app/helpers/pagination/PaginationCustom";
+import {
+  removeNullFields,
+  useDebounce,
+} from "@app/helpers/pagination/PaginationInfo";
 import {
   deleteRole,
   paginatedWithConditions,
@@ -21,6 +26,30 @@ import "./common.css";
 import DeleteConfirm from "./deleteFolder/DeleteConfirm";
 
 const Roles = () => {
+  const [objectSearch, setObjectSearch] = useState<any>({
+    page: 0,
+    items_per_page: 10,
+  });
+  const [objectFilter, setObjectFilter] = useState<any>(objectSearch);
+  const [totalRecords, setTotalRecords] = useState(0);
+
+  const debouncedSearchNo = useDebounce(objectFilter, 300);
+
+  const onPageChange = (event: any) => {
+    setObjectFilter({
+      ...objectFilter,
+      page: event.first,
+      items_per_page: event.rows,
+    });
+  };
+  const onRowsChange = (event: any) => {
+    setObjectFilter({
+      ...objectFilter,
+      page: 0,
+      items_per_page: event.target?.value,
+    });
+  };
+
   const [roles, setRoles] = useState<PaginateRoleResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
@@ -28,10 +57,18 @@ const Roles = () => {
   const navigator = useNavigate();
 
   const getAllRoles = async () => {
+    const objectTemp = {
+      ...objectFilter,
+      page: objectFilter?.page / objectFilter?.items_per_page,
+      items_per_page: objectFilter?.items_per_page,
+    };
+    const filteredObject = removeNullFields(objectTemp);
+    const objString = new URLSearchParams(filteredObject).toString();
     setLoading(true);
     try {
-      const response = await paginatedWithConditions();
+      const response = await paginatedWithConditions(objString);
       setRoles(response?.results);
+      setTotalRecords(response?.total);
     } catch (error) {
       console.error(error);
     }
@@ -39,8 +76,10 @@ const Roles = () => {
   };
 
   useEffect(() => {
-    getAllRoles();
-  }, []);
+    if (objectFilter) {
+      getAllRoles();
+    }
+  }, [debouncedSearchNo]);
 
   const optionsField = [
     { value: "Select field", label: "Select field" },
@@ -561,6 +600,20 @@ const Roles = () => {
             </table>
           </div>
         </div>
+        <PaginationCustom
+          setPage={(e: any) =>
+            setObjectFilter({
+              ...objectFilter,
+              page: e,
+            })
+          }
+          page={objectFilter?.page}
+          items_per_page={objectFilter?.items_per_page}
+          totalRecords={totalRecords}
+          dataTable={roles}
+          onPageChange={onPageChange}
+          onRowsChange={onRowsChange}
+        />
       </div>
     </div>
   );

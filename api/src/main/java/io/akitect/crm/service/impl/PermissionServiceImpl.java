@@ -130,5 +130,20 @@ public class PermissionServiceImpl implements PermissionService {
         return result;
     }
 
+    @Override
+    public List<GetDisplay> getDisplayWithKey() {
+        return permissionRepository.findAllWithFilter(List.of()).stream().map(perm -> convertToDisplayWithKey(perm)).collect(Collectors.toList());
+    }
+
+    private GetDisplay convertToDisplayWithKey (Permission data) {
+        GetDisplay result = new GetDisplay();
+
+        result.setLabel(data.getName() + " (" + data.getKey() + ")");
+        result.setValue(data.getId());
+        result.setExtra(data.getParent() != null ? data.getParent().getId(): null);
+
+        return result;
+    }
+
 
 }

@@ -28,4 +28,5 @@ public class UserResponse {
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private Timestamp lastLogin;
+
 }

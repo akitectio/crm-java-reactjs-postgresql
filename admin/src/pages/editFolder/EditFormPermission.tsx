@@ -1,7 +1,8 @@
 import {
-  createPermissions,
   GetAllPermissionsResponse,
   getAllPermissionsWithKey,
+  getPermissionsById,
+  updatePermission,
 } from "@app/services/permissions";
 import { Button } from "@app/styles/common";
 import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
@@ -9,59 +10,69 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
-
-const CreateFormPermissions = () => {
+const EditFormPermission = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const [permissions, setPermissions] = useState<GetAllPermissionsResponse[]>(
     []
   );
 
-  const getNamePermissions = async () => {
-    setIsLoading(true);
-    try {
-      const response = await getAllPermissionsWithKey();
-      setPermissions(response);
-    } catch (error) {
-      console.error(error);
-    }
-    setIsLoading(false);
-  };
+  const [initialValues, setInitialValues] = useState({
+    name: "",
+    key: "",
+    parentId: "",
+  });
 
   useEffect(() => {
-    getNamePermissions();
-  }, []);
+    const loadPermissionData = async () => {
+      try {
+        const response = await getPermissionsById(id);
+        const displayResponse = await getAllPermissionsWithKey();
+        setPermissions(displayResponse);
+        const formatNameKey = response.name + " (" + response.key + ")";
+        displayResponse.map((item) => {
+          if (formatNameKey === item.label) {
+            setInitialValues({
+              name: response.name,
+              key: response.key,
+              parentId: item.extra,
+            });
+          }
+        });
+      } catch (error) {
+        toast.error("Failed to load permission data");
+      }
+    };
+    loadPermissionData();
+  }, [id]);
 
   const { handleChange, values, handleSubmit, touched, errors } = useFormik({
-    initialValues: {
-      name: "",
-      parentId: "",
-    },
+    enableReinitialize: true,
+    initialValues,
     validationSchema: Yup.object({
       name: Yup.string().required("Required"),
-      parentId: Yup.string().required("Required"),
     }),
     onSubmit: async (values) => {
-      // debugger;
       const { name, parentId } = values;
 
-      const permissionsRequest = {
-        name: name,
-        parentId: parentId,
+      const permissionRequest = {
+        name,
+        parentId,
       };
 
       try {
         setIsLoading(true);
-        const response = await createPermissions(permissionsRequest);
-        console.log(response);
-        toast.success("Permissions created successfully!");
-        navigate("/permission");
+        const respone = await updatePermission(id, permissionRequest);
+        console.log(respone);
+        toast.success("User updated successfully");
+        navigate("/users"); // Redirect to home or another page
       } catch (error) {
-        toast.error("Failed to create Permissions");
+        toast.error("Failed to update user");
       } finally {
         setIsLoading(false);
       }
@@ -72,7 +83,7 @@ const CreateFormPermissions = () => {
     navigate("/");
   };
 
-  const handleRandP = () => {
+  const handleP = () => {
     navigate("/permission");
   };
 
@@ -86,7 +97,7 @@ const CreateFormPermissions = () => {
             </a>
           </li>
           <li className="breadcrumb-item" style={{ fontSize: "13px" }}>
-            <a href="#" onClick={handleRandP}>
+            <a href="#" onClick={handleP}>
               PERMISSIONS
             </a>
           </li>
@@ -95,7 +106,7 @@ const CreateFormPermissions = () => {
             aria-current="page"
             style={{ fontSize: "13px" }}
           >
-            CREATE NEW PERMISSION
+            UPDATE
           </li>
         </ol>
       </nav>
@@ -174,4 +185,4 @@ const CreateFormPermissions = () => {
   );
 };
 
-export default CreateFormPermissions;
+export default EditFormPermission;

@@ -1,3 +1,8 @@
+import PaginationCustom from "@app/helpers/pagination/PaginationCustom";
+import {
+  removeNullFields,
+  useDebounce,
+} from "@app/helpers/pagination/PaginationInfo";
 import {
   deleteUser,
   paginateWithFilters,
@@ -22,49 +27,24 @@ import "./common.css";
 import DeleteConfirm from "./deleteFolder/DeleteConfirm";
 
 const UserTable = () => {
-  const [users, setUsers] = useState<UserResponse[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
-
-  const navigator = useNavigate();
-
-  const getAllUsers = async () => {
-    setLoading(true);
-    try {
-      const response = await paginateWithFilters();
-      setUsers(response?.results);
-    } catch (error) {
-      console.error(error);
-    }
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    getAllUsers();
-  }, []);
-
   const optionsField = [
-    { value: "Select field", label: "Select field" },
-    { value: "Username", label: "Username" },
-    { value: "Email", label: "Email" },
+    { value: "username", label: "Username" },
+    { value: "email", label: "Email" },
     { value: "Status", label: "Status" },
-    { value: "Created At", label: "Created At" },
+    { value: "createdAt", label: "Created At" },
   ];
 
   const optionsOperation = [
-    { value: "Contains", label: "Contains" },
-    { value: "Is equal to", label: "Is equal to" },
-    { value: "Greater than", label: "Greater than" },
-    { value: "Less than", label: "Less than" },
+    { value: "ILIKE", label: "Contains" },
+    { value: "EQUAL", label: "Is equal to" },
+    { value: "MORE_THAN", label: "Greater than" },
+    { value: "LESS_THAN", label: "Less than" },
   ];
 
   const optionsStatus = [
-    { value: "Select option", label: "Select option" },
     { value: "Activated", label: "Activated" },
     { value: "Deactivated", label: "Deactivated" },
   ];
-
-  // Bulk
 
   const optionsBulk = [
     { value: "Bulk Actions", label: "Bulk Actions" },
@@ -72,9 +52,74 @@ const UserTable = () => {
     { value: "Delete", label: "Delete" },
   ];
 
-  const [filters, setFilters] = useState([
+  const [filters, setFilters] = useState<any>([
     { field: optionsField[0], operation: optionsOperation[1], value: "" },
   ]);
+
+  const [objectSearch, setObjectSearch] = useState<any>({
+    page: 0,
+    items_per_page: 10,
+  });
+  const [objectFilter, setObjectFilter] = useState<any>(objectSearch);
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [users, setUsers] = useState<UserResponse[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
+
+  const debouncedSearchNo = useDebounce(objectFilter, 300);
+
+  const onPageChange = (event: any) => {
+    setObjectFilter({
+      ...objectFilter,
+      page: event.first,
+      items_per_page: event.rows,
+    });
+  };
+  const onRowsChange = (event: any) => {
+    setObjectFilter({
+      ...objectFilter,
+      page: 0,
+      items_per_page: event.target?.value,
+    });
+  };
+  const navigator = useNavigate();
+
+  const getAllUsers = async () => {
+    const objectTemp = {
+      ...objectFilter,
+      page: objectFilter?.page / objectFilter?.items_per_page,
+      items_per_page: objectFilter?.items_per_page,
+    };
+
+    const filteredObject = removeNullFields(objectTemp);
+    const objString = new URLSearchParams(filteredObject).toString();
+
+    const dataPayload: any =
+      Array.isArray(templFilters) &&
+      templFilters?.map((item: any) => ({
+        key: item?.field?.value,
+        operator: item?.operation?.value,
+        value: item?.value,
+      }));
+
+    let payloadFilters;
+
+    if (dataPayload?.length > 0 && Array.isArray(dataPayload)) {
+      payloadFilters = dataPayload;
+    }
+
+    setLoading(true);
+    try {
+      const response = await paginateWithFilters(objString, payloadFilters);
+      setUsers(response?.results);
+      setTotalRecords(response?.total);
+    } catch (error) {
+      console.error(error);
+    }
+    setLoading(false);
+  };
+
+  const [templFilters, setTemplFilters] = useState<any>("");
 
   const addFilter = () => {
     setFilters([
@@ -167,6 +212,12 @@ const UserTable = () => {
     }
   };
 
+  useEffect(() => {
+    if (objectFilter || templFilters?.length > 0) {
+      getAllUsers();
+    }
+  }, [debouncedSearchNo, templFilters]);
+
   return (
     <div className="container" style={{ paddingTop: "24px" }}>
       <nav aria-label="breadcrumb">
@@ -240,6 +291,7 @@ const UserTable = () => {
                 <div className="col-3">
                   <Select
                     isClearable
+                    placeholder="Select field"
                     options={optionsField}
                     value={filter.field}
                     onChange={(selected) => handleFieldChange(index, selected)}
@@ -296,8 +348,8 @@ const UserTable = () => {
                 <div className="col-3">
                   {filter.field &&
                     (filter.field.value === "Select field" ||
-                      filter.field.value === "Username" ||
-                      filter.field.value === "Email") && (
+                      filter.field.value === "username" ||
+                      filter.field.value === "email") && (
                       <input
                         type="text"
                         value={filter.value}
@@ -315,6 +367,7 @@ const UserTable = () => {
                     <Select
                       isClearable
                       options={optionsStatus}
+                      placeholder="Select option"
                       value={filter.value}
                       onChange={(selected) =>
                         handleValueChange(index, selected ? selected.value : "")
@@ -340,7 +393,7 @@ const UserTable = () => {
                       }
                     />
                   )}
-                  {filter.field && filter.field.value === "Created At" && (
+                  {filter.field && filter.field.value === "createdAt" && (
                     <DatePicker
                       dateFormat="yyyy/MM/dd"
                       showMonthDropdown
@@ -408,6 +461,9 @@ const UserTable = () => {
                   className="btn btn-sm btn-primary col-2"
                   style={{
                     marginTop: "-10px",
+                  }}
+                  onClick={() => {
+                    setTemplFilters(filters);
                   }}
                 >
                   Apply
@@ -602,7 +658,7 @@ const UserTable = () => {
                           borderBottom: "dashed 1px #0088cc",
                         }}
                       >
-                        No role assigned
+                        {user.roleName}
                       </a>
                     </td>
                     <td className="text-start">{user.createdAt}</td>
@@ -644,6 +700,20 @@ const UserTable = () => {
             </table>
           </div>
         </div>
+        <PaginationCustom
+          setPage={(e: any) =>
+            setObjectFilter({
+              ...objectFilter,
+              page: e,
+            })
+          }
+          page={objectFilter?.page}
+          items_per_page={objectFilter?.items_per_page}
+          totalRecords={totalRecords}
+          dataTable={users}
+          onPageChange={onPageChange}
+          onRowsChange={onRowsChange}
+        />
       </div>
     </div>
   );

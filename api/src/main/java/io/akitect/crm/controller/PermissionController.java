@@ -71,4 +71,10 @@ public class PermissionController {
         return ResponseEntity.ok(permissionService.getDisplay());
     }
 
+    @GetMapping("/displayWithKey")
+    public ResponseEntity<List<GetDisplay>> getDisplayPermissionWithKey() {
+        return ResponseEntity.ok(permissionService.getDisplayWithKey());
+    }
+    
+
 }

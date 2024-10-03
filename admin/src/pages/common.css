@@ -46,3 +46,20 @@ button.btn.btn-sm.btn-icon.btn-primary.mr-1.position-relative:hover
 tbody > :hover {
   background-color: #d1d5db;
 }
+
+.p-paginator.p-component {
+  background: none;
+}
+
+button.p-paginator-page.p-paginator-element.p-link.p-paginator-page-end {
+  font-size: 14px;
+}
+
+button.p-paginator-page.p-paginator-element.p-link.p-paginator-page-start.p-highlight {
+  font-size: 14px;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page {
+  border-radius: 50%;
+  transition: box-shadow 0.2s;
+}

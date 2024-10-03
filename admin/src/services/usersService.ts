@@ -4,17 +4,6 @@ import {
   postRequest,
   putRequest,
 } from "@app/helpers/apiService";
-export interface UserRequest {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  username: string;
-  avatarId: number;
-  superUser: boolean;
-  manageSupers: boolean;
-  permissions: string;
-}
 
 export interface UserResponse {
   id: number;
@@ -25,8 +14,9 @@ export interface UserResponse {
   avatarId: number;
   superUser: boolean;
   manageSupers: boolean;
-  permissions: string;
   active: boolean;
+  roleId: number | null;
+  roleName: string;
   emailVerifiedAt: String | null; // Date type for timestamps
   createdAt: String;
   updatedAt: String;
@@ -40,9 +30,19 @@ export interface Paginated {
   totalPage: number;
 }
 
-export const paginateWithFilters = async () => {
+export interface Filters {
+  key: string;
+  operator: "ILIKE" | "EQUAL" | "MORE_THAN" | "LESS_THAN";
+  value: Object;
+}
+
+export const paginateWithFilters = async (param?: any, Filters?: Object) => {
+  console.log(Filters, "filter post");
   try {
-    const response = await getRequest<Paginated>("users/paginate");
+    const response = await postRequest<Paginated>(
+      `users/paginate?${param}`,
+      Filters
+    );
     return response.data;
   } catch (error) {
     throw error;
@@ -70,18 +70,6 @@ export const getUserById = async (id: number) => {
   }
 };
 
-export const updateUser = async (id: number, UserRequest: Object) => {
-  try {
-    const respone = await putRequest<UserResponse>(
-      `users/update/ + ${id}`,
-      UserRequest
-    );
-    return respone.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
 export const deleteUser = async (id: number) => {
   try {
     const response = await deleteRequest<UserResponse>(`users/delete/ + ${id}`);
@@ -98,6 +86,33 @@ export const removeSuper = async (id: number) => {
       null
     );
     return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const changePassword = async (
+  id: number,
+  ChangePasswordRequest: Object
+) => {
+  try {
+    const response = await putRequest<String>(
+      `users/${id}/change-password`,
+      ChangePasswordRequest
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateUser = async (id: number, UserRequest: Object) => {
+  try {
+    const respone = await putRequest<UserResponse>(
+      `users/update/ + ${id}`,
+      UserRequest
+    );
+    return respone.data;
   } catch (error) {
     throw error;
   }

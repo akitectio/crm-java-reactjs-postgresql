@@ -1,9 +1,10 @@
+import { getAllRoles, GetAllRolesResponse } from "@app/services/roles";
 import { createUser } from "@app/services/usersService";
 import { Button } from "@app/styles/common";
 import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useFormik } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -13,6 +14,23 @@ const CreateForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  const [roles, setRoles] = useState<GetAllRolesResponse[]>([]);
+
+  const getNameRoles = async () => {
+    setIsLoading(true);
+    try {
+      const response = await getAllRoles();
+      setRoles(response);
+    } catch (error) {
+      console.error(error);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    getNameRoles();
+  }, []);
+
   const { handleChange, values, handleSubmit, touched, errors } = useFormik({
     initialValues: {
       email: "",
@@ -21,7 +39,7 @@ const CreateForm = () => {
       firstName: "",
       lastName: "",
       username: "",
-      role: "Select role", // Default role value
+      roleId: roles,
     },
     validationSchema: Yup.object({
       email: Yup.string().email("Invalid email address").required("Required"),
@@ -36,8 +54,8 @@ const CreateForm = () => {
       username: Yup.string().required("Required"),
     }),
     onSubmit: async (values) => {
-      debugger;
-      const { email, password, firstName, lastName, username, role } = values;
+      // debugger;
+      const { email, password, firstName, lastName, username, roleId } = values;
 
       const userRequest = {
         email: email,
@@ -45,10 +63,10 @@ const CreateForm = () => {
         firstName: firstName,
         lastName: lastName,
         username: username,
+        roleId: roleId,
         avatarId: 0,
         superUser: true,
         manageSupers: true,
-        permissions: role === "Admin",
       };
 
       try {
@@ -261,13 +279,19 @@ const CreateForm = () => {
                 <InputGroup>
                   <Form.Control
                     as="select"
-                    id="role"
-                    name="role"
+                    id="roleId"
+                    name="roleId"
                     onChange={handleChange}
-                    value={values.role}
+                    value={values.roleId}
                   >
-                    <option value="Select role">Select Role</option>
-                    <option value="Admin">Admin</option>
+                    <option value="" disabled>
+                      Select role
+                    </option>
+                    {roles.map((role) => (
+                      <option key={role.value} value={role.value}>
+                        {role.label}
+                      </option>
+                    ))}
                   </Form.Control>
                 </InputGroup>
               </div>

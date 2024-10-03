@@ -117,6 +117,11 @@ public class UserServiceImpl implements UserService {
         response.setUpdatedAt(user.getUpdatedAt());
         response.setLastLogin(user.getLastLogin());
         response.setActive(user.getActive());
+
+        Role role = roleRepository.findOneById(user.getRoleId());
+
+        response.setRoleName(role.getName());
+
         return response;
     }
 
@@ -147,16 +152,17 @@ public class UserServiceImpl implements UserService {
 
     private List<FilterMap> getFilters(List<GetUserRequest> filter) {
         List<FilterMap> filters = new ArrayList<>();
-        for (GetUserRequest needToFilter : filter) {
+        if (filter != null)
+            for (GetUserRequest needToFilter : filter) {
 
-            if (List.of("email, firstName, lastName, username").contains(needToFilter.getKey()))
-                needToFilter.setValue("%" + needToFilter.getValue() + "%");
-            if (List.of("createdAt", "updatedAt", "lastLogin").contains(needToFilter.getKey()))
-                needToFilter.setValue(StringToTimestamp.convert((String) needToFilter.getValue(), null));
+                if (List.of("email, firstName, lastName, username").contains(needToFilter.getKey()))
+                    needToFilter.setValue("%" + needToFilter.getValue() + "%");
+                if (List.of("createdAt", "updatedAt", "lastLogin").contains(needToFilter.getKey()))
+                    needToFilter.setValue(StringToTimestamp.convert((String) needToFilter.getValue(), null));
 
-            filters.add(new FilterMap(needToFilter.getKey(), needToFilter.getKey(), needToFilter.getValue(),
-                    needToFilter.getOperator()));
-        }
+                filters.add(new FilterMap(needToFilter.getKey(), needToFilter.getKey(), needToFilter.getValue(),
+                        needToFilter.getOperator()));
+            }
         return filters;
     }
 
