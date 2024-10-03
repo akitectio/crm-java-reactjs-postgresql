@@ -78,8 +78,8 @@ public class RoleServiceImpl implements RoleService {
             newRole.setCreatedByName("System");
         }
 
-        List<Permission> permissions = permissionService.getById(data.getPermissionIds()).stream()
-                .collect(Collectors.toList());
+        Set<Permission> permissions = permissionService.getById(data.getPermissionIds()).stream()
+                .collect(Collectors.toSet());
         List<Permission> childPermission = new ArrayList<>();
 
         for (Permission permission : permissions) {
@@ -88,7 +88,7 @@ public class RoleServiceImpl implements RoleService {
 
         permissions.addAll(childPermission);
 
-        newRole.setPermissions(permissions);
+        newRole.setPermissions(permissions.stream().collect(Collectors.toList()));
 
         if (data.getIsDefault() != null && data.getIsDefault()) {
             List<Role> oldDefaultRole = roleRepository
@@ -142,8 +142,8 @@ public class RoleServiceImpl implements RoleService {
         if (data.getIsDefault() != null)
             target.setIsDefault(data.getIsDefault());
 
-        List<Permission> permissions = permissionService.getById(data.getPermissionIds()).stream()
-                .collect(Collectors.toList());
+        Set<Permission> permissions = permissionService.getById(data.getPermissionIds()).stream()
+                .collect(Collectors.toSet());
         List<Permission> childPermission = new ArrayList<>();
 
         for (Permission permission : permissions) {
@@ -152,7 +152,7 @@ public class RoleServiceImpl implements RoleService {
 
         permissions.addAll(childPermission);
 
-        target.setPermissions(permissions);
+        target.setPermissions(permissions.stream().collect(Collectors.toList()));
 
         return convertToResponse(roleRepository.insertOrUpdate(target));
     }
