@@ -27,7 +27,6 @@ import EditForm from "./pages/editFolder/EditFormUser";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 //core
 import "primereact/resources/primereact.min.css";
-import EditFormPermission from "./pages/editFolder/EditFormPermission";
 import Permissions from "./pages/Permissions";
 import Roles from "./pages/Roles";
 import UserTable from "./pages/UserTable";
@@ -123,10 +122,7 @@ const App = () => {
               path="/permission/create"
               element={<CreateFormPermissions />}
             ></Route>
-            <Route
-              path="permission/edit/:id"
-              element={<EditFormPermission />}
-            ></Route>
+
             <Route path="/profile" element={<Profile />} />
             <Route path="/" element={<Dashboard />} />
           </Route>

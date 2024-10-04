@@ -168,6 +168,7 @@ const UserTable = () => {
   // Remove Super
   const handleRemoveSuper = async (id: number) => {
     await removeSuper(id);
+    console.log(await removeSuper(id), "Remoce super");
     getAllUsers();
   };
 

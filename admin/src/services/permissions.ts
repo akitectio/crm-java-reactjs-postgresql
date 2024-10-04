@@ -1,4 +1,9 @@
-import { getRequest, postRequest, putRequest } from "@app/helpers/apiService";
+import {
+  deleteRequest,
+  getRequest,
+  postRequest,
+  putRequest,
+} from "@app/helpers/apiService";
 
 export interface PermissionRequest {
   name: string;
@@ -98,6 +103,15 @@ export const updatePermission = async (
       `permissions/ + ${id}`,
       PermissionRequest
     );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deletePermission = async (id: number) => {
+  try {
+    const response = await deleteRequest<String>(`permissions/ + ${id}`);
     return response.data;
   } catch (error) {
     throw error;
