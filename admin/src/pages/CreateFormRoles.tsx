@@ -36,7 +36,6 @@ const CreateFormRoles = () => {
         description: description,
         permissionIds: permissionIds,
       };
-      console.log(rolesRequest, "ROLESREQUEST");
       try {
         setIsLoading(true);
         const response = await createRoles(rolesRequest);

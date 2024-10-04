@@ -17,7 +17,7 @@ export interface UserResponse {
   active: boolean;
   roleId: number | null;
   roleName: string;
-  emailVerifiedAt: String | null; // Date type for timestamps
+  emailVerifiedAt: String | null;
   createdAt: String;
   updatedAt: String;
   lastLogin: String | null;

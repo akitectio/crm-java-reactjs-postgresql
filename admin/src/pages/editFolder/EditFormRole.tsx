@@ -77,12 +77,12 @@ const EditFormRole = () => {
     }),
     onSubmit: async (values) => {
       // debugger;
-      const { name, description, permissionIds } = values;
+      const { name, description, permissions } = values;
 
       const rolesRequest = {
         name,
         description,
-        permissionIds,
+        permissions,
       };
 
       try {

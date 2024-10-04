@@ -1,6 +1,6 @@
 import { getAllPermissions } from "@app/services/permissions";
 import "bootstrap/dist/css/bootstrap.min.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 interface Permission {
   label: string;
@@ -117,51 +117,86 @@ const PermissionCard: React.FC<{
     onCheckboxChange(node.value, checked);
   };
   const [tree, setTree] = useState<any>([]);
+  const ignoreEffectRef = useRef(false); // Đánh dấu khi onChange được gọi
 
   useEffect(() => {
-    if (
-      !node.children ||
-      !Array.isArray(node.children) ||
-      !valueDetails?.permissions
-    ) {
-      setTree(node.children);
-    }
+    // Chỉ chạy nếu không đến từ onChange
+    if (!ignoreEffectRef.current) {
+      if (
+        !node.children ||
+        !Array.isArray(node.children) ||
+        !valueDetails?.permissions
+      ) {
+        setTree(node.children);
+      }
+      const updateCheckedStatus = (tree, permissions) => {
+        return tree.map((node) => {
+          const matchedPermission = permissions.find(
+            (perm) => perm.id === node.value
+          );
 
-    const updateCheckedStatus = (tree: any, permissions: any): any => {
-      return tree.map((node: any) => {
-        // Kiểm tra nếu node hiện tại trùng ID với bất kỳ phần tử nào trong permissions
-        const matchedPermission = permissions.find(
-          (perm: any) => perm.id === node.value
+          if (matchedPermission) {
+            node.checked = matchedPermission.checked;
+          }
+
+          if (node.children && node.children.length > 0) {
+            node.children = updateCheckedStatus(node.children, permissions);
+          }
+
+          return node;
+        });
+      };
+
+      if (
+        Array.isArray(valueDetails?.permissions) &&
+        valueDetails.permissions.length > 0
+      ) {
+        const updatedTree = updateCheckedStatus(
+          node.children,
+          valueDetails.permissions
         );
-
-        // Nếu trùng thì cập nhật checked của node hiện tại thành true
-        if (matchedPermission) {
-          node.checked = matchedPermission.checked;
-        }
-
-        // Nếu node có children thì gọi đệ quy để tiếp tục kiểm tra trong children
-        if (node.children && node.children.length > 0) {
-          node.children = updateCheckedStatus(node.children, permissions);
-        }
-
-        return node;
-      });
-    };
-
-    // Chỉ cập nhật nếu có dữ liệu hợp lệ
-    if (
-      Array.isArray(valueDetails?.permissions) &&
-      valueDetails?.permissions?.length > 0
-    ) {
-      const updatedTree = updateCheckedStatus(
-        node.children,
-        valueDetails?.permissions
-      );
-      setTree(updatedTree); // Cập nhật state sau khi xử lý xong
+        setTree(updatedTree);
+      }
+    } else {
+      ignoreEffectRef.current = false; // Reset lại flag sau khi onChange
     }
   }, [node.children, valueDetails?.permissions]);
 
-  console.log(tree, "tree");
+  const updateSingleCheckbox = (
+    tree: any[],
+    value: any,
+    isChecked: boolean
+  ): any[] => {
+    return tree.map((item: any) => {
+      // Nếu item có giá trị value bằng với value truyền vào, cập nhật checked của nó
+      if (item.value === value) {
+        return { ...item, checked: isChecked };
+      }
+
+      // Nếu item có children, tiếp tục kiểm tra trong children
+      if (item.children && item.children.length > 0) {
+        return {
+          ...item,
+          children: updateSingleCheckbox(item.children, value, isChecked),
+        };
+      }
+
+      // Nếu không thay đổi gì, trả về item ban đầu
+      return item;
+    });
+  };
+
+  // Sử dụng hàm này trong onChange
+  const handleCheckboxChangeChildren = (value: any, isChecked: boolean) => {
+    ignoreEffectRef.current = true; // Đánh dấu để bỏ qua effect khi onChange
+    const updatedTree = updateSingleCheckbox(tree, value, isChecked);
+    console.log(updatedTree, "dffdfd");
+    setTree(updatedTree);
+  };
+
+  useEffect(() => {
+    console.log(tree, "treetreetree");
+  }, [tree]);
   return (
     <div className="card mb-3">
       <div
@@ -210,7 +245,7 @@ const PermissionCard: React.FC<{
           >
             {Array.isArray(tree) &&
               tree?.length > 0 &&
-              tree?.map((child: any) => (
+              tree?.map((child: any, index: any) => (
                 <li
                   key={child.value}
                   style={{ listStyle: "none", marginBottom: "8px" }}
@@ -220,9 +255,13 @@ const PermissionCard: React.FC<{
                       type="checkbox"
                       id={`permission-${child.value}`}
                       checked={child.checked}
-                      onChange={(e) =>
-                        onCheckboxChange(child.value, e.target.checked)
-                      }
+                      onChange={(e) => {
+                        handleCheckboxChangeChildren(
+                          child.value,
+                          e.target.checked
+                        );
+                        onCheckboxChange(child.value, e.target.checked);
+                      }}
                       style={{ height: "20px", width: "20px" }}
                     />
                     <label

@@ -4,16 +4,11 @@ import {
   useDebounce,
 } from "@app/helpers/pagination/PaginationInfo";
 import {
+  deletePermission,
   paginatedWithConditions,
   PermissionResponse,
 } from "@app/services/permissions";
-import { deleteUser } from "@app/services/usersService";
-import {
-  faEdit,
-  faPlus,
-  faSearch,
-  faSync,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faSearch, faSync } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
@@ -86,16 +81,12 @@ const Permissions = () => {
 
   // Delete
   const handleDelete = async (id: number) => {
-    await deleteUser(id);
+    await deletePermission(id);
     getAllPermissions();
   };
 
   const handleButtonCreate = () => {
     navigator("/permission/create");
-  };
-
-  const handleButtonEdit = (id_permissions: number) => {
-    navigator(`/permission/edit/${id_permissions}`);
   };
 
   const handleDashboard = () => {
@@ -275,6 +266,7 @@ const Permissions = () => {
                   <th className="text-start">NAME</th>
                   <th className="text-start">KEY</th>
                   <th className="text-start">CREATED AT</th>
+                  <th className="text-start">DELETED AT</th>
                   <th className="text-center">OPERATIONS</th>
                 </tr>
               </thead>
@@ -309,15 +301,15 @@ const Permissions = () => {
                       <span>{permission.key}</span>
                     </td>
                     <td className="text-start">{permission.createdAt}</td>
+                    <td className="text-start">
+                      <span className="badge bg-info p-2">
+                        {permission.deletedAt == null
+                          ? "Activated"
+                          : "Deactivated"}
+                      </span>
+                    </td>
                     <td className="text-center text-nowrap">
                       <div className="table-actions">
-                        <button
-                          className="btn btn-sm btn-icon btn-primary mr-1 position-relative"
-                          onClick={() => handleButtonEdit(permission.id)}
-                        >
-                          <FontAwesomeIcon icon={faEdit} />
-                          <span className="title-edit">Edit</span>
-                        </button>
                         <DeleteConfirm
                           onDelete={() => handleDelete(permission.id)}
                           id={permission.id}
