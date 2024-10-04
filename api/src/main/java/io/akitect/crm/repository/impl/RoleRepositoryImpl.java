@@ -71,4 +71,18 @@ public class RoleRepositoryImpl implements RoleRepository {
                 .findWithConditions(List.of(new FilterMap("isDefault", "isDefault", true, FilterOperator.EQUAL)))
                 .getFirst();
     }
+
+    @Override
+    @Transactional
+    public List<Role> findRoleByPermissionId(Long id) {
+
+        return queryHelper.getEntityManager().createQuery("""
+                SELECT r
+                FROM Role r
+                JOIN role_permission rp
+                ON rp.role_id = r.id
+                WHERE rp.permission_id = ?1
+                """, Role.class).getResultList();
+    }
+
 }

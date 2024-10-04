@@ -7,12 +7,12 @@ public enum FilterOperator {
     LESS_OR_EQUAL("<="),
     MORE_THAN(">"),
     MORE_OR_EQUAL(">="),
-    IS("is"),
-    IS_NOT("is not"),
-    IN("in"),
-    NOT_IN("not in"),
-    ILIKE("ilike"),
-    LIKE("like");
+    IS("IS"),
+    IS_NOT("IS NOT"),
+    IN("IN"),
+    NOT_IN("NOT IN"),
+    ILIKE("ILIKE"),
+    LIKE("LIKE");
 
     public String name;
 

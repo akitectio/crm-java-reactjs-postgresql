@@ -14,6 +14,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.akitect.crm.utils.enums.FilterOperator;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
@@ -89,18 +90,33 @@ public class QueryHelper<T> {
         return entityManager.createQuery(queryStr, entityClass).getResultList();
     }
 
-    public List<T> findWithConditions(List<FilterMap> conditions) {
+    public List<T> findWithConditions(List<FilterMap> filters) {
         StringBuilder queryStr = new StringBuilder("SELECT e FROM " + entityClass.getSimpleName() + " e WHERE 1=1");
-        conditions.forEach(
-                filter -> queryStr.append(" AND e.").append(filter.fieldName).append(" " + filter.operator.name + " :")
-                        .append(filter.paramName));
+        filters.forEach(
+                filter -> {
+                    if (List.of(FilterOperator.IS, FilterOperator.IS_NOT).contains(filter.operator)
+                            && filter.value == null) {
+                        queryStr.append(" AND e.").append(filter.fieldName)
+                                .append(" " + filter.operator.name + " NULL");
+                    } else {
+                        queryStr.append(" AND e.").append(filter.fieldName).append(" " + filter.operator.name + " :")
+                                .append(filter.paramName);
+                    }
 
+                });
         // Log the generated query
         System.out.println("Generated Query: " + queryStr.toString());
         // System.out.println("Parameters: " + conditions);
 
         var query = entityManager.createQuery(queryStr.toString(), entityClass);
-        conditions.forEach(filter -> query.setParameter(filter.paramName, filter.value));
+        filters.forEach(filter -> {
+            if (List.of(FilterOperator.IS, FilterOperator.IS_NOT).contains(filter.operator)
+                    && filter.value == null) {
+
+            } else {
+                query.setParameter(filter.paramName, filter.value);
+            }
+        });
 
         return query.getResultList();
     }
@@ -110,15 +126,33 @@ public class QueryHelper<T> {
                 "SELECT e FROM " + entityClass.getSimpleName() + " e WHERE 1=1");
 
         filters.forEach(
-                filter -> queryStr.append(" AND e.").append(filter.fieldName).append(" " + filter.operator.name + " :")
-                        .append(filter.paramName));
+                filter -> {
+                    if (List.of(FilterOperator.IS, FilterOperator.IS_NOT).contains(filter.operator)
+                            && filter.value == null) {
+                        queryStr.append(" AND e.").append(filter.fieldName)
+                                .append(" " + filter.operator.name + " NULL");
+                    } else {
+                        queryStr.append(" AND e.").append(filter.fieldName).append(" " + filter.operator.name + " :")
+                                .append(filter.paramName);
+                    }
+
+                });
 
         queryStr.append(" " + getSortByParam(pageable.getSort()));
 
         TypedQuery<K> query = entityManager.createQuery(queryStr.toString(), dtoClass);
-        filters.forEach(filter -> query.setParameter(filter.paramName, filter.value));
 
         TypedQuery<Long> countQuery = entityManager.createQuery(getCountQueryString(filters), Long.class);
+
+        filters.forEach(filter -> {
+            if (List.of(FilterOperator.IS, FilterOperator.IS_NOT).contains(filter.operator)
+                    && filter.value == null) {
+
+            } else {
+                query.setParameter(filter.paramName, filter.value);
+                countQuery.setParameter(filter.paramName, filter.value);
+            }
+        });
 
         query.setMaxResults(pageable.getPageSize());
         query.setFirstResult((int) pageable.getOffset());
@@ -135,8 +169,17 @@ public class QueryHelper<T> {
         StringBuilder queryStr = new StringBuilder(
                 "SELECT COUNT(e.id) AS COUNTER FROM " + entityClass.getSimpleName() + " e WHERE 1=1");
         filters.forEach(
-                filter -> queryStr.append(" AND e.").append(filter.fieldName).append(" " + filter.operator.name + " :")
-                        .append(filter.paramName));
+                filter -> {
+                    if (List.of(FilterOperator.IS, FilterOperator.IS_NOT).contains(filter.operator)
+                            && filter.value == null) {
+                        queryStr.append(" AND e.").append(filter.fieldName)
+                                .append(" " + filter.operator.name + " NULL");
+                    } else {
+                        queryStr.append(" AND e.").append(filter.fieldName).append(" " + filter.operator.name + " :")
+                                .append(filter.paramName);
+                    }
+
+                });
         return queryStr.toString();
     }
 

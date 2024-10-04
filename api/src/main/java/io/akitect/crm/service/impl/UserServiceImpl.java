@@ -14,7 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import io.akitect.crm.dto.request.GetUserRequest;
+import io.akitect.crm.dto.request.GetCommonFilterRequest;
 import io.akitect.crm.dto.request.UserRequest;
 import io.akitect.crm.dto.request.UserRequestPut;
 import io.akitect.crm.dto.response.UserResponse;
@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public Page<UserResponse> paginatedWithConditions(PageRequest pageRequest, String sortBy, Direction order,
-            List<GetUserRequest> filter) {
+            List<GetCommonFilterRequest> filter) {
         pageRequest = pageRequest.withSort(order, sortBy);
         Page<UserResponse> result = userRepository.paginatedWithConditions(pageRequest, getFilters(filter));
         Set<Long> roleIds = result.getContent().stream().map(x -> x.getRoleId()).filter(x -> x != null)
@@ -150,12 +150,12 @@ public class UserServiceImpl implements UserService {
         return result;
     }
 
-    private List<FilterMap> getFilters(List<GetUserRequest> filter) {
+    private List<FilterMap> getFilters(List<GetCommonFilterRequest> filter) {
         List<FilterMap> filters = new ArrayList<>();
         if (filter != null)
-            for (GetUserRequest needToFilter : filter) {
+            for (GetCommonFilterRequest needToFilter : filter) {
 
-                if (List.of("email, firstName, lastName, username").contains(needToFilter.getKey()))
+                if (List.of("email", "firstName", "lastName", "username").contains(needToFilter.getKey()))
                     needToFilter.setValue("%" + needToFilter.getValue() + "%");
                 if (List.of("createdAt", "updatedAt", "lastLogin").contains(needToFilter.getKey()))
                     needToFilter.setValue(StringToTimestamp.convert((String) needToFilter.getValue(), null));

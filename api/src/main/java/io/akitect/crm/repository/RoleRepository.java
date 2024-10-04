@@ -25,4 +25,6 @@ public interface RoleRepository {
             List<FilterMap> filters);
 
     List<Role> findWithConditions(List<FilterMap> filters);
+
+    List<Role> findRoleByPermissionId(Long id);
 }

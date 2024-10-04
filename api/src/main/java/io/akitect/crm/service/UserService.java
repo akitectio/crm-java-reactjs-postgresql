@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 
-import io.akitect.crm.dto.request.GetUserRequest;
+import io.akitect.crm.dto.request.GetCommonFilterRequest;
 import io.akitect.crm.dto.request.UserRequest;
 import io.akitect.crm.dto.request.UserRequestPut;
 import io.akitect.crm.dto.response.UserResponse;
@@ -24,7 +24,7 @@ public interface UserService {
     UserResponse removeSuper(Long id);
 
     Page<UserResponse> paginatedWithConditions(PageRequest pageRequest, String sortBy, Direction order,
-            List<GetUserRequest> filter);
+            List<GetCommonFilterRequest> filter);
 
     UserResponse setRole(Long id, Long roleId);
 

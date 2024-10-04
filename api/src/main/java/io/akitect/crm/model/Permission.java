@@ -7,6 +7,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.akitect.crm.dto.response.PermissionResponse;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -45,6 +46,7 @@ public class Permission {
 
     private Timestamp updatedAt;
 
+    @Column(name = "DELETED_AT")
     private Timestamp deletedAt;
 
     @JsonIgnore

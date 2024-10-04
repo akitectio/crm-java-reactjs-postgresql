@@ -8,7 +8,6 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.akitect.crm.dto.request.GetRoleRequest;
+import io.akitect.crm.dto.request.GetCommonFilterRequest;
 import io.akitect.crm.dto.request.PostPutRoleRequest;
 import io.akitect.crm.dto.response.GetDisplay;
 import io.akitect.crm.dto.response.PaginateRoleResponse;
@@ -33,13 +32,13 @@ public class RoleController {
     @Autowired
     RoleService roleService;
 
-    @GetMapping("/paginated")
+    @PostMapping("/paginated")
     public ResponseEntity<PaginatedResponse<PaginateRoleResponse>> paginated(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "items_per_page", defaultValue = "10") int perPage,
             @RequestParam(name = "sort_by", defaultValue = "id") String sortBy,
             @RequestParam(name = "order", defaultValue = "ASC") Direction order,
-            @ModelAttribute() GetRoleRequest filter) {
+            @RequestBody(required = false) List<GetCommonFilterRequest> filter) {
         return ResponseEntity
                 .ok(PageHelper.convertResponse(
                         roleService.paginatedWithConditions(PageRequest.of(page, perPage), sortBy, order, filter)));
@@ -76,4 +75,10 @@ public class RoleController {
 
         return ResponseEntity.ok("Delete success!");
     }
+
+    @GetMapping("/by-permission")
+    public ResponseEntity<List<RoleResponse>> getRoleByPermissionId(@RequestParam Long permissionId) {
+        return ResponseEntity.ok(roleService.getRoleByPermissionId(permissionId));
+    }
+
 }

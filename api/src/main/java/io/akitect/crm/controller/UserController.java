@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.akitect.crm.dto.request.GetUserRequest;
+import io.akitect.crm.dto.request.GetCommonFilterRequest;
 import io.akitect.crm.dto.request.UserRequest;
 import io.akitect.crm.dto.request.UserRequestPut;
 import io.akitect.crm.dto.response.PaginatedResponse;
@@ -69,7 +69,7 @@ public class UserController {
             @RequestParam(name = "items_per_page", defaultValue = "10") int perPage,
             @RequestParam(name = "sort_by", defaultValue = "id") String sortBy,
             @RequestParam(name = "order", defaultValue = "ASC") Direction order,
-            @RequestBody(required = false) List<GetUserRequest> filter) {
+            @RequestBody(required = false) List<GetCommonFilterRequest> filter) {
 
         PaginatedResponse<UserResponse> result = PageHelper
                 .convertResponse(

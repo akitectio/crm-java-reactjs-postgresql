@@ -11,7 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
-import io.akitect.crm.dto.request.GetRoleRequest;
+import io.akitect.crm.dto.request.GetCommonFilterRequest;
 import io.akitect.crm.dto.request.PostPutRoleRequest;
 import io.akitect.crm.dto.response.GetDisplay;
 import io.akitect.crm.dto.response.PaginateRoleResponse;
@@ -108,14 +108,22 @@ public class RoleServiceImpl implements RoleService {
     @Override
     @Transactional
     public Page<PaginateRoleResponse> paginatedWithConditions(PageRequest pageRequest, String sortBy, Direction order,
-            GetRoleRequest filter) {
+            List<GetCommonFilterRequest> filter) {
 
         return roleRepository.paginatedWithConditions(pageRequest, getFilters(filter));
     }
 
-    private List<FilterMap> getFilters(GetRoleRequest filter) {
+    private List<FilterMap> getFilters(List<GetCommonFilterRequest> filter) {
         List<FilterMap> filters = new ArrayList<>();
+        if (filter != null)
+            for (GetCommonFilterRequest needToFilter : filter) {
 
+                if (List.of("name").contains(needToFilter.getKey()))
+                    needToFilter.setValue("%" + needToFilter.getValue() + "%");
+
+                filters.add(new FilterMap(needToFilter.getKey(), needToFilter.getKey(), needToFilter.getValue(),
+                        needToFilter.getOperator()));
+            }
         return filters;
     }
 
@@ -169,6 +177,13 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public List<GetDisplay> getAll() {
         return roleRepository.findWithConditions(List.of()).stream().map(x -> x.toDisplay())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public List<RoleResponse> getRoleByPermissionId(Long id) {
+        return roleRepository.findRoleByPermissionId(id).stream().map(role -> convertToResponse(role))
                 .collect(Collectors.toList());
     }
 

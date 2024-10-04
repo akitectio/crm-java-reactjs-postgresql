@@ -120,7 +120,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public List<GetDisplay> getDisplay() {
 
-        return permissionRepository.findAllWithFilter(List.of()).stream()
+        return permissionRepository.findAllWithFilter(getFilters(new GetPermissionRequest())).stream()
                 .map(permission -> convertToDisplay(permission)).collect(Collectors.toList());
     }
 

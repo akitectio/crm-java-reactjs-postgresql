@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 
-import io.akitect.crm.dto.request.GetRoleRequest;
+import io.akitect.crm.dto.request.GetCommonFilterRequest;
 import io.akitect.crm.dto.request.PostPutRoleRequest;
 import io.akitect.crm.dto.response.GetDisplay;
 import io.akitect.crm.dto.response.PaginateRoleResponse;
@@ -22,9 +22,11 @@ public interface RoleService {
     List<String> getPermissionByRole(Long id);
 
     Page<PaginateRoleResponse> paginatedWithConditions(PageRequest pageRequest, String sortBy, Direction order,
-            GetRoleRequest filter);
+            List<GetCommonFilterRequest> filter);
 
     RoleResponse updateRole(PostPutRoleRequest data, Long id);
 
     void deleteRoleById(Long id);
+
+    List<RoleResponse> getRoleByPermissionId(Long id);
 }
