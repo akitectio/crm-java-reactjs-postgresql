@@ -118,7 +118,8 @@ public class RoleServiceImpl implements RoleService {
         if (filter != null)
             for (GetCommonFilterRequest needToFilter : filter) {
 
-                if (List.of("name").contains(needToFilter.getKey()))
+                if (List.of("name").contains(needToFilter.getKey())
+                        && List.of(FilterOperator.ILIKE, FilterOperator.LIKE).contains(needToFilter.getOperator()))
                     needToFilter.setValue("%" + needToFilter.getValue() + "%");
 
                 filters.add(new FilterMap(needToFilter.getKey(), needToFilter.getKey(), needToFilter.getValue(),

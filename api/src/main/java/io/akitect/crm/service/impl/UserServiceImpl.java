@@ -25,6 +25,7 @@ import io.akitect.crm.repository.UserRepository;
 import io.akitect.crm.service.UserService;
 import io.akitect.crm.utils.FilterMap;
 import io.akitect.crm.utils.converters.StringToTimestamp;
+import io.akitect.crm.utils.enums.FilterOperator;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -155,7 +156,8 @@ public class UserServiceImpl implements UserService {
         if (filter != null)
             for (GetCommonFilterRequest needToFilter : filter) {
 
-                if (List.of("email", "firstName", "lastName", "username").contains(needToFilter.getKey()))
+                if (List.of("email", "firstName", "lastName", "username").contains(needToFilter.getKey())
+                        && List.of(FilterOperator.ILIKE, FilterOperator.LIKE).contains(needToFilter.getOperator()))
                     needToFilter.setValue("%" + needToFilter.getValue() + "%");
                 if (List.of("createdAt", "updatedAt", "lastLogin").contains(needToFilter.getKey()))
                     needToFilter.setValue(StringToTimestamp.convert((String) needToFilter.getValue(), null));
